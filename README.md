@@ -1,57 +1,98 @@
+cat > README.md <<'EOF'
 # Emergent State Machine (ESM)
 
-The Emergent State Machine (ESM) is a turn-based control architecture that enforces structural separation between **descriptive state representation** and **authoritative action selection**.
+The Emergent State Machine (ESM) is a turn-based control architecture pattern within the broader **Controlled Mutation Layer (CML)** framework.
 
-This repository is the **specification layer**. The Digital Learning Companion (DLC) is the **reference implementation layer**.
+ESM formalizes structural separation between:
+
+- Descriptive state representation  
+- Deterministic, versioned authority  
+- Optional schema-constrained generative instrumentation  
+
+It is designed for engineers building systems where probabilistic interpretation and consequential action must coexist — without sacrificing auditability, replayability, or policy control.
+
+---
+
+## Why This Exists
+
+Modern AI systems frequently entangle:
+
+- Interpretation  
+- Decision authority  
+- Generative output  
+
+This entanglement makes systems difficult to:
+
+- Audit  
+- Reproduce  
+- Version safely  
+- Govern at scale  
+
+Controlled Mutation Layer (CML) is an architectural response to that pain.
+
+ESM is a concrete realization of CML principles.
+
+It enforces that behavioral change occurs only through explicit, versioned mutation of authoritative policy layers — never through implicit drift.
+
+---
+
+## Scope of This Repository
+
+This repository contains the **normative specification** of the ESM pattern:
+
+- Formal execution model  
+- Required invariants  
+- Clarification and ambiguity handling rules  
+- Versioning guarantees  
+- Instrumented Deterministic Evolution (IDE)  
+
+It does not contain application code.
 
 ---
 
 ## White Paper
 
-- **ESM: A Turn-Based Control Architecture (v0.9)**  
+- *ESM: A Turn-Based Control Architecture (v0.9)*  
   `paper/ESM_Turn_Based_Control_Architecture_v0.9.pdf`
 
 ---
 
-## Reference Implementation (DLC)
+## Engineering Specification
 
-The Digital Learning Companion (DLC) implements the ESM architecture:
+Canonical engineering specification:
 
-- Meta repo (front door): https://github.com/ih8scargo/dlc
+`spec/esm_spec.md`
 
-Within DLC:
-- **Brain (projection + policy + instrumentation):** `dlc_brain`
-- **Bird (web/UI interface):** `dlc_web`
+An implementation must satisfy this specification to be considered ESM-compliant.
 
 ---
 
-## Architectural Summary
+## Reference Implementation
 
-An ESM consists of:
+The Digital Learning Companion (DLC) is one implementation of the ESM pattern:
 
-- Projection operator: \( x_t = R_v(I_t) \)  
-- Deterministic policy: \( a_t = \pi_w(x_t) \)  
-- Optional schema-constrained generative instrument: \( G \) (non-authoritative)
+https://github.com/ih8scargo/dlc
 
-Execution rule:
-
-\[
-a_t = \pi_w(R_v(I_t))
-\]
-
-Behavior evolves only through explicit, versioned updates to \( R \) and/or \( \pi \) (Instrumented Deterministic Evolution).
+Additional implementations are welcome.
 
 ---
 
-## Repo Contents
+## Join the Conversation
 
-- `paper/` — released PDFs of the specification
-- `latex/` — LaTeX source for the white paper
+If you are building systems that require:
 
-This repo intentionally does **not** contain implementation code.
+- Deterministic authority boundaries  
+- Explicit policy control  
+- Structured ambiguity handling  
+- Safe, versioned evolution  
+
+We invite collaboration, critique, and experimentation.
+
+CML is an architectural direction — not a closed product.
 
 ---
 
 ## License
 
 MIT License.
+EOF
