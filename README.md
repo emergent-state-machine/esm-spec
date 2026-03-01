@@ -1,7 +1,8 @@
-
 # Emergent State Machine (ESM)
 
-The Emergent State Machine (ESM) is a turn-based control architecture pattern within the broader **Controlled Mutation Layer (CML)** framework.
+The Emergent State Machine (ESM) is a normative turn-based control architecture that structurally separates descriptive state representation from authoritative action selection.
+
+Within ESM, all state mutation occurs exclusively through a **Controlled Mutation Layer (CML)** — a deterministic, versioned, and instrumented boundary governing how authoritative state may evolve.
 
 ESM formalizes structural separation between:
 
@@ -28,11 +29,9 @@ This entanglement makes systems difficult to:
 - Version safely  
 - Govern at scale  
 
-Controlled Mutation Layer (CML) is an architectural response to that pain.
+ESM addresses this by enforcing a strict architectural separation between descriptive projection and authoritative mutation.
 
-ESM is a concrete realization of CML principles.
-
-It enforces that behavioral change occurs only through explicit, versioned mutation of authoritative policy layers — never through implicit drift.
+Behavioral change may occur only through explicit, versioned state transitions mediated by the Controlled Mutation Layer (CML) — never through implicit drift.
 
 ---
 
@@ -55,7 +54,7 @@ It does not contain application code.
 - *ESM: A Turn-Based Control Architecture (v0.9)*  
   [Download PDF](paper/ESM_Turn_Based_Control_Architecture_v0.9.pdf)
 
---- 
+---
 
 ## Engineering Specification
 
@@ -86,12 +85,4 @@ If you are building systems that require:
 - Structured ambiguity handling  
 - Safe, versioned evolution  
 
-We invite collaboration, critique, and experimentation.
-
-CML is an architectural direction — not a closed product.
-
----
-
-## License
-
-MIT License.
+We invite collaboration and discussion.
