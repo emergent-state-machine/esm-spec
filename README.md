@@ -54,7 +54,8 @@ It does not contain application code.
 
 - *ESM: A Turn-Based Control Architecture (v0.9)*  
   [Download PDF](paper/ESM Turn Based Control Architecture v0.9.pdf)
-(paper/ESM Turn Based Control Architecture v0.9.pdf)
+
+--- 
 
 ## Engineering Specification
 
