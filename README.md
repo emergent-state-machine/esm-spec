@@ -52,8 +52,6 @@ It does not contain application code.
 
 ## White Paper
 
-## White Paper
-
 - *ESM: A Turn-Based Control Architecture (v0.9)*  
   [Download PDF](paper/ESM Turn Based Control Architecture v0.9.pdf)
 
