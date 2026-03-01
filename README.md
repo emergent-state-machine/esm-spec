@@ -52,27 +52,17 @@ It does not contain application code.
 
 ## White Paper
 
-<<<<<<< HEAD
 ## White Paper
 
 - *ESM: A Turn-Based Control Architecture (v0.9)*  
   [Download PDF](paper/ESM Turn Based Control Architecture v0.9.pdf)
-=======
-- *ESM: A Turn-Based Control Architecture (v0.9)*  
-  `paper/ESM_Turn_Based_Control_Architecture_v0.9.pdf`
->>>>>>> 206a52d (chore: remove Windows Zone.Identifier artifact)
 
----
 
 ## Engineering Specification
 
 Canonical engineering specification:
 
-<<<<<<< HEAD
 [spec/esm_spec.md](spec/esm_spec.md)
-=======
-`spec/esm_spec.md`
->>>>>>> 206a52d (chore: remove Windows Zone.Identifier artifact)
 
 An implementation must satisfy this specification to be considered ESM-compliant.
 
