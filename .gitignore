@@ -1,3 +1,6 @@
 
 # local-only workspace
 esm-org-profile/
+
+# Private drafts
+spec/esm_formal_paper_claude.md
