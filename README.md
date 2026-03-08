@@ -87,7 +87,7 @@ Additional implementations are welcome.
 
 ## Release Notes
 
-v0.2.0 – Clarified architecture
+v1.0.0 – Clarified architecture
 
 Improves terminology around primitive detectors and signals, explicitly locates probabilistic interpretation in the Projection Layer, and introduces hierarchical composition of ESMs.
 
