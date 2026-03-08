@@ -22,7 +22,7 @@ ESM is domain-agnostic. It applies wherever probabilistic interpretation and con
 For systems that require a deterministic and instrumented mutation boundary, the ESM architecture can be implemented using a **[Controlled Mutation Layer (CML)](https://github.com/controlled-mutation-layer)**.
 
 ### ESM Turn Structure
-
+```
 Input (u_t)
 │
 ▼
@@ -45,7 +45,7 @@ Input (u_t)
 │
 ▼
 State Mutation (m_{t+1})
-
+```
 Each **Turn** records the versions of:
 
 - signal detectors  
