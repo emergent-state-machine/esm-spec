@@ -4,18 +4,18 @@ The **Emergent State Machine (ESM)** is a turn-based control architecture for go
 
 ESM makes the decision boundary explicit by separating:
 
-- **Signals** (measurement)  
-- **Interpretation** (evaluation)  
-- **Authorization** (authority to mutate state)  
+- **Signals** (measurement)
+- **Interpretation** (evaluation)
+- **Authorization** (authority to mutate state)
 
 Each interaction is bound into a **Turn**, which records the versions of signal logic, interpretation logic, and authorization policy in effect at that moment. State may only evolve through this structured boundary.
 
 The result is a system where evolution is:
 
-- Reconstructible  
-- Versioned  
-- Inspectable  
-- Governable  
+- Reconstructible
+- Versioned
+- Inspectable
+- Governable
 
 ESM is domain-agnostic. It applies wherever probabilistic interpretation and consequential state mutation must coexist — including AI-assisted systems, digital twins, enterprise workflows, and learning platforms.
 
@@ -27,16 +27,16 @@ For systems that require a deterministic and instrumented mutation boundary, ESM
 
 Modern AI systems frequently entangle:
 
-- Interpretation  
-- Decision authority  
-- Generative output  
+- Interpretation
+- Decision authority
+- Generative output
 
 This entanglement makes systems difficult to:
 
-- Audit  
-- Reproduce  
-- Version safely  
-- Govern at scale  
+- Audit
+- Reproduce
+- Version safely
+- Govern at scale
 
 ESM addresses this by enforcing a strict architectural separation between descriptive projection and authoritative mutation.
 
@@ -48,11 +48,11 @@ Behavioral change may occur only through explicit, versioned state transitions m
 
 This repository contains the **normative specification** of the ESM pattern:
 
-- Formal execution model  
-- Required invariants  
-- Clarification and ambiguity handling rules  
-- Versioning guarantees  
-- Instrumented Deterministic Evolution (IDE)  
+- Formal execution model
+- Required invariants
+- Clarification and ambiguity handling rules
+- Versioning guarantees
+- Instrumented Deterministic Evolution (IDE)
 
 It does not contain application code.
 
@@ -60,7 +60,7 @@ It does not contain application code.
 
 ## White Paper
 
-- *ESM: A Turn-Based Control Architecture (v0.9)*  
+- _ESM: A Turn-Based Control Architecture (v0.9)_  
   [Download PDF](paper/ESM_Turn_Based_Control_Architecture_v0.9.pdf)
 
 ---
@@ -85,13 +85,19 @@ Additional implementations are welcome.
 
 ---
 
+## Release Notes
+
+v0.2.0 – Clarified architecture
+
+Improves terminology around primitive detectors and signals, explicitly locates probabilistic interpretation in the Projection Layer, and introduces hierarchical composition of ESMs.
+
 ## Join the Conversation
 
 If you are building systems that require:
 
-- Deterministic authority boundaries  
-- Explicit policy control  
-- Structured ambiguity handling  
-- Safe, versioned evolution  
+- Deterministic authority boundaries
+- Explicit policy control
+- Structured ambiguity handling
+- Safe, versioned evolution
 
 We invite collaboration and discussion.

@@ -1,44 +1,141 @@
-Emergent State Machine (ESM)
-Architectural Specification (vCurrent)
+# Emergent State Machine (ESM)
 
-1. System Definition
+## Architectural Specification (v1.0.0)
 
-The Emergent State Machine (ESM) is a deterministic turn-based control architecture composed of three structurally separated layers:
+## 1. System Definition
 
-1. Signal Layer — Structured state observation
-2. Projection Layer — Interpretable state construction
-3. Authority Layer — Deterministic, versioned mutation control
+The **Emergent State Machine (ESM)** is a deterministic, turn-based control architecture for governing state mutation in model-assisted systems.
 
-All authoritative state mutation occurs exclusively within the Authority Layer.
+The architecture is composed of three structurally separated layers:
 
-Optional generative mechanisms MAY be used as bounded assistance but SHALL NOT possess decision authority.
+1. **Signal Layer** — Structured state observation and measurement
+2. **Projection Layer** — Interpretable state construction
+3. **Authority Layer** — Deterministic, versioned mutation control
+
+All authoritative state mutation occurs exclusively within the **Authority Layer**.
+
+Optional generative mechanisms MAY assist interpretation but SHALL NOT possess decision authority.
 
 Behavioral evolution occurs only through explicit, versioned modification of system components.
 
-The architecture guarantees determinism, replayability, and traceable change.
+The architecture guarantees:
 
-2. Terminology
+- determinism
+- replayability
+- traceable change
+- inspectable decision boundaries
 
-Primitive
-An explicitly defined, bounded feature representing a domain-relevant signal.
+## 2. Terminology
 
-Feature Vector (x_t)
-The bounded scalar vector constructed from primitives.
+### Primitive Detector
 
-Projection Matrix (R)
-A versioned linear transformation mapping feature space to role space.
+A **primitive detector** is a deterministic function that extracts a bounded scalar measurement from system input.
+
+Primitive detectors represent domain-relevant measurement instruments defined by system designers or domain experts.
+
+Primitive detectors MUST:
+
+- be explicitly defined
+- produce bounded outputs
+- be versioned
+- be independently testable
+
+### Signal
+
+A **signal** is the bounded scalar value produced by a primitive detector.
+
+Signals represent **measured conditions of the system state**.
+
+Signals are deterministic measurements and do not contain interpretation or decision authority.
+
+### Feature Vector (`x_t`)
+
+The **feature vector** is the ordered collection of signal values produced by primitive detectors during a turn.
+
+```text
+x_t = [s₁, s₂, …, sₙ]
+
+Where each sᵢ is a signal.
+
+Projection Matrix / Projection Function (R or P)
+
+A projection maps the feature vector into interpreted structural state.
+
+Projection produces role scores representing interpreted system conditions.
+
+Projection MAY be implemented as:
+
+linear transformation
+
+deterministic function
+
+probabilistic or model-assisted interpretation
+
+Projection outputs MUST remain structured and deterministic with respect to recorded inputs and environment identifiers.
 
 Role Score (r_t)
-Projected state representing interpreted structural conditions.
 
-Policy (pi)
-Deterministic mapping from projected state and control state to action.
+A role score represents an interpreted structural condition derived from signals.
+
+Role scores describe the degree to which the system state occupies a particular structural role.
+
+Examples include:
+
+stability
+
+alignment
+
+claim strength
+
+defect likelihood
+
+system drift
+
+Role scores are interpreted state, not authoritative decisions.
+
+Policy (π)
+
+A policy is a deterministic mapping from interpreted state and control state to an action.
+
+a_t = π(r_t, m_t)
+
+Policy contains explicit decision rules governing system behavior.
 
 Control State (m_t)
-Bounded internal system state (norm tier, persistence counters, cooldowns, volatility windows, etc.).
+
+Control state represents the internal operational state of the system.
+
+Examples include:
+
+norm tiers
+
+persistence counters
+
+cooldown timers
+
+volatility windows
+
+active objective
+
+workflow stage
+
+operating mode
+
+Control state evolves deterministically across turns.
 
 Generative Instrument (G)
-Optional schema-constrained generation mechanism with no decision authority.
+
+A generative instrument is an optional schema-constrained generative mechanism.
+
+Generative instruments MAY assist interpretation or structured input generation but SHALL NOT mutate authoritative system state.
+
+Generative outputs MUST:
+
+conform to explicit schema
+
+be versioned
+
+fail closed on validation violation
 
 3. Input
 
@@ -48,270 +145,299 @@ I_t = { u_t, h_t, m_t }
 
 Where:
 
-- u_t = current input
+u_t = current input
 
-- h_t = bounded rolling history
+h_t = bounded rolling history
 
-- m_t = control state
+m_t = control state
 
 History depth is finite and versioned.
 
-4. Primitive Feature Extraction
+4. Signal Layer
 
-From input I_t, deterministic detectors compute bounded scalars:
+The Signal Layer performs deterministic measurement of observable system conditions.
 
-x_t = Features(I_t)
+The Signal Layer consists of two internal stages:
 
-Each feature:
+Primitive Detection
 
-- Is explicitly defined
+Signal Assembly
 
-- Has a bounded numeric range
+Primitive detectors operate on system input:
 
-- Is versioned
+s_i = detector_i(I_t)
 
-- Is independently testable
+Signals are then assembled into the feature vector:
 
-Examples include:
+x_t = [s₁, s₂, …, sₙ]
 
-Role presence signals
+Signals represent policy-relevant measurements required to evaluate system state at the current turn.
 
-- Intra-role coherence
+Signals MUST:
 
-- Inter-role alignment
+be bounded
 
-- Temporal coherence
+be deterministic
 
-- Volatility measures
+be versioned
 
-- Persistence counters
+represent measurable system properties
 
-No feature may be unbounded.
+The Signal Layer performs measurement only and does not perform interpretation or decision making.
 
 5. Projection Layer
 
-Projection maps feature space to role space:
+Projection transforms measured signals into interpreted structural state.
 
 r_t = R x_t
 
+or
+
+r_t = P(x_t)
+
 Where:
 
-R in R^(k x n)
-r_t in R^k
+x_t = feature vector
 
-Each row of R corresponds to a role.
+r_t = role scores
 
-Properties:
+Projection describes structural conditions of the system.
 
-- Linear transformation
+Examples include:
 
-- Deterministic
+system stability
 
-- Fully versioned
+argument structure
 
-- Replayable
+process drift
 
-- Projection does not branch
+coordination alignment
 
-Projection describes structural state.
-Projection does not decide action.
+Projection does not produce decisions.
 
-### Projection Determinism and Allowed Implementations
+Projection Determinism and Allowed Implementations
 
-The Projection Layer MAY be implemented as a linear operator (e.g., `r_t = R x_t`) or as any versioned projection function `P`.
+Projection MAY include:
 
-Regardless of implementation, projection MUST satisfy the following:
+linear transformation
 
-- **Replayability:** Projection MUST be reproducible given its recorded inputs and identifiers, including:
-  - `signal_pack_id`
-  - `projection_version_id`
-  - `projection_input_ref` (immutable reference or content hash)
-  - `projection_env_id` (versioned execution environment descriptor, e.g., runtime + library versions, and any required platform identifiers)
+deterministic algorithms
 
-- **No Authority:** Projection MUST NOT directly mutate authoritative state.
+probabilistic interpretation
 
-- **Structured Output:** Projection outputs MUST be representable in structured form suitable for deterministic policy evaluation.
+constrained generative interpretation
 
-- **Versioning:** Projection logic MUST be explicitly versioned. Any change to projection logic, preprocessing, or environment SHALL result in a new `projection_version_id` and/or `projection_env_id`.
+Regardless of implementation, projection MUST satisfy:
 
-The ESM specification RECOMMENDS **bit-for-bit replay** for projection outputs wherever feasible. If an implementation cannot guarantee bit-for-bit replay due to platform constraints, it MUST explicitly declare a deterministic replay contract (including any tolerance policy) and MUST record the relevant environment identifiers necessary to validate replay.
+Replayability
 
-6. Deterministic Policy (pi)
+Projection MUST be reproducible given:
 
-Policy selects action:
+signal_pack_id
 
-a_t = pi(r_t, m_t)
+projection_version_id
 
-Policy may include:
+projection_input_ref
 
-- Threshold logic
+projection_env_id
 
-- Escalation rules
+No Authority
 
-- Persistence requirements
+Projection MUST NOT mutate authoritative system state.
 
-- Cooldowns
+Structured Output
 
-- Norm tier thresholds
+Projection outputs MUST be structured and suitable for deterministic policy evaluation.
 
-- Hard contradiction gating
+Versioning
 
-Properties:
+Projection logic MUST be explicitly versioned.
 
-- Deterministic
+6. Authority Layer (Policy)
 
-- Explicit branching
+Policy selects the authoritative system action.
 
-- Fully versioned
+a_t = π(r_t, m_t)
 
-- Instrumented
+Policy MAY include:
 
-Policy decides action authority.
+threshold logic
+
+escalation rules
+
+persistence requirements
+
+cooldown constraints
+
+tier thresholds
+
+contradiction gating
+
+Policy properties:
+
+deterministic
+
+explicit
+
+fully versioned
+
+inspectable
+
+Policy is the only component permitted to authorize state mutation.
 
 7. Control State Update
 
-System state updates deterministically:
+After action selection, system state evolves deterministically:
 
-m\_{t+1} = f(m_t, r_t, a_t)
+m_{t+1} = f(m_t, r_t, a_t)
 
-Examples:
+Examples include:
 
-- Increment persistence counters
+updating persistence counters
 
-- Adjust norm tier
+adjusting operational tiers
 
-- Apply cooldowns
+triggering cooldowns
 
-- Update volatility windows
+advancing workflow stages
 
-Control state is bounded and versioned.
+updating objectives
+
+Control state evolution is fully versioned.
 
 8. Optional Generative Assistance
 
-Generative mechanisms MAY be invoked within the Projection Layer or as bounded assistance under policy authorization.
+Generative instruments MAY assist interpretation or structured input generation.
 
-Generative outputs:
+However:
 
-- MUST conform to explicit schema.
-- MUST NOT mutate authoritative state directly.
-- MUST be versioned and trace-bound if included in authorization context.
-- SHALL fail closed on validation violation.
+generative mechanisms SHALL NOT mutate authoritative state
 
-Generative mechanisms possess no decision authority.
+generative outputs MUST be schema-constrained
+
+generative outputs MUST be traceable to versioned generation logic
+
+All generative outputs must pass validation before entering the decision pipeline.
 
 9. Execution Flow
 
 At each turn:
 
-1. Receive input I_t
+Receive input I_t
 
-2. Compute features x_t = Features(I_t)
+Run primitive detectors
 
-3. Compute projection r_t = R x_t
+Assemble signals into feature vector x_t
 
-4. Select action a_t = pi(r_t, m_t)
+Compute projection r_t
 
-5. Update control state m\_{t+1} = f(m_t, r_t, a_t)
+Evaluate policy a_t = π(r_t, m_t)
 
-6. Optionally invoke G under policy constraints
+Update control state m_{t+1}
+
+Optionally invoke generative instruments under policy constraints
 
 No other execution path exists.
 
 10. Norm Ladder
 
-Norm Ladder is implemented within policy.
+Norm ladders implement staged progression of acceptable system behavior.
 
-Define tier-indexed thresholds:
-
-theta_tier
+Each tier defines threshold requirements for interpreted state.
 
 Advancement requires:
 
-- Role score >= threshold
+role score ≥ threshold
 
-- Sustained signal strength
+sustained signal strength
 
-- Stable coherence
+bounded volatility
 
-- Bounded volatility
+persistence requirements
 
-- Persistence satisfied
+Norm tiers are represented within control state.
 
-Norm tier is part of control state m_t.
+Norm ladders may represent:
+
+skill progression
+
+operational maturity stages
+
+escalation tiers
+
+safety gates
 
 Projection remains unchanged across tiers.
 
 11. Coherence Structure
 
-Coherence is decomposed into:
+Coherence may be decomposed into dimensions such as:
 
-- Intra-role coherence (internal consistency)
+intra-role coherence
 
-- Inter-role alignment (relational coherence)
+inter-role alignment
 
-- Temporal coherence (stability across turns)
+temporal coherence
 
-Each coherence dimension:
+Each dimension:
 
-- Is explicitly computed
+is explicitly computed
 
-- Is bounded
+is bounded
 
-- Is versioned
+is versioned
 
-Coherence may influence:
-
-- Projection
-
-- Policy gating
-
-- Temporal escalation
+Coherence signals may influence projection or policy gating.
 
 12. Stability Guarantees
 
 Given fixed:
 
-- Feature definitions
+primitive detectors
 
-- Projection matrix R
+signal definitions
 
-- Policy pi
+projection logic
 
-- Control state initialization
+policy logic
+
+control state initialization
 
 The system guarantees:
 
-- Deterministic action selection
+deterministic action selection
 
-- Replayability
+replayable decision history
 
-- Version-differentiable behavior
+version-differentiable behavior
 
-- Failure localization
+failure localization
 
-- Drift diagnosability
+drift diagnosability
 
 No implicit learning occurs.
 
 13. Instrumented Deterministic Evolution (IDE)
 
-Behavioral change occurs only through:
+System behavior evolves only through explicit modification of:
 
-- Modification of primitive definitions
+primitive detectors
 
-- Modification of projection matrix R
+signal definitions
 
-- Modification of policy pi
+projection logic
 
-- Modification of tier thresholds
+policy logic
 
-Each modification:
+tier thresholds
 
-- Is versioned
+Each modification MUST be:
 
-- Is replay-tested
+versioned
 
-- Is logged
+replay-tested
+
+recorded
 
 No implicit adaptation occurs.
 
@@ -319,47 +445,65 @@ No implicit adaptation occurs.
 
 To deploy ESM in a new domain:
 
-- Define primitives
+define primitive detectors
 
-- Define bounded feature ranges
+define signal ranges
 
-- Define projection matrix R
+define projection logic
 
-- Define deterministic policy pi
+define deterministic policy
 
-- Define optional generative schema
+optionally define generative schema
 
-- Define norm tiers (optional)
+optionally define norm ladders
 
-Architecture remains invariant.
+The architecture itself remains invariant.
 
-15. Constraints
+15. Composition of ESMs
 
-ESM does not:
+Emergent State Machines may be composed hierarchically.
 
-- Perform gradient descent
+Higher-level ESMs may:
 
-- Self-update weights
+set objectives
 
-- Modify policy dynamically
+define operating modes
 
-- Permit generative override of authority
+update policy context
 
-- Evolve without explicit version change
+Lower-level ESMs operate within those conditions while maintaining their own deterministic turn boundaries.
+
+Each ESM remains locally deterministic and fully replayable.
+
+16. Constraints
+
+An ESM does not:
+
+perform gradient descent
+
+modify policy dynamically
+
+self-update weights
+
+allow generative override of authority
+
+evolve without explicit version change
 
 All adaptation is governed.
 
-16. Formal Summary
+17. Formal Summary
 
 At each turn:
 
-x*t = Features(I_t)
-r_t = R x_t
-a_t = pi(r_t, m_t)
-m*{t+1} = f(m_t, r_t, a_t)
+s_i = detector_i(I_t)
+x_t = [s₁ … sₙ]
+r_t = P(x_t)
+a_t = π(r_t, m_t)
+m_{t+1} = f(m_t, r_t, a_t)
 
 Optional:
 
 g_t = G(I_t, schema)
 
-All components are deterministic and versioned.
+All components are deterministic, versioned, and replayable.
+```
