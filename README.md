@@ -1,10 +1,22 @@
-## Papers
-
 ## Emergent State Machine: A Turn-Based Control Architecture
 
-Formal description of the Emergent State Machine architecture and the turn-based control model.
+## Papers
 
-- 📄 [PDF](papers/esm-foundations/ESM_Turn_Based_Control_Architecture_v0.9.pdf)
+## Latest Paper Release
+
+**Emergent State Machine: A Turn-Based Control Architecture — v1.0.0**
+
+This release updates the architecture paper to align with the ESM specification v1.0.0.
+
+Major clarifications include:
+
+- explicit separation of **Signal**, **Projection**, and **Authority** layers
+- introduction of **primitive detectors** and **signals** as the measurement interface
+- formalization of **control state** within the policy decision boundary
+- clarification of the **authority boundary** separating interpretation from action
+- expanded definition of **Instrumented Deterministic Evolution (IDE)**
+
+The paper now reflects the current architectural model used in the ESM specification.
 
 ## Designing the Digital Learning Companion
 
@@ -36,7 +48,8 @@ ESM is domain-agnostic. It applies wherever probabilistic interpretation and con
 For systems that require a deterministic and instrumented mutation boundary, the ESM architecture can be implemented using a **[Controlled Mutation Layer (CML)](https://github.com/controlled-mutation-layer)**.
 
 ### ESM Turn Structure
-```
+
+````
 ### ESM Turn Structure
 
 <<<<<<< HEAD
@@ -63,7 +76,8 @@ Input (u_t)
     │
     ▼
 State Mutation (m_t → m_{t+1})
-```
+````
+
 =======
 Input (u*t)
 │
@@ -88,8 +102,8 @@ Input (u*t)
 ▼
 State Mutation (m*{t+1})
 
->>>>>>> c8b92b4 (Add DLC design narrative preprint v0.9.0)
-Each **Turn** records the versions of:
+> > > > > > > c8b92b4 (Add DLC design narrative preprint v0.9.0)
+> > > > > > > Each **Turn** records the versions of:
 
 - signal detectors
 - projection logic
@@ -139,7 +153,7 @@ It does not contain application code.
 ## White Paper
 
 - _ESM: A Turn-Based Control Architecture (v0.9)_  
-  [Download PDF](paper/ESM_Turn_Based_Control_Architecture_v0.9.pdf)
+  [Download PDF](papers/esm-architecture/Emergent_State_Machine__Control_Architecture_v1.0.0.pdf)
 
 ---
 
