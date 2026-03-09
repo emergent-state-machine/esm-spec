@@ -1,3 +1,17 @@
+## Papers
+
+## Emergent State Machine: A Turn-Based Control Architecture
+
+Formal description of the Emergent State Machine architecture and the turn-based control model.
+
+- 📄 [PDF](papers/esm-foundations/ESM_Turn_Based_Control_Architecture_v0.9.pdf)
+
+## Designing the Digital Learning Companion
+
+Design narrative describing how the Emergent State Machine architecture emerged.
+
+- 📄 [PDF](papers/dlc-design-narrative/Designing_the_Digital_Learning_Companion_v0.9.0.pdf)
+
 ## Emergent State Machine (ESM)
 
 The **Emergent State Machine (ESM)** is a turn-based control architecture for governing state mutation in model-assisted systems.
@@ -23,7 +37,7 @@ For systems that require a deterministic and instrumented mutation boundary, the
 
 ### ESM Turn Structure
 
-Input (u_t)
+Input (u*t)
 │
 ▼
 ┌───────────────┐
@@ -44,13 +58,13 @@ Input (u_t)
 └─────────────────┘
 │
 ▼
-State Mutation (m_{t+1})
+State Mutation (m*{t+1})
 
 Each **Turn** records the versions of:
 
-- signal detectors  
-- projection logic  
-- policy rules  
+- signal detectors
+- projection logic
+- policy rules
 
 This makes every state transition **replayable, inspectable, and governable**.
 
@@ -146,6 +160,7 @@ This release clarifies:
 - norm ladders as staged operational or learning progressions
 
 See:
+
 - [`spec/esm_spec.md`](spec/esm_spec.md)
 - [GitHub Release: v1.0.0](../../releases/tag/v1.0.0)
 
@@ -161,6 +176,7 @@ Contents at this tag included:
 - accompanying draft paper and LaTeX sources
 
 See:
+
 - [GitHub Release: v0.9.1](../../releases/tag/v0.9.1)
 
 ---
@@ -172,6 +188,19 @@ If you reference the Emergent State Machine architecture in research or technica
 **Emergent State Machine (ESM) Architectural Specification v1.0.0**  
 Emergent State Machine Project  
 [https://github.com/emergent-state-machine/esm-spec](https://github.com/emergent-state-machine/esm-spec)
+
+---
+
+### Designing the Digital Learning Companion
+
+_A Narrative of Discovery and the Emergence of the Emergent State Machine_
+
+This paper presents a design narrative describing how the Emergent State Machine (ESM) architecture was discovered during the development of an AI-assisted tutoring system called the **Digital Learning Companion (DLC)**.
+
+Through iterative experimentation with a conversational AI partner, the project gradually revealed a structural pattern governing how learner interactions could be evaluated and how system state could evolve through discrete, observable turns.
+
+[Designing the Digital Learning Companion (PDF)](papers/dlc-design-narrative/Designing_the_Digital_Learning_Companion_v0.9.pdf)
+[LaTeX source](papers/dlc-design-narrative/)
 
 ---
 
