@@ -1,0 +1,23 @@
+\begin{figure}[ht]
+\centering
+\setlength{\fboxsep}{8pt}
+\renewcommand{\arraystretch}{1.35}
+\begin{tabular}{c}
+\fbox{\parbox{0.76\textwidth}{\centering \textbf{Student Writing Observations}\\Sentence text, paragraph text, revision attempts, interaction history}}\\
+$\downarrow$\\
+\fbox{\parbox{0.76\textwidth}{\centering \textbf{CER Signals}\\Claim present, evidence present, reasoning present, imbalance measures, revision trends}}\\
+$\downarrow$\\
+\fbox{\parbox{0.76\textwidth}{\centering \textbf{Writing State}\\The student's current argumentative situation represented explicitly}}\\
+$\downarrow$\\
+\fbox{\parbox{0.76\textwidth}{\centering \textbf{Instructional Gate}\\Condition determining which evaluation path or support path becomes active}}\\
+$\downarrow$\\
+\fbox{\parbox{0.76\textwidth}{\centering \textbf{Instructional Policy Projection}\\State expressed in policy dimensions such as missing claim, ready for evidence, ready for reasoning, or ready for transition}}\\
+$\downarrow$\\
+\fbox{\parbox{0.76\textwidth}{\centering \textbf{Instructional Action}\\Prompt, scaffold, example, revision request, breadcrumb, or transition to the next ESM}}\\
+$\downarrow$\\
+\fbox{\parbox{0.76\textwidth}{\centering \textbf{Learning Evolution}\\The student revises, new observations arrive, and the writing state updates}}\\[0.6em]
+\parbox{0.82\textwidth}{\centering \textbf{Learning Trajectory:} the system guides the student through interpretable writing states toward stronger claim--evidence--reasoning structure}
+\end{tabular}
+\caption{CER-oriented ESM flow. Student writing is transformed into interpretable argumentative state, allowing the system to deliver structured instructional guidance and track the learner's trajectory through writing state space.}
+\label{fig:cer-esm-flow}
+\end{figure}

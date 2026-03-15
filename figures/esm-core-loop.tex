@@ -1,0 +1,75 @@
+\begin{tikzpicture}[
+    node distance=0.9cm,
+    box/.style={
+        draw,
+        rounded corners,
+        align=center,
+        minimum width=8.5cm,
+        minimum height=0.95cm,
+        font=\small
+    },
+    arrow/.style={
+        -{Stealth[length=2.5mm]},
+        thick
+    }
+]
+
+\node[box] (obs) {%
+\textbf{Observations}\\
+Raw measurements or events from the monitored environment
+};
+
+\node[box, below=of obs] (sig) {%
+\textbf{Signals}\\
+Direct and derived signals computed deterministically from observations
+};
+
+\node[box, below=of sig] (state) {%
+\textbf{State Vector}\\
+Interpretable current situation represented in signal space
+};
+
+\node[box, below=of state] (gate) {%
+\textbf{Activation Gate}\\
+Condition determining whether policy evaluation begins
+};
+
+\node[box, below=of gate] (proj) {%
+\textbf{Policy Projection}\\
+State expressed in policy-relevant coordinates
+};
+
+\node[box, below=of proj] (policy) {%
+\textbf{Policy Selection}\\
+Deterministic choice of the next action
+};
+
+\node[box, below=of policy] (action) {%
+\textbf{Action}\\
+Alert, prompt, intervention, or workflow step
+};
+
+\node[box, below=of action] (evolve) {%
+\textbf{State Evolution}\\
+New observations arrive and the system updates again
+};
+
+% Arrows
+\draw[arrow] (obs) -- (sig);
+\draw[arrow] (sig) -- (state);
+\draw[arrow] (state) -- (gate);
+\draw[arrow] (gate) -- (proj);
+\draw[arrow] (proj) -- (policy);
+\draw[arrow] (policy) -- (action);
+\draw[arrow] (action) -- (evolve);
+
+% Loop arrow
+\draw[arrow] (evolve.east) .. controls +(2.0,0) and +(2.0,0) .. node[right, xshift=1.0cm, align=center, font=\small] {repeat with\\new observations} (obs.east);
+
+% Bottom annotation
+\node[align=center, below=1.2cm of evolve, font=\small] (traj) {%
+\textbf{Trajectory through State Space:} $x_0 \rightarrow x_1 \rightarrow x_2 \rightarrow x_3 \rightarrow \dots$\\[0.2em]
+\textbf{Control Objective:} steer trajectories toward desirable or stable regions
+};
+
+\end{tikzpicture}

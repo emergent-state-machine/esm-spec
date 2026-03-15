@@ -24,10 +24,15 @@
 \fancyhf{}
 
 % --- Paper versioning ---
+% --- Paper versioning ---
 \renewcommand{\headrulewidth}{0.4pt}
 \renewcommand{\footrulewidth}{0pt}
-\newcommand{\paperVersion}{1.1.0}
-\newcommand{\paperDate}{March 15, 2026}
+
+% fallback values (used if git_version.tex is missing)
+\providecommand{\paperVersion}{draft}
+\providecommand{\paperDate}{\today}
+
+\input{../../latex/git_version.tex}
 
 \usepackage{fancyhdr}
 \pagestyle{fancy}
