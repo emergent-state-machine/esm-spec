@@ -4,3 +4,28 @@ esm-org-profile/
 
 # Private drafts
 spec/esm_formal_paper_claude.md
+
+
+# LaTeX build artifacts
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.lof
+*.log
+*.lot
+*.nav
+*.out
+*.run.xml
+*.snm
+*.synctex.gz
+*.toc
+
+# latexmk cache
+*.latexmk
+
+# OS clutter
+.DS_Store
+Thumbs.db
