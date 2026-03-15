@@ -1,509 +1,308 @@
 # Emergent State Machine (ESM)
 
-## Architectural Specification (v1.0.0)
+## Architectural Specification (v1.1.0)
 
-## 1. System Definition
+**Note:** This update introduces the first standalone Emergent State Machine Specification (`esm_spec`) document.
 
-The **Emergent State Machine (ESM)** is a deterministic, turn-based control architecture for governing state mutation in model-assisted systems.
+## 1. Overview
 
-The architecture is composed of three structurally separated layers:
+The Emergent State Machine (ESM) is a deterministic control architecture for systems that must transform observations into actions while preserving transparency, auditability, and governance.
 
-1. **Signal Layer** — Structured state observation and measurement
-2. **Projection Layer** — Interpretable state construction
-3. **Authority Layer** — Deterministic, versioned mutation control
+The architecture separates three responsibilities:
 
-All authoritative state mutation occurs exclusively within the **Authority Layer**.
+- Measurement -- extracting signals from observations
+- Interpretation -- constructing a structured representation of system state
+- Authority -- selecting actions through explicit deterministic policy
 
-Optional generative mechanisms MAY assist interpretation but SHALL NOT possess decision authority.
+This separation prevents probabilistic interpretation mechanisms from directly authorizing consequential actions. Instead, authoritative decisions remain governed by explicit policy rules.
 
-Behavioral evolution occurs only through explicit, versioned modification of system components.
+The architecture operates through a sequence of turns, each representing a bounded reasoning frame.
 
-The architecture guarantees:
+## 2. Architectural Principles
+
+The ESM architecture is governed by several core principles.
+
+### 2.1 Deterministic Authority
+
+Authoritative actions must be selected by deterministic policy functions. Identical system state must produce identical decisions under fixed policy versions.
+
+### 2.2 Inspectable Reasoning
+
+Every decision must be traceable through an explicit reasoning chain linking actions to underlying observations.
+
+### 2.3 Separation of Description and Authority
+
+Interpretation mechanisms may describe system conditions but cannot directly authorize actions.
+
+### 2.4 Versioned Evolution
+
+Changes to system behavior must occur through explicit revision of versioned artifacts rather than implicit model drift.
+
+## 3. Core Concepts
+
+### 3.1 Turn
+
+A turn is the fundamental unit of reasoning within an Emergent State Machine.
+
+Each turn processes new observations and produces an authoritative action.
+
+A turn contains the following stages:
+
+- observation intake
+- signal extraction
+- state construction
+- projection into policy space
+- policy evaluation
+- action selection
+
+Turns provide a bounded computational frame that supports replayability and auditability.
+
+### 3.2 Observations
+
+Observations represent measurable information about the environment.
+
+Observations may originate from:
+
+- sensors
+- user input
+- external systems
+- historical records
+
+Observations are denoted:
+
+`o_t`
+
+where `t` indicates the current turn.
+
+### 3.3 Signals
+
+Signals are structured measurements derived from observations.
+
+Signals may be:
+
+- direct signals -- direct measurements
+- derived signals -- deterministic transformations of observations or other signals
+
+Signals must satisfy the following properties:
+
+- explicit definition
+- bounded output range
+- independent testability
+- versioned implementation
+
+Signals extracted during a turn form the signal set:
+
+`S_t = { s1, s2, ..., sn }`
+
+### 3.4 State Vector
+
+Signals are organized into a structured representation called the state vector.
+
+The state vector describes the system's current situation in a form suitable for policy evaluation.
+
+`x_t = [ s1, s2, ..., sn ]`
+
+Each component corresponds to a signal derived during the current turn.
+
+Unlike latent representations used in many machine learning systems, the ESM state vector remains explicitly interpretable.
+
+## 4. Projection
+
+The state vector alone does not determine which actions should occur.
+
+The system therefore projects the state vector into policy space, where dimensions correspond to decision-relevant conditions.
+
+Projection is represented as:
+
+`y_t = P(x_t)`
+
+where:
+
+- `x_t` is the state vector
+- `P` is the projection function
+- `y_t` is the policy-space representation
+
+Projection may be implemented through deterministic algorithms or statistical models, but the resulting representation must remain structured and reproducible.
+
+Projection does not authorize action.
+
+## 5. Policy
+
+Policy governs authoritative action selection.
+
+The policy function maps projected state into actions:
+
+`a_t = π(y_t)`
+
+where:
+
+- `π` is the policy function
+- `y_t` is the policy-space representation
+- `a_t` is the selected action
+
+Policy rules may include:
+
+- threshold logic
+- escalation rules
+- persistence requirements
+- cooldown constraints
+- routing logic
+
+Policy must satisfy four requirements:
 
 - determinism
-- replayability
-- traceable change
-- inspectable decision boundaries
+- explicit definition
+- versioning
+- exclusive decision authority
 
-## 2. Terminology
+Only policy may authorize actions that affect external systems.
 
-### Primitive Detector
+## 6. Action
 
-A **primitive detector** is a deterministic function that extracts a bounded scalar measurement from system input.
+An action represents the authoritative decision produced by the system during a turn.
 
-Primitive detectors represent domain-relevant measurement instruments defined by system designers or domain experts.
+Examples include:
 
-Primitive detectors MUST:
+- triggering an alert
+- routing a request
+- escalating a workflow
+- requesting clarification
+- performing system updates
 
-- be explicitly defined
-- produce bounded outputs
-- be versioned
-- be independently testable
+The action set is defined as:
 
-### Signal
+`A = { a1, a2, ..., ak }`
 
-A **signal** is the bounded scalar value produced by a primitive detector.
+## 7. Control State
 
-Signals represent **measured conditions of the system state**.
+An Emergent State Machine maintains internal operational state across turns.
 
-Signals are deterministic measurements and do not contain interpretation or decision authority.
+Control state may include:
 
-### Feature Vector (`x_t`)
+- workflow stage
+- escalation level
+- cooldown timers
+- persistence counters
+- active objectives
 
-The **feature vector** is the ordered collection of signal values produced by primitive detectors during a turn.
+Control state is denoted:
+
+`m_t`
+
+Control state evolves deterministically:
+
+`m_{t+1} = f(m_t, y_t, a_t)`
+
+This update function is explicit and versioned.
+
+## 8. Turn Execution Flow
+
+At each turn the system executes the following pipeline:
+
+- receive observations
+- compute signals
+- construct state vector
+- project state into policy space
+- evaluate policy
+- select action
+- update control state
+
+This pipeline ensures that authoritative decisions always pass through explicit policy.
+
+## 9. Clarification and Partial Observability
+
+In some situations available signals may not uniquely determine a valid action.
+
+When policy cannot determine a unique action, the system may select:
+
+`request_clarification`
+
+Additional input is then incorporated in the next turn.
+
+This approach surfaces ambiguity explicitly rather than collapsing uncertainty internally.
+
+## 10. Instrumentation
+
+Each turn produces a structured interaction record containing:
+
+- raw observations
+- signal values
+- state vector
+- projection output
+- policy version
+- selected action
+- control state
+
+These records allow complete replay of system behavior.
+
+## 11. Instrumented Deterministic Evolution (IDE)
+
+System behavior evolves through explicit artifact revision.
+
+Artifacts subject to versioning include:
+
+- signal detectors
+- projection logic
+- policy rules
+- control state update logic
+
+Each revision must be:
+
+- versioned
+- recorded
+- testable through replay
+
+Under this regime system evolution occurs intentionally rather than through implicit parameter drift.
+
+## 12. Architectural Boundaries
+
+The ESM architecture enforces strict separation between interpretation and authority.
+
+Interpretation mechanisms may assist in describing system conditions but cannot directly authorize actions.
+
+This boundary allows systems to incorporate probabilistic or generative models while preserving deterministic governance of consequential decisions.
+
+## 13. Reference Implementation Structure
+
+A minimal ESM implementation contains the following components:
 
 ```text
-x_t = [s₁, s₂, …, sₙ]
-
-Where each sᵢ is a signal.
-
-Projection Matrix / Projection Function (R or P)
-
-A projection maps the feature vector into interpreted structural state.
-
-Projection produces role scores representing interpreted system conditions.
-
-Projection MAY be implemented as:
-
-linear transformation
-
-deterministic function
-
-probabilistic or model-assisted interpretation
-
-Projection outputs MUST remain structured and deterministic with respect to recorded inputs and environment identifiers.
-
-Role Score (r_t)
-
-A role score represents an interpreted structural condition derived from signals.
-
-Role scores describe the degree to which the system state occupies a particular structural role.
-
-Examples include:
-
-stability
-
-alignment
-
-claim strength
-
-defect likelihood
-
-system drift
-
-Role scores are interpreted state, not authoritative decisions.
-
-Policy (π)
-
-A policy is a deterministic mapping from interpreted state and control state to an action.
-
-a_t = π(r_t, m_t)
-
-Policy contains explicit decision rules governing system behavior.
-
-Control State (m_t)
-
-Control state represents the internal operational state of the system.
-
-Examples include:
-
-norm tiers
-
-persistence counters
-
-cooldown timers
-
-volatility windows
-
-active objective
-
-workflow stage
-
-operating mode
-
-Control state evolves deterministically across turns.
-
-Generative Instrument (G)
-
-A generative instrument is an optional schema-constrained generative mechanism.
-
-Generative instruments MAY assist interpretation or structured input generation but SHALL NOT mutate authoritative system state.
-
-Generative outputs MUST:
-
-conform to explicit schema
-
-be versioned
-
-fail closed on validation violation
-
-3. Input
-
-At turn t:
-
-I_t = { u_t, h_t, m_t }
-
-Where:
-
-u_t = current input
-
-h_t = bounded rolling history
-
-m_t = control state
-
-History depth is finite and versioned.
-
-4. Signal Layer
-
-The Signal Layer performs deterministic measurement of observable system conditions.
-
-The Signal Layer consists of two internal stages:
-
-Primitive Detection
-
-Signal Assembly
-
-Primitive detectors operate on system input:
-
-s_i = detector_i(I_t)
-
-Signals are then assembled into the feature vector:
-
-x_t = [s₁, s₂, …, sₙ]
-
-Signals represent policy-relevant measurements required to evaluate system state at the current turn.
-
-Signals MUST:
-
-be bounded
-
-be deterministic
-
-be versioned
-
-represent measurable system properties
-
-The Signal Layer performs measurement only and does not perform interpretation or decision making.
-
-5. Projection Layer
-
-Projection transforms measured signals into interpreted structural state.
-
-r_t = R x_t
-
-or
-
-r_t = P(x_t)
-
-Where:
-
-x_t = feature vector
-
-r_t = role scores
-
-Projection describes structural conditions of the system.
-
-Examples include:
-
-system stability
-
-argument structure
-
-process drift
-
-coordination alignment
-
-Projection does not produce decisions.
-
-Projection Determinism and Allowed Implementations
-
-Projection MAY include:
-
-linear transformation
-
-deterministic algorithms
-
-probabilistic interpretation
-
-constrained generative interpretation
-
-Regardless of implementation, projection MUST satisfy:
-
-Replayability
-
-Projection MUST be reproducible given:
-
-signal_pack_id
-
-projection_version_id
-
-projection_input_ref
-
-projection_env_id
-
-No Authority
-
-Projection MUST NOT mutate authoritative system state.
-
-Structured Output
-
-Projection outputs MUST be structured and suitable for deterministic policy evaluation.
-
-Versioning
-
-Projection logic MUST be explicitly versioned.
-
-6. Authority Layer (Policy)
-
-Policy selects the authoritative system action.
-
-a_t = π(r_t, m_t)
-
-Policy MAY include:
-
-threshold logic
-
-escalation rules
-
-persistence requirements
-
-cooldown constraints
-
-tier thresholds
-
-contradiction gating
-
-Policy properties:
-
-deterministic
-
-explicit
-
-fully versioned
-
-inspectable
-
-Policy is the only component permitted to authorize state mutation.
-
-7. Control State Update
-
-After action selection, system state evolves deterministically:
-
-m_{t+1} = f(m_t, r_t, a_t)
-
-Examples include:
-
-updating persistence counters
-
-adjusting operational tiers
-
-triggering cooldowns
-
-advancing workflow stages
-
-updating objectives
-
-Control state evolution is fully versioned.
-
-8. Optional Generative Assistance
-
-Generative instruments MAY assist interpretation or structured input generation.
-
-However:
-
-generative mechanisms SHALL NOT mutate authoritative state
-
-generative outputs MUST be schema-constrained
-
-generative outputs MUST be traceable to versioned generation logic
-
-All generative outputs must pass validation before entering the decision pipeline.
-
-9. Execution Flow
-
-At each turn:
-
-Receive input I_t
-
-Run primitive detectors
-
-Assemble signals into feature vector x_t
-
-Compute projection r_t
-
-Evaluate policy a_t = π(r_t, m_t)
-
-Update control state m_{t+1}
-
-Optionally invoke generative instruments under policy constraints
-
-No other execution path exists.
-
-10. Norm Ladder
-
-Norm ladders implement staged progression of acceptable system behavior.
-
-Each tier defines threshold requirements for interpreted state.
-
-Advancement requires:
-
-role score ≥ threshold
-
-sustained signal strength
-
-bounded volatility
-
-persistence requirements
-
-Norm tiers are represented within control state.
-
-Norm ladders may represent:
-
-skill progression
-
-operational maturity stages
-
-escalation tiers
-
-safety gates
-
-Projection remains unchanged across tiers.
-
-11. Coherence Structure
-
-Coherence may be decomposed into dimensions such as:
-
-intra-role coherence
-
-inter-role alignment
-
-temporal coherence
-
-Each dimension:
-
-is explicitly computed
-
-is bounded
-
-is versioned
-
-Coherence signals may influence projection or policy gating.
-
-12. Stability Guarantees
-
-Given fixed:
-
-primitive detectors
-
-signal definitions
-
-projection logic
-
-policy logic
-
-control state initialization
-
-The system guarantees:
-
-deterministic action selection
-
-replayable decision history
-
-version-differentiable behavior
-
-failure localization
-
-drift diagnosability
-
-No implicit learning occurs.
-
-13. Instrumented Deterministic Evolution (IDE)
-
-System behavior evolves only through explicit modification of:
-
-primitive detectors
-
-signal definitions
-
-projection logic
-
-policy logic
-
-tier thresholds
-
-Each modification MUST be:
-
-versioned
-
-replay-tested
-
-recorded
-
-No implicit adaptation occurs.
-
-14. Portability
-
-To deploy ESM in a new domain:
-
-define primitive detectors
-
-define signal ranges
-
-define projection logic
-
-define deterministic policy
-
-optionally define generative schema
-
-optionally define norm ladders
-
-The architecture itself remains invariant.
-
-15. Composition of ESMs
-
-Emergent State Machines may be composed hierarchically.
-
-Higher-level ESMs may:
-
-set objectives
-
-define operating modes
-
-update policy context
-
-Lower-level ESMs operate within those conditions while maintaining their own deterministic turn boundaries.
-
-Each ESM remains locally deterministic and fully replayable.
-
-16. Constraints
-
-An ESM does not:
-
-perform gradient descent
-
-modify policy dynamically
-
-self-update weights
-
-allow generative override of authority
-
-evolve without explicit version change
-
-All adaptation is governed.
-
-17. Formal Summary
-
-At each turn:
-
-s_i = detector_i(I_t)
-x_t = [s₁ … sₙ]
-r_t = P(x_t)
-a_t = π(r_t, m_t)
-m_{t+1} = f(m_t, r_t, a_t)
-
-Optional:
-
-g_t = G(I_t, schema)
-
-All components are deterministic, versioned, and replayable.
+signals/
+    primitive detectors
+projection/
+    state interpretation logic
+policy/
+    decision rules
+control/
+    state update logic
+instrumentation/
+    interaction logging
 ```
+
+Each component must be independently versioned.
+
+## 14. Domain Adaptation
+
+The ESM architecture is domain-agnostic.
+
+To deploy an ESM system in a new domain, developers must define:
+
+- domain-specific signals
+- projection functions
+- policy rules
+- action sets
+
+The architectural separation between measurement, interpretation, and authority remains invariant.
+
+## 15. Summary
+
+The Emergent State Machine provides a deterministic architecture for systems that must convert observations into decisions while preserving transparency and governance.
+
+By separating measurement, interpretation, and authority, the architecture enables:
+
+- inspectable reasoning
+- deterministic decision control
+- replayable system behavior
+- controlled system evolution
+
+This structure allows automated systems to remain understandable, auditable, and governable even as they grow in complexity.
