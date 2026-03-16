@@ -187,11 +187,12 @@ Design narrative describing how the Emergent State Machine architecture emerged.
 
 ## Reference Implementation
 The Digital Learning Companion (DLC) is one implementation of the ESM pattern:
-https://github.com/ih8scargo/dlc
+https://github.com/Digital-Learning-Companion
 Additional implementations are welcome.
 
 ## Release History
-### v1.1.0 — ESM Specification Update
+### v1.1.0 — Update to Strengthen Control-Theoretic Formulation
+
 This update introduces the first standalone Emergent State Machine Specification (esm_spec) document.
 The specification defines the architectural structure of the ESM independent of any specific implementation or application domain.
 Highlights
@@ -203,33 +204,10 @@ Specification of Instrumented Deterministic Evolution (IDE) as the mechanism gov
 Clarification of architectural boundaries that prevent interpretive mechanisms from directly authorizing consequential actions.
 Purpose of the Specification
 The goal of the ESM specification is to provide a domain-agnostic architectural reference that can support implementations across multiple domains, including:
-decision support systems
-operational monitoring
-AI-assisted reasoning systems
-governance-sensitive automated systems
-The specification is intended to evolve alongside the mathematical paper and reference implementations.
-Relationship to the Math Paper
-The mathematical paper describes the formal structure of the architecture.
-The specification provides an implementation-oriented description of the system components and execution model.
-Both documents will evolve in parallel as the architecture develops.
-
-
-### v1.1.0 — ESM Specification Update
-This update introduces the first standalone Emergent State Machine Specification (esm_spec) document.
-The specification defines the architectural structure of the ESM independent of any specific implementation or application domain.
-Highlights
-Formal definition of the Turn as the fundamental unit of ESM reasoning.
-Clear separation of measurement, interpretation, and authority within the architecture.
-Definition of signals, state vectors, projection, and policy as explicit system artifacts.
-Introduction of control state for deterministic multi-turn system behavior.
-Specification of Instrumented Deterministic Evolution (IDE) as the mechanism governing system evolution.
-Clarification of architectural boundaries that prevent interpretive mechanisms from directly authorizing consequential actions.
-Purpose of the Specification
-The goal of the ESM specification is to provide a domain-agnostic architectural reference that can support implementations across multiple domains, including:
-decision support systems
-operational monitoring
-AI-assisted reasoning systems
-governance-sensitive automated systems
+- decision support systems
+- operational monitoring
+- AI-assisted reasoning systems
+- governance-sensitive automated systems
 The specification is intended to evolve alongside the mathematical paper and reference implementations.
 Relationship to the Math Paper
 The mathematical paper describes the formal structure of the architecture.

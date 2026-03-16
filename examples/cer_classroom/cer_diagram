@@ -15,7 +15,7 @@ $\downarrow$\\
 $\downarrow$\\
 \fbox{\parbox{0.76\textwidth}{\centering \textbf{Instructional Action}\\Prompt, scaffold, example, revision request, breadcrumb, or transition to the next ESM}}\\
 $\downarrow$\\
-\fbox{\parbox{0.76\textwidth}{\centering \textbf{Learning Evolution}\\The student revises, new observations arrive, and the writing state updates}}\\[0.6em]
+\fbox{\parbox{0.76\textwidth}{\centering \textbf{Learning Evolution}\\The student revises, new observations arrive, and the writing state updates}}\\[1.2em]
 \parbox{0.82\textwidth}{\centering \textbf{Learning Trajectory:} the system guides the student through interpretable writing states toward stronger claim--evidence--reasoning structure}
 \end{tabular}
 \caption{CER-oriented ESM flow. Student writing is transformed into interpretable argumentative state, allowing the system to deliver structured instructional guidance and track the learner's trajectory through writing state space.}

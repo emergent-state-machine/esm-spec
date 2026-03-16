@@ -26,6 +26,10 @@ spec/esm_formal_paper_claude.md
 # latexmk cache
 *.latexmk
 
+# Work In Progress files
+/wip/
+
+
 # OS clutter
 .DS_Store
 Thumbs.db

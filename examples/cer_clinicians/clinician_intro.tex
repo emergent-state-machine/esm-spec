@@ -1,0 +1,119 @@
+\documentclass[11pt]{article}
+
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, calc}
+\geometry{margin=1in}
+
+\title{Emergent State Machines:\\A Clinician's Introduction}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{The Problem: Too Many Signals, Too Little Structure}
+
+Modern clinical environments generate enormous amounts of patient data. Vital signs, laboratory values, imaging results, and clinical notes are continuously produced and monitored.
+
+Despite this wealth of information, many monitoring systems operate in a very simple way: a signal crosses a threshold, and an alarm is triggered.
+
+Clinicians know the limitations of this approach. Many alerts are not actionable. Important patterns may be buried among less relevant signals. Alarm fatigue is a well-known consequence.
+
+The underlying issue is not a lack of data. It is a lack of structure in how signals are interpreted. See Figure~\ref{fig:clinician-esm-flow}.
+
+\input{clinician_esm_flow.tex}
+
+\section{Situations Instead of Signals}
+
+An Emergent State Machine (ESM) is designed to monitor \textit{situations}, not just individual signals.
+
+Instead of evaluating one measurement at a time, the system evaluates combinations of signals that together represent clinically meaningful conditions.
+
+For example, clinicians often reason about patterns such as:
+
+\begin{itemize}
+\item decreasing oxygen saturation
+\item increasing respiratory rate
+\item rising heart rate
+\end{itemize}
+
+Taken together, these signals may indicate worsening respiratory instability.
+
+An ESM represents such patterns explicitly and monitors how they evolve over time.
+
+\section{How the System Works}
+
+The ESM architecture follows a simple reasoning chain:
+
+\begin{itemize}
+\item patient observations are recorded
+\item observations produce signals
+\item signals form a structured patient state
+\item clinical policy evaluates the state
+\item appropriate actions or alerts are triggered
+\end{itemize}
+
+Each step in this process is transparent and inspectable.
+
+If the system produces an alert, clinicians can trace that alert back to the signals and observations that produced it.
+
+\section{Clinical Knowledge Remains in Human Hands}
+
+A key principle of the ESM architecture is that clinical expertise remains central.
+
+Clinicians and medical experts define:
+
+\begin{itemize}
+\item which signals matter
+\item how signals combine to form meaningful patterns
+\item what actions should occur when patterns appear
+\end{itemize}
+
+The system performs structured monitoring, but it does not replace clinical judgment.
+
+Instead, it supports clinicians by making relevant situations easier to detect and interpret.
+
+\section{Guided Responses and Clinical Workflows}
+
+When the system detects a developing situation, it can recommend possible next steps.
+
+Examples might include:
+
+\begin{itemize}
+\item increasing monitoring frequency
+\item reviewing patient history
+\item ordering additional tests
+\item consulting a specialist
+\end{itemize}
+
+These recommendations appear as structured options rather than opaque automated decisions.
+
+Clinicians remain responsible for deciding how to respond.
+
+\section{Why This Matters}
+
+The goal of the ESM approach is not to automate clinical decision-making.
+
+The goal is to support clinicians by:
+
+\begin{itemize}
+\item organizing complex signal patterns
+\item reducing unnecessary alarms
+\item highlighting meaningful clinical situations
+\item making system reasoning transparent
+\end{itemize}
+
+In environments where clinicians must interpret many signals at once, structured situational monitoring may improve both clarity and workflow.
+
+\section{Looking Forward}
+
+Emergent State Machines are designed as a transparent and governable architecture for complex monitoring systems.
+
+Because every signal, rule, and decision remains inspectable, the system can evolve alongside clinical knowledge while preserving accountability and safety.
+
+The intent is simple: provide better situational awareness while keeping clinical expertise at the center of care.
+
+\end{document}

@@ -1,0 +1,23 @@
+\begin{figure}[ht]
+\centering
+\setlength{\fboxsep}{8pt}
+\renewcommand{\arraystretch}{1.35}
+\begin{tabular}{c}
+\fbox{\parbox{0.76\textwidth}{\centering \textbf{Patient Observations}\\Vital signs, labs, clinical notes, bedside observations}}\\
+$\downarrow$\\
+\fbox{\parbox{0.76\textwidth}{\centering \textbf{Clinical Signals}\\Direct and derived indicators such as oxygen saturation, respiratory rate trend, shock index, or interaction patterns}}\\
+$\downarrow$\\
+\fbox{\parbox{0.76\textwidth}{\centering \textbf{Patient State}\\An interpretable representation of the patient's current situation}}\\
+$\downarrow$\\
+\fbox{\parbox{0.76\textwidth}{\centering \textbf{Clinical Gate}\\Condition determining whether further rule evaluation or escalation should activate}}\\
+$\downarrow$\\
+\fbox{\parbox{0.76\textwidth}{\centering \textbf{Clinical Policy Projection}\\State expressed in clinically meaningful decision dimensions such as instability, urgency, or escalation priority}}\\
+$\downarrow$\\
+\fbox{\parbox{0.76\textwidth}{\centering \textbf{Clinical Response}\\Increase monitoring, review history, order diagnostics, notify specialist, or escalate care}}\\
+$\downarrow$\\
+\fbox{\parbox{0.76\textwidth}{\centering \textbf{Patient Evolution}\\The patient changes over time, producing new observations and a new state}}\\[0.6em]
+\parbox{0.82\textwidth}{\centering \textbf{Visible Clinical Trajectory:} clinicians can inspect how the patient's state changes over time and whether interventions alter its direction}
+\end{tabular}
+\caption{Clinician-oriented ESM flow. The system organizes bedside observations into interpretable patient state and supports clinicians by making evolving situations visible and auditable.}
+\label{fig:clinician-esm-flow}
+\end{figure}

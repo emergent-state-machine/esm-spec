@@ -1,0 +1,185 @@
+\documentclass[11pt]{article}
+
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, calc}
+\geometry{margin=1in}
+
+\title{Emergent State Machines:\\A Claim--Evidence--Reasoning Example}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{Purpose}
+
+This document provides a simple example of how an Emergent State Machine (ESM) can be applied to student writing.
+
+The example focuses on a common instructional task in middle and secondary education: helping students produce writing that includes a clear claim, supporting evidence, and explicit reasoning.
+
+\section{The Problem}
+
+Teachers often see the same structural problems repeatedly in student writing.
+
+For example, a student may:
+
+\begin{itemize}
+\item make a claim without evidence
+\item list evidence without explaining it
+\item provide reasoning without grounding it in a claim
+\end{itemize}
+
+In many classrooms, the teacher must repeatedly diagnose these problems by hand and decide what support to give next.
+
+An ESM can support this process by making the student's current argumentative situation explicit. See Figure~\ref{fig:cer-esm-flow}.
+
+\input{cer_diagram}
+
+\section{What the ESM Monitors}
+
+In this example, the ESM monitors one narrow domain:
+
+\begin{quote}
+\textit{the structure of claim--evidence--reasoning in the student's current writing}
+\end{quote}
+
+The system is not evaluating the entire student, the entire assignment, or the entire course. It is evaluating one specific writing situation.
+
+\section{The ESM Pipeline}
+
+The ESM operates through the same general loop used in other domains.
+
+\subsection*{Observations}
+
+The system receives student writing as input.
+
+Examples of observations include:
+
+\begin{itemize}
+\item student sentence text
+\item paragraph text
+\item revision attempts
+\end{itemize}
+
+\subsection*{Signals}
+
+From those observations, the system computes direct and derived signals.
+
+Examples include:
+
+\begin{itemize}
+\item claim present
+\item evidence present
+\item reasoning present
+\item evidence--reasoning imbalance
+\item repeated missing-claim pattern
+\end{itemize}
+
+\subsection*{State Vector}
+
+The signals are assembled into an interpretable state representing the student's current argumentative situation.
+
+Examples of states include:
+
+\begin{itemize}
+\item claim missing
+\item claim present but unsupported
+\item evidence present without reasoning
+\item complete CER structure
+\end{itemize}
+
+\subsection*{Gate}
+
+A gate determines whether certain forms of evaluation should proceed.
+
+For example, if no claim is present, the system may defer deeper evidence or reasoning evaluation and instead activate claim-oriented support.
+
+\subsection*{Policy Projection}
+
+The state is evaluated relative to instructional policy dimensions.
+
+Examples include:
+
+\begin{itemize}
+\item missing foundational structure
+\item ready for evidence support
+\item ready for reasoning support
+\item ready for revision or enrichment
+\end{itemize}
+
+\subsection*{Policy Selection}
+
+Based on the projected state, the system selects a next instructional action.
+
+Examples include:
+
+\begin{itemize}
+\item prompt the student to write a claim
+\item ask for supporting evidence
+\item ask the student to explain how the evidence supports the claim
+\item direct the student to revise a weak reasoning statement
+\end{itemize}
+
+\subsection*{State Evolution}
+
+As the student revises, new observations arrive and the state updates.
+
+Over time, the student's writing forms a trajectory through the state space.
+
+\section{Playbooks}
+
+A playbook defines how the system guides the student over a sequence of states.
+
+For example, a basic CER playbook might guide the student through:
+
+\begin{enumerate}
+\item producing a claim
+\item adding evidence
+\item adding reasoning
+\item strengthening reasoning
+\end{enumerate}
+
+The playbook does not replace the ESM. Instead, it uses ESM state evaluations to decide what instructional support should come next.
+
+\section{Breadcrumbs}
+
+When the student reaches an appropriate transition point, the system may present breadcrumbs representing possible next steps.
+
+Examples might include:
+
+\begin{itemize}
+\item Revise your reasoning
+\item Try a paragraph-level argument
+\item Apply this structure to a science explanation
+\end{itemize}
+
+Breadcrumbs make the next transition visible while preserving structured guidance.
+
+\section{Why This Matters}
+
+The value of the ESM in this context is not that it ``grades'' writing automatically.
+
+Its value is that it can:
+
+\begin{itemize}
+\item make structural writing situations explicit
+\item reduce repetitive diagnostic work for teachers
+\item support students with immediate, targeted feedback
+\item guide students through interpretable writing states
+\end{itemize}
+
+This allows teachers to spend more time on higher-level instructional work such as interpretation, discussion, extension, and creative development.
+
+\section{Summary}
+
+In this example, the ESM functions as a deterministic, inspectable reasoning structure for argumentative writing.
+
+It transforms writing observations into signals, signals into state, and state into policy-guided instructional action.
+
+The result is a system that supports writing development through explicit situational reasoning rather than opaque scoring.
+
+\end{document}
+

@@ -1,0 +1,64 @@
+% ======================================================
+% Emergent State Machine Document Header
+% Shared across all ESM documents
+% ======================================================
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage{booktabs}
+
+\geometry{margin=1in}
+
+\hypersetup{
+colorlinks=true,
+linkcolor=blue,
+urlcolor=blue,
+citecolor=blue
+}
+
+% ------------------------------------------------------
+% Metadata commands
+% ------------------------------------------------------
+
+\newcommand{\esmTitle}{Emergent State Machine}
+\newcommand{\esmAuthor}{Richard Hines}
+\newcommand{\esmVersion}{Version 1.1.0}
+\newcommand{\esmDate}{\today}
+\newcommand{\esmRepo}{https://github.com/emergent-state-machine}
+
+% ------------------------------------------------------
+% Title page macro
+% ------------------------------------------------------
+
+\newcommand{\esmTitlePage}[2]{
+
+\begin{titlepage}
+\centering
+
+\vspace*{2cm}
+
+{\LARGE \textbf{\esmTitle}}\\[0.5cm]
+
+{\Large #1}\\[1cm]
+
+{\large #2}\\[1.5cm]
+
+{\large Author: \esmAuthor}\\[0.3cm]
+
+{\large \esmVersion}\\[0.3cm]
+
+{\large \esmDate}\\[1.5cm]
+
+\textit{Open architecture specification for interpretable control systems}\\[2cm]
+
+\href{\esmRepo}{\esmRepo}
+
+\vfill
+
+\end{titlepage}
+
+}
