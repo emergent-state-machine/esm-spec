@@ -1,75 +1,77 @@
 \begin{tikzpicture}[
-    node distance=0.9cm,
-    box/.style={
-        draw,
-        rounded corners,
-        align=center,
-        minimum width=8.5cm,
-        minimum height=0.95cm,
-        font=\small
-    },
-    arrow/.style={
-        -{Stealth[length=2.5mm]},
-        thick
-    }
+  scale=0.88,
+  transform shape,
+  node distance=1.0cm,
+  box/.style={
+    rectangle,
+    rounded corners,
+    draw,
+    align=center,
+    minimum width=10.8cm,
+    minimum height=1.05cm,
+    font=\normalsize
+  },
+  smallbox/.style={
+    rectangle,
+    rounded corners,
+    draw,
+    align=center,
+    minimum width=8.4cm,
+    minimum height=0.95cm,
+    font=\normalsize
+  },
+  note/.style={
+    align=left,
+    font=\normalsize
+  },
+  arrow/.style={
+    -{Latex[length=2.5mm]},
+    thick
+  }
 ]
 
-\node[box] (obs) {%
-\textbf{Observations}\\
-Raw measurements or events from the monitored environment
-};
+% Main vertical chain
+\node[box] (obs) {\textbf{Observations}\\Raw measurements or events from the monitored environment};
 
-\node[box, below=of obs] (sig) {%
-\textbf{Signals}\\
-Direct and derived signals computed deterministically from observations
-};
+\node[box, below=of obs] (sig) {\textbf{Signals}\\Direct and derived signals computed deterministically from observations};
 
-\node[box, below=of sig] (state) {%
-\textbf{State Vector}\\
-Interpretable current situation represented in signal space
-};
+\node[smallbox, below=of sig] (state) {\textbf{State Vector}\\Interpretable current situation represented in signal space};
 
-\node[box, below=of state] (gate) {%
-\textbf{Activation Gate}\\
-Condition determining whether policy evaluation begins
-};
+\node[smallbox, below=of state] (proj) {\textbf{Policy Projection}\\State expressed in policy-relevant coordinates};
 
-\node[box, below=of gate] (proj) {%
-\textbf{Policy Projection}\\
-State expressed in policy-relevant coordinates
-};
+\node[smallbox, below=of proj] (gate) {\textbf{Relevance Gate}\\Condition determining whether policy evaluation begins};
 
-\node[box, below=of proj] (policy) {%
-\textbf{Policy Selection}\\
-Deterministic choice of the next action
-};
+\node[smallbox, below=of gate] (policy) {\textbf{Policy Evaluation}\\Deterministic evaluation of the next authorized response};
 
-\node[box, below=of policy] (action) {%
-\textbf{Action}\\
-Alert, prompt, intervention, or workflow step
-};
+\node[smallbox, below=of policy] (outcome) {\textbf{Outcome}\\Turn result: no-op, action, escalation, handoff, or clarification};
 
-\node[box, below=of action] (evolve) {%
-\textbf{State Evolution}\\
-New observations arrive and the system updates again
-};
+\node[smallbox, below=of outcome] (action) {\textbf{Action (if present)}\\Executed intervention, alert, prompt, or workflow step};
 
-% Arrows
+\node[smallbox, below=of action] (evolve) {\textbf{State Evolution}\\New observations arrive; next turn begins};
+
+% Main arrows
 \draw[arrow] (obs) -- (sig);
 \draw[arrow] (sig) -- (state);
-\draw[arrow] (state) -- (gate);
-\draw[arrow] (gate) -- (proj);
-\draw[arrow] (proj) -- (policy);
-\draw[arrow] (policy) -- (action);
+\draw[arrow] (state) -- (proj);
+\draw[arrow] (proj) -- (gate);
+\draw[arrow] (gate) -- (policy);
+\draw[arrow] (policy) -- (outcome);
+\draw[arrow] (outcome) -- (action);
 \draw[arrow] (action) -- (evolve);
 
-% Loop arrow
-\draw[arrow] (evolve.east) .. controls +(2.0,0) and +(2.0,0) .. node[right, xshift=1.0cm, align=center, font=\small] {repeat with\\new observations} (obs.east);
+% Gate side note for no-op
+\node[note, right=0.8cm of gate] (gatenote) {if not relevant:\\directly yields\\\textbf{no-op outcome}};
+\draw[arrow] (gate.east) -- ++(0.9,0) |- (outcome.east);
 
-% Bottom annotation
-\node[align=center, below=1.2cm of evolve, font=\small] (traj) {%
-\textbf{Trajectory through State Space:} $x_0 \rightarrow x_1 \rightarrow x_2 \rightarrow x_3 \rightarrow \dots$\\[0.2em]
-\textbf{Control Objective:} steer trajectories toward desirable or stable regions
-};
+% Loop back
+\draw[arrow] (evolve.east) .. controls +(3.0,0) and +(3.0,0) .. (obs.east);
+
+% Loop label
+\node[note, right=3.0cm of policy] {repeat with\\new observations};
+
+% Bottom summary text
+\node[align=center, below=0.85cm of evolve, font=\normalsize] (traj)
+{\textbf{Trajectory through State Space:} $x_1 \rightarrow x_2 \rightarrow x_3 \rightarrow \cdots$\\[0.35em]
+\textbf{Control Objective:} steer trajectories toward desirable or stable regions};
 
 \end{tikzpicture}
