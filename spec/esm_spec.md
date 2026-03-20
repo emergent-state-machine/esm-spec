@@ -1,12 +1,14 @@
 # Emergent State Machine (ESM)
 
-## Architectural Specification (v1.1.0)
+## Architectural Specification (v1.2.0)
 
-**Note:** This update introduces the first standalone Emergent State Machine Specification (`esm_spec`) document.
+**Note:** This version refines the core ontology of the Emergent State Machine to make projection, gating, temporal dynamics, and turn outcomes explicit, while preserving the original architectural simplicity.
+
+---
 
 ## 1. Overview
 
-The Emergent State Machine (ESM) is a deterministic control architecture for systems that must transform observations into actions while preserving transparency, auditability, and governance.
+The Emergent State Machine (ESM) is a deterministic control architecture for systems that transform observations into actions while preserving transparency, auditability, and governance.
 
 The architecture separates three responsibilities:
 
@@ -16,11 +18,11 @@ The architecture separates three responsibilities:
 
 This separation prevents probabilistic interpretation mechanisms from directly authorizing consequential actions. Instead, authoritative decisions remain governed by explicit policy rules.
 
-The architecture operates through a sequence of turns, each representing a bounded reasoning frame.
+The architecture operates through a sequence of turns, each representing a bounded reasoning frame in which the system evaluates state, determines relevance, and produces a turn outcome.
+
+---
 
 ## 2. Architectural Principles
-
-The ESM architecture is governed by several core principles.
 
 ### 2.1 Deterministic Authority
 
@@ -38,13 +40,19 @@ Interpretation mechanisms may describe system conditions but cannot directly aut
 
 Changes to system behavior must occur through explicit revision of versioned artifacts rather than implicit model drift.
 
+### 2.5 Conditional Intervention
+
+The system continuously evaluates its environment but only intervenes when conditions warrant action.
+
+---
+
 ## 3. Core Concepts
 
 ### 3.1 Turn
 
 A turn is the fundamental unit of reasoning within an Emergent State Machine.
 
-Each turn processes new observations and produces an authoritative action.
+Each turn processes new observations and produces a **turn outcome**.
 
 A turn contains the following stages:
 
@@ -52,10 +60,28 @@ A turn contains the following stages:
 - signal extraction
 - state construction
 - projection into policy space
-- policy evaluation
-- action selection
+- gating evaluation
+- policy evaluation (conditional)
+- outcome determination
 
 Turns provide a bounded computational frame that supports replayability and auditability.
+
+---
+
+### 3.1.1 Turn Outcome
+
+A turn outcome represents the result of evaluating the current situation.
+
+Possible outcomes include:
+
+- **no-op** — no action is taken
+- **local_action** — a bounded action is executed
+- **escalation** — authority is transferred to a higher-level system or human operator
+- **handoff** — control is transferred to another system
+
+Not all turns produce actions. Non-action is a valid and expected outcome.
+
+---
 
 ### 3.2 Observations
 
@@ -73,6 +99,8 @@ Observations are denoted:
 `o_t`
 
 where `t` indicates the current turn.
+
+---
 
 ### 3.3 Signals
 
@@ -94,17 +122,21 @@ Signals extracted during a turn form the signal set:
 
 `S_t = { s1, s2, ..., sn }`
 
+---
+
 ### 3.4 State Vector
 
 Signals are organized into a structured representation called the state vector.
 
-The state vector describes the system's current situation in a form suitable for policy evaluation.
+The state vector describes the system's current situation in a form suitable for interpretation and policy evaluation.
 
 `x_t = [ s1, s2, ..., sn ]`
 
 Each component corresponds to a signal derived during the current turn.
 
-Unlike latent representations used in many machine learning systems, the ESM state vector remains explicitly interpretable.
+The state vector may include derived features such as temporal summaries or diagnostic indicators, provided they remain interpretable and reproducible.
+
+---
 
 ## 4. Projection
 
@@ -122,22 +154,57 @@ where:
 - `P` is the projection function
 - `y_t` is the policy-space representation
 
+Projection is a required step that transforms state into policy-relevant coordinates.
+
 Projection may be implemented through deterministic algorithms or statistical models, but the resulting representation must remain structured and reproducible.
 
 Projection does not authorize action.
 
-## 5. Policy
+---
+
+## 5. Gating
+
+Gating determines whether the projected state warrants policy evaluation and potential action.
+
+Gating is represented as:
+
+`g_t = G(y_t)`
+
+where:
+
+- `y_t` is the projected state
+- `G` is the gating function
+- `g_t ∈ {0, 1}`
+
+Behavior:
+
+- if `g_t = 0` → no-op
+- if `g_t = 1` → proceed to policy evaluation
+
+Gating implements conditional intervention by distinguishing between continuous evaluation and discrete action.
+
+Typical gating conditions may include:
+
+- deviation from a desirable region
+- high volatility or rapid change
+- low confidence in interpretation
+- violation of persistence constraints
+
+---
+
+## 6. Policy
 
 Policy governs authoritative action selection.
 
-The policy function maps projected state into actions:
+Policy is evaluated only when gating conditions are satisfied.
 
-`a_t = π(y_t)`
+`a_t = π(y_t)  if g_t = 1`  
+`a_t = ∅       if g_t = 0`
 
 where:
 
 - `π` is the policy function
-- `y_t` is the policy-space representation
+- `y_t` is the projected state
 - `a_t` is the selected action
 
 Policy rules may include:
@@ -157,23 +224,30 @@ Policy must satisfy four requirements:
 
 Only policy may authorize actions that affect external systems.
 
-## 6. Action
+---
 
-An action represents the authoritative decision produced by the system during a turn.
+## 7. Action and Outcome
 
-Examples include:
+An action represents an authoritative operation executed by the system.
 
-- triggering an alert
-- routing a request
-- escalating a workflow
-- requesting clarification
-- performing system updates
+Actions are one type of turn outcome.
+
+Possible outcomes include:
+
+- no-op
+- local_action
+- escalation
+- handoff
 
 The action set is defined as:
 
 `A = { a1, a2, ..., ak }`
 
-## 7. Control State
+Action sets are externally defined and may be constrained to pre-authorized operations depending on deployment context.
+
+---
+
+## 8. Control State
 
 An Emergent State Machine maintains internal operational state across turns.
 
@@ -195,7 +269,9 @@ Control state evolves deterministically:
 
 This update function is explicit and versioned.
 
-## 8. Turn Execution Flow
+---
+
+## 9. Turn Execution Flow
 
 At each turn the system executes the following pipeline:
 
@@ -203,17 +279,20 @@ At each turn the system executes the following pipeline:
 - compute signals
 - construct state vector
 - project state into policy space
-- evaluate policy
-- select action
+- evaluate gating
+- (if gated) evaluate policy
+- determine turn outcome
 - update control state
 
 This pipeline ensures that authoritative decisions always pass through explicit policy.
 
-## 9. Clarification and Partial Observability
+---
 
-In some situations available signals may not uniquely determine a valid action.
+## 10. Clarification and Partial Observability
 
-When policy cannot determine a unique action, the system may select:
+In some situations available signals may not uniquely determine a valid interpretation or action.
+
+When ambiguity is detected, the system may produce:
 
 `request_clarification`
 
@@ -221,7 +300,9 @@ Additional input is then incorporated in the next turn.
 
 This approach surfaces ambiguity explicitly rather than collapsing uncertainty internally.
 
-## 10. Instrumentation
+---
+
+## 11. Instrumentation
 
 Each turn produces a structured interaction record containing:
 
@@ -229,13 +310,58 @@ Each turn produces a structured interaction record containing:
 - signal values
 - state vector
 - projection output
+- gating result
 - policy version
-- selected action
+- turn outcome
+- selected action (if any)
 - control state
+
+Optional fields may include:
+
+- confidence measures
+- volatility indicators
 
 These records allow complete replay of system behavior.
 
-## 11. Instrumented Deterministic Evolution (IDE)
+---
+
+## 12. Temporal Dynamics
+
+The ESM operates over discrete turns while interacting with continuous real-world time.
+
+Time between turns may vary.
+
+Temporal reasoning may include:
+
+- persistence requirements
+- temporal aggregation
+- stability and change detection
+- decay of signal relevance
+
+Signals and derived features may decrease in influence over time as they become less relevant to current interpretation.
+
+Temporal features must remain explicitly defined and reproducible.
+
+---
+
+## 13. Layered ESMs
+
+Multiple ESMs may operate at different levels of abstraction within a system.
+
+Higher-level ESMs may provide initialized state to downstream ESMs through structured state transfer.
+
+After initialization, ESMs operate independently on their own observation streams.
+
+Interaction between ESMs occurs through:
+
+- state transfer
+- outcome-triggered coordination
+
+Continuous coupling between ESMs is not required.
+
+---
+
+## 14. Instrumented Deterministic Evolution (IDE)
 
 System behavior evolves through explicit artifact revision.
 
@@ -243,6 +369,7 @@ Artifacts subject to versioning include:
 
 - signal detectors
 - projection logic
+- gating functions
 - policy rules
 - control state update logic
 
@@ -254,34 +381,51 @@ Each revision must be:
 
 Under this regime system evolution occurs intentionally rather than through implicit parameter drift.
 
-## 12. Architectural Boundaries
+---
+
+## 15. Architectural Boundaries
 
 The ESM architecture enforces strict separation between interpretation and authority.
 
 Interpretation mechanisms may assist in describing system conditions but cannot directly authorize actions.
 
+All actions must be:
+
+- explicitly defined
+- externally governed
+- deterministically selected
+
 This boundary allows systems to incorporate probabilistic or generative models while preserving deterministic governance of consequential decisions.
 
-## 13. Reference Implementation Structure
+---
+
+## 16. Reference Implementation Structure
 
 A minimal ESM implementation contains the following components:
 
-```text
 signals/
-    primitive detectors
+primitive detectors
+
 projection/
-    state interpretation logic
+state interpretation logic
+
+gating/
+relevance evaluation logic
+
 policy/
-    decision rules
+decision rules
+
 control/
-    state update logic
+state update logic
+
 instrumentation/
-    interaction logging
-```
+interaction logging
 
 Each component must be independently versioned.
 
-## 14. Domain Adaptation
+---
+
+## 17. Domain Adaptation
 
 The ESM architecture is domain-agnostic.
 
@@ -289,16 +433,19 @@ To deploy an ESM system in a new domain, developers must define:
 
 - domain-specific signals
 - projection functions
+- gating logic
 - policy rules
 - action sets
 
 The architectural separation between measurement, interpretation, and authority remains invariant.
 
-## 15. Summary
+---
 
-The Emergent State Machine provides a deterministic architecture for systems that must convert observations into decisions while preserving transparency and governance.
+## 18. Summary
 
-By separating measurement, interpretation, and authority, the architecture enables:
+The Emergent State Machine provides a deterministic architecture for systems that convert observations into outcomes while preserving transparency and governance.
+
+By separating measurement, interpretation, relevance evaluation, and authority, the architecture enables:
 
 - inspectable reasoning
 - deterministic decision control
