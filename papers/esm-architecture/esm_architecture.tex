@@ -82,7 +82,7 @@
 % Title
 % ----------------------------
 \title{Emergent State Machines:\\
-A Deterministic Architecture for Situational Reasoning in Complex Systems}
+A Deterministic Control Framework \\ for Interpretable Situational Reasoning}
 
 \author{
 Richard Hines\\
@@ -96,28 +96,29 @@ Richard Hines\\
 \maketitle
 
 \begin{abstract}
-This paper presents the mathematical foundations of the Emergent State Machine (ESM), a deterministic architecture for interpretable situational reasoning in complex systems. The central organizing unit of the architecture is the \emph{turn}: a complete reasoning frame in which observations from the environment are transformed into signals, assembled into an interpretable state vector, projected into policy-relevant coordinates, evaluated for relevance, and, when warranted, mapped deterministically to an action or other outcome. By structuring system behavior as a sequence of turns, the ESM makes reasoning processes inspectable, replayable, and auditable.
+This paper presents the mathematical foundations of Emergent State Machines (ESMs), a deterministic control framework for interpretable situational reasoning in complex systems. The ESM formalism defines both individual machines and networks of interacting machines that exchange state, signals, or control across well-defined boundaries while preserving a common underlying structure independent of domain-specific logic.
 
-Within each turn, raw observations are converted into direct and derived signals defined by domain experts. These signals form an explicit state vector representing the system's current situation. A projection mechanism then expresses that state in policy-relevant coordinates, enabling deterministic policy selection without collapsing reasoning into latent or opaque representations. Repeated turns generate trajectories through interpretable and policy-relevant state space over variable real-world time, allowing policies to guide the system toward desirable stable regions and away from undesirable ones.
+The central organizing unit of this framework is the \emph{turn}: a complete reasoning frame in which observations from the environment are transformed into signals, assembled into an interpretable state vector, projected into policy-relevant coordinates, evaluated for relevance, and, when warranted, mapped deterministically to an action or other outcome. Within each turn, raw observations are converted into direct and derived signals defined by domain experts. These signals form an explicit state vector representing the system's current situation. A projection mechanism then expresses that state in policy-relevant coordinates, enabling deterministic policy selection without collapsing reasoning into latent or opaque representations.
+
+By structuring system behavior as sequences of turns, ESMs make reasoning processes inspectable, replayable, and auditable. Repeated turns generate trajectories through interpretable and policy-relevant state space over variable real-world time, allowing policies to guide the system toward desirable stable regions and away from undesirable ones.
 
 Unlike architectures that entangle probabilistic interpretation with consequential action, the ESM preserves a structural boundary between state representation and authoritative policy selection. Projection interprets; relevance gating determines whether a situation warrants decision; deterministic policy authorizes action. This separation supports traceability, failure localization, and controlled system evolution through versioned revision of signals, projections, gating logic, and policies. The resulting framework provides a mathematically structured approach to decision systems whose reasoning must remain visible, reproducible, and governable across domains including clinical monitoring, learning systems, and operational control.
 
 The canonical specification is available at \url{https://github.com/emergent-state-machine/esm-spec}.
-
 \end{abstract}
 
 \paragraph{Contribution Statement.}
-This paper makes five principal contributions. First, it defines the \emph{turn} as the atomic reasoning object of an Emergent State Machine, providing a formal unit for inspection, replay, and audit. Second, it presents a deterministic state-space formulation in which observations are transformed into signals, state vectors, policy projections, relevance-gating states, and turn outcomes through an explicit reasoning chain. Third, it shows how repeated turns generate trajectories through projected state space over variable real-world time, enabling policy to guide the system toward desirable stable regions through persistence-aware intervention rather than instantaneous reaction alone. Fourth, it formalizes layered ESM reasoning in which initialized state may be transferred across interacting ESMs without collapsing modular authority. Fifth, it formalizes \emph{Instrumented Deterministic Evolution} as a regime in which behavioral change occurs only through explicit revision of versioned architectural artifacts rather than through hidden parameter drift.
-
+This paper makes five principal contributions. First, it defines the turn as the atomic reasoning object of an Emergent State Machine, providing a formal unit for inspection, replay, and audit within the broader ESM framework. Second, it presents a deterministic state-space formulation in which observations are transformed into signals, state vectors, policy projections, relevance-gating states, and turn outcomes through an explicit reasoning chain. Third, it shows how repeated turns generate trajectories through projected state space over variable real-world time, enabling policy to guide system behavior toward desirable stable regions through persistence-aware intervention rather than instantaneous reaction alone. Fourth, it formalizes layered ESM reasoning in which initialized state may be transferred across interacting ESMs without collapsing modular authority. Fifth, it formalizes Instrumented Deterministic Evolution as a regime in which behavioral change occurs only through explicit revision of versioned architectural artifacts rather than through hidden parameter drift.
 % ----------------------------
 % Introduction
 % ----------------------------
 
 \section{Introduction}
-
 Many contemporary decision systems operate as opaque pipelines in which complex transformations produce outputs without exposing the intermediate reasoning steps that led to those outputs. In domains such as clinical care, education, and operational control, this opacity creates a practical problem: professionals remain responsible for consequential decisions, yet the computational systems supporting those decisions often do not provide an inspectable account of how those decisions were reached. Threshold-triggered alerting systems partially address this problem by surfacing selected measurements, but they typically expose signals rather than situations. Human operators must still reconstruct the situational meaning of those signals for themselves.
 
-The Emergent State Machine (ESM) addresses this limitation by structuring automated reasoning into discrete, inspectable units called \emph{turns}. A turn is the fundamental reasoning frame of the system. During a turn, observations are collected from the environment, transformed into direct and derived signals, assembled into an interpretable state vector, projected into policy-relevant coordinates, evaluated through relevance gating, and, when warranted, mapped deterministically to an action or other outcome. The turn therefore serves as the minimal object required to inspect, replay, reproduce, and audit system reasoning.
+The Emergent State Machine (ESM) framework addresses this limitation by structuring automated reasoning into discrete, inspectable units called \emph{turns}. Although this paper introduces Emergent State Machines as a class of architectures, analysis is often conducted at the level of a single machine. In practice, complex systems are composed of multiple interacting ESMs that exchange state, signals, or control across well-defined boundaries. The formalism presented here therefore applies both to individual machines and to networks of interconnected ESMs.
+
+A turn is the fundamental reasoning frame of the system. During a turn, observations are collected from the environment, transformed into direct and derived signals, assembled into an interpretable state vector, projected into policy-relevant coordinates, evaluated through relevance gating, and, when warranted, mapped deterministically to an action or other outcome. The turn therefore serves as the minimal object required to inspect, replay, reproduce, and audit system reasoning.
 
 This framing is important for both theory and practice. Theoretically, it allows the ESM to be modeled as a dynamical system evolving through interpretable and policy-relevant state spaces. Practically, it gives system designers and domain experts a concrete artifact that can be logged, examined, and revised. Rather than treating reasoning as an invisible process inside a model, the ESM makes each reasoning step explicit. Each turn packages the information available to the system, the transformations applied to that information, the policy dimensions activated, the relevance conditions satisfied, and the outcome produced. A sequence of turns therefore provides both a trajectory through state space and a structured record of how the system's reasoning unfolded.
 
@@ -126,7 +127,6 @@ The architecture developed here differs from systems that entangle probabilistic
 Time is explicit in this framework in two distinct senses. The sequence of turns provides a discrete, inspectable reasoning order, while real-world time between turns may vary depending on when observations arrive or when conditions warrant reevaluation. This distinction allows the ESM to represent persistence, abrupt change, and temporally decaying relevance without collapsing reasoning into a continuous opaque process.
 
 This paper presents the mathematical foundations of that architecture. It first defines the turn as the atomic unit of reasoning, then formalizes the transformation from observations to signals, state vectors, projected policy coordinates, relevance-gating states, and outcomes. These components may be summarized as follows:
-
 \begin{itemize}
 \item observations, representing measurements or events in the monitored environment
 \item signals, which are direct or derived quantities computed from observations
@@ -150,6 +150,8 @@ The architectural principles underlying the Emergent State Machine draw on ideas
 
 The Emergent State Machine organizes reasoning into discrete computational units called \emph{turns}. A turn represents one complete cycle of observation, interpretation, relevance evaluation, and, when warranted, policy selection. Rather than treating system reasoning as a continuous and opaque transformation, the ESM treats each turn as an explicit object that can be inspected, replayed, and reproduced.
 
+Although the turn is defined at the level of a single Emergent State Machine, the same structure applies when multiple ESMs interact. In such systems, turns remain locally complete reasoning units, while coordination across machines occurs through the exchange of signals, state, or control at well-defined boundaries.
+
 At time $t$, a turn may be represented abstractly as
 
 \begin{equation}
@@ -171,12 +173,14 @@ When an action is authorized, the action itself is denoted separately by $a_t$ a
 
 This formulation makes explicit that a turn is not merely a timestamped input or output. It is the full reasoning frame of the system at that moment. Each turn contains the information needed to reconstruct the system's situational interpretation, the relevance conditions applied to that interpretation, and the policy logic that produced its outcome.
 
+\vspace{0.5em}
 \begin{figure}[H]
 \centering
 \input{../../figures/esm-core-loop.tex}
 \caption{Core reasoning loop of an Emergent State Machine. Each turn transforms observations into signals, constructs a state vector, projects the state into policy coordinates, evaluates relevance, and, when warranted, selects an action or other outcome.}
 \label{fig:esm-core-loop}
 \end{figure}
+\pagebreak
 
 In practical deployments, the first operational turn need not begin from an empty case state. A turn may begin with initialized contextual information provided by prior system structure, a distinct intake process, or an upstream ESM. What is required is not emptiness but explicitness: the initialized conditions, the observations available, and the versioned reasoning artifacts governing the turn must all remain inspectable.
 
@@ -186,17 +190,15 @@ A sequence of turns forms the temporal structure of ESM reasoning:
 T_1 \rightarrow T_2 \rightarrow T_3 \rightarrow \dots
 \end{equation}
 
-This sequence corresponds to the evolution of the monitored system through state space. Because each turn remains explicit and inspectable, the system's reasoning process can be analyzed at the level of individual turns or at the level of trajectories formed across many turns.
+This sequence corresponds to the evolution of the monitored system through state space. Because each turn remains explicit and inspectable, the system's reasoning process can be analyzed at the level of individual turns or at the level of trajectories formed across many turns. In multi-machine systems, these trajectories may extend across interacting ESMs, with state, signals, or intermediate representations passed between machines. Each ESM maintains its own turn sequence, while the overall system behavior emerges from the coordinated evolution of these interacting sequences.
 
 The concept of the turn plays two roles in the architecture. First, it is the atomic object of inspection and audit. Second, it is the temporal unit through which state trajectories are generated. In this sense, turns connect the operational behavior of the system to its mathematical formulation. What evolves over time is not an abstract hidden process, but a sequence of explicit turns whose contents remain available for replay and analysis.
 
-Importantly, the structure of the turn is invariant across domains. The same sequence of observation, signal construction, projection, gating, and policy evaluation applies regardless of the subject matter being evaluated.
+Importantly, the structure of the turn is invariant across domains. The same sequence of observation, signal construction, projection, gating, and policy evaluation applies regardless of the subject matter being evaluated. Domain specificity is introduced exclusively through the definition of signals, the construction of derived signals, and the primitive functions used in projection.
 
-Domain specificity is introduced not through modification of the turn structure, but through the definition of signals, the construction of derived signals, and the primitive functions used in projection. The control loop itself remains unchanged.
+This implies that the unit of generalization in the Emergent State Machine is not the input domain, but the structure of the decision process. This property is supported by empirical observations from early system development. An initial implementation of the ESM core loop was used to evaluate student reasoning in fraction multiplication tasks through structured signals and deterministic evaluation criteria, and was later extended to support Claim--Evidence--Reasoning (CER) writing evaluation without modification to the core reasoning loop. Only the signal definitions, derived signal constructions, and primitive functions used in projection were changed, while the underlying control structure remained unchanged.
 
-This implies that the unit of generalization in the Emergent State Machine is not the input domain, but the structure of the decision process. Distinct domains may be instantiated within the same architecture by redefining the signal layer and projection primitives while preserving the turn-based control structure.
-
-In this sense, the Emergent State Machine is not a domain-specific system, but a reusable control architecture in which domains are encoded through signal and projection design.
+In this sense, the Emergent State Machine is a reusable control architecture in which domains are instantiated through signal and projection design rather than through modification of the core reasoning process.
 
 % ----------------------------
 % 3. Observations and Signals
@@ -494,7 +496,7 @@ Trajectories through projected state space may converge toward desirable regions
 
 \section{Layered ESMs, Initialization, and Handoff}
 
-In many deployments, an Emergent State Machine does not operate in isolation. Multiple ESMs may operate at different levels of abstraction or over different aspects of the same monitored case.
+In many deployments, Emergent State Machines operate as components within a larger system composed of interacting ESMs. These machines may operate at different levels of abstraction or over different aspects of the same monitored case.
 
 A lower-level ESM may reason over a narrow local process, while a higher-level or earlier-phase ESM may construct broader contextual state. In such cases, downstream ESMs need not begin from context-free observations. Instead, they may begin from explicitly initialized state that has been produced by an upstream component or prior phase of reasoning.
 
@@ -517,7 +519,7 @@ This formulation clarifies two important architectural points.
 
 First, initialization is invariant, but a distinct intake ESM is not. Every deployed ESM must begin from some initialized condition, but that initialization may be performed internally as part of the ESM's own first turn or externally through a distinct upstream process.
 
-Second, layered ESMs interact through explicit state transfer and outcome-triggered coordination rather than through unrestricted continuous coupling. An upstream ESM may hand off structured state to downstream ESMs, but it need not remain a continuing live signal source after handoff. This preserves modularity, clear provenance, and replayability. This layered organization aligns with hierarchical control architectures in which higher-level systems establish context and constraints for lower-level processes without collapsing local autonomy \citep{albus1981}.
+Second, layered ESMs interact through explicit state transfer and outcome-triggered coordination rather than through unrestricted continuous coupling. An upstream ESM may hand off structured state to downstream ESMs without remaining a continuing live signal source after handoff. This preserves modularity, clear provenance, and replayability while allowing higher-level systems to establish context and constraints for downstream reasoning. In this respect, layered ESM organization aligns with hierarchical control architectures in which higher-level systems shape lower-level behavior without collapsing local autonomy \citep{albus1981}.
 
 Layered ESMs therefore allow shared situational context and specialized local reasoning to coexist without collapsing all interpretation and authority into a single undifferentiated system.
 
@@ -551,7 +553,7 @@ Operationally, desirable region membership is often temporal rather than instant
 
 A useful interpretation of attractor-like behavior in the ESM is therefore temporal and policy-relative. Desirable regions may function as stable attractors when trajectories tend to enter them, remain within them, and return to them after small perturbations under the combined influence of world dynamics and policy-guided intervention.
 
-The ESM therefore provides a framework in which policy does not merely respond to isolated signals but instead shapes trajectories through projected state space over time.
+The ESM therefore defines a control structure in which policy does not merely respond to isolated signals but instead shapes trajectories through projected state space over time.
 
 % ----------------------------
 % Section 11 --- Determinism, Transparency, and Auditability
@@ -649,7 +651,7 @@ Instrumented Deterministic Evolution allows systems to improve over time while p
 
 \section{Boundaries of the Architecture}
 
-The Emergent State Machine enforces structural separation between observation, interpretation, relevance evaluation, and authoritative policy selection. While this separation provides important properties of transparency and replayability, it does not eliminate the inherent limits of modeling, measurement, or governance.
+The Emergent State Machine framework enforces structural separation between observation, interpretation, relevance evaluation, and authoritative policy selection. While this separation provides important properties of transparency and replayability, it does not eliminate the inherent limits of modeling, measurement, or governance.
 
 \subsection{Projection Quality}
 

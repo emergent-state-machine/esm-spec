@@ -1,31 +1,31 @@
 \begin{tikzpicture}[
-  scale=0.88,
+  scale=0.92,
   transform shape,
-  node distance=1.0cm,
+  node distance=0.68cm,
   box/.style={
     rectangle,
     rounded corners,
     draw,
     align=center,
-    minimum width=10.8cm,
-    minimum height=1.05cm,
-    font=\normalsize
+    minimum width=10.2cm,
+    minimum height=0.92cm,
+    font=\small
   },
   smallbox/.style={
     rectangle,
     rounded corners,
     draw,
     align=center,
-    minimum width=8.4cm,
-    minimum height=0.95cm,
-    font=\normalsize
+    minimum width=8.0cm,
+    minimum height=0.84cm,
+    font=\small
   },
   note/.style={
     align=left,
-    font=\normalsize
+    font=\small
   },
   arrow/.style={
-    -{Latex[length=2.5mm]},
+    -{Latex[length=2.1mm]},
     thick
   }
 ]
@@ -60,18 +60,18 @@
 \draw[arrow] (action) -- (evolve);
 
 % Gate side note for no-op
-\node[note, right=0.8cm of gate] (gatenote) {if not relevant:\\directly yields\\\textbf{no-op outcome}};
-\draw[arrow] (gate.east) -- ++(0.9,0) |- (outcome.east);
+\node[note, right=0.55cm of gate] (gatenote) {if not relevant:\\yields \textbf{no-op}};
+\draw[arrow] (gate.east) -- ++(0.7,0) |- (outcome.east);
 
 % Loop back
-\draw[arrow] (evolve.east) .. controls +(3.0,0) and +(3.0,0) .. (obs.east);
+\draw[arrow] (evolve.east) .. controls +(2.6,0) and +(2.6,0) .. (obs.east);
 
 % Loop label
-\node[note, right=3.0cm of policy] {repeat with\\new observations};
+\node[note, right=2.55cm of policy] {repeat with\\new observations};
 
 % Bottom summary text
-\node[align=center, below=0.85cm of evolve, font=\normalsize] (traj)
-{\textbf{Trajectory through State Space:} $x_1 \rightarrow x_2 \rightarrow x_3 \rightarrow \cdots$\\[0.35em]
+\node[align=center, below=0.45cm of evolve, font=\small] (traj)
+{\textbf{Trajectory through State Space:} $x_1 \rightarrow x_2 \rightarrow x_3 \rightarrow \cdots$\\[0.15em]
 \textbf{Control Objective:} steer trajectories toward desirable or stable regions};
 
 \end{tikzpicture}
