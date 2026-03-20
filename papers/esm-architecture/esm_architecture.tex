@@ -102,7 +102,7 @@ Within each turn, raw observations are converted into direct and derived signals
 
 Unlike architectures that entangle probabilistic interpretation with consequential action, the ESM preserves a structural boundary between state representation and authoritative policy selection. Projection interprets; relevance gating determines whether a situation warrants decision; deterministic policy authorizes action. This separation supports traceability, failure localization, and controlled system evolution through versioned revision of signals, projections, gating logic, and policies. The resulting framework provides a mathematically structured approach to decision systems whose reasoning must remain visible, reproducible, and governable across domains including clinical monitoring, learning systems, and operational control.
 
-\href{https://github.com/emergent-state-machine/esm-spec}{github.com/emergent-state-machine/esm-spec}
+The canonical specification is available at \url{https://github.com/emergent-state-machine/esm-spec}.
 
 \end{abstract}
 
@@ -125,7 +125,7 @@ The architecture developed here differs from systems that entangle probabilistic
 
 Time is explicit in this framework in two distinct senses. The sequence of turns provides a discrete, inspectable reasoning order, while real-world time between turns may vary depending on when observations arrive or when conditions warrant reevaluation. This distinction allows the ESM to represent persistence, abrupt change, and temporally decaying relevance without collapsing reasoning into a continuous opaque process.
 
-This paper presents the mathematical foundations of that architecture. It first defines the turn as the atomic unit of reasoning, then formalizes the transformation from observations to signals, state vectors, projected policy coordinates, relevance-gating states, and outcomes. It next describes state evolution, temporal dynamics, layered initialization and handoff, trajectories, desirable regions, and stable states in projected state space. Finally, it shows how determinism, auditability, and replayability support a regime of \emph{Instrumented Deterministic Evolution}, in which system behavior changes only through explicit revision of versioned architectural components.
+This paper presents the mathematical foundations of that architecture. It first defines the turn as the atomic unit of reasoning, then formalizes the transformation from observations to signals, state vectors, projected policy coordinates, relevance-gating states, and outcomes. These components may be summarized as follows:
 
 \begin{itemize}
 \item observations, representing measurements or events in the monitored environment
@@ -189,6 +189,14 @@ T_1 \rightarrow T_2 \rightarrow T_3 \rightarrow \dots
 This sequence corresponds to the evolution of the monitored system through state space. Because each turn remains explicit and inspectable, the system's reasoning process can be analyzed at the level of individual turns or at the level of trajectories formed across many turns.
 
 The concept of the turn plays two roles in the architecture. First, it is the atomic object of inspection and audit. Second, it is the temporal unit through which state trajectories are generated. In this sense, turns connect the operational behavior of the system to its mathematical formulation. What evolves over time is not an abstract hidden process, but a sequence of explicit turns whose contents remain available for replay and analysis.
+
+Importantly, the structure of the turn is invariant across domains. The same sequence of observation, signal construction, projection, gating, and policy evaluation applies regardless of the subject matter being evaluated.
+
+Domain specificity is introduced not through modification of the turn structure, but through the definition of signals, the construction of derived signals, and the primitive functions used in projection. The control loop itself remains unchanged.
+
+This implies that the unit of generalization in the Emergent State Machine is not the input domain, but the structure of the decision process. Distinct domains may be instantiated within the same architecture by redefining the signal layer and projection primitives while preserving the turn-based control structure.
+
+In this sense, the Emergent State Machine is not a domain-specific system, but a reusable control architecture in which domains are encoded through signal and projection design.
 
 % ----------------------------
 % 3. Observations and Signals
