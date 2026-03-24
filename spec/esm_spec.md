@@ -37,6 +37,11 @@ The system operates through discrete turns, each representing a bounded reasonin
 
 ## 3. Turn
 
+In ESM, the turn is both:
+
+- the atomic reasoning unit
+- the temporal unit of system evolution
+
 ### 3.1 Invariant Requirements (MUST)
 
 A turn MUST:
@@ -59,11 +64,6 @@ A turn MUST be:
 - Turns MAY include additional diagnostic artifacts
 
 ### 3.3 Implementation Notes
-
-The turn is both:
-
-- the atomic reasoning unit
-- the temporal unit of system evolution
 
 Each turn:
 
