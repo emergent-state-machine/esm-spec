@@ -1,8 +1,26 @@
 # Emergent State Machine
 
-The **Emergent State Machine (ESM)** is a deterministic control architecture for systems that must transform observations into decisions while preserving transparency, replayability, and governance.
+The **Emergent State Machine (ESM)** is an architectural framework for deterministic, interpretable decision systems.
 
-ESM organizes reasoning into discrete computational frames called **turns**. Each turn transforms observations into signals, constructs a structured state representation, evaluates policy, and produces an authoritative action.
+It defines how systems transform observations into governed outcomes while preserving:
+
+transparency
+replayability
+auditability
+explicit control over decision authority
+
+## Core Execution Model
+
+ESM organizes reasoning into discrete computational frames called turns.
+
+Each turn:
+
+incorporates observations
+derives signals
+constructs a coherent state
+re-expresses that state in decision coordinates
+determines whether evaluation is warranted
+conditionally produces an outcome
 
 ## ESM Core Loop
 
@@ -10,70 +28,126 @@ ESM organizes reasoning into discrete computational frames called **turns**. Eac
 Environment / Domain
         │
         ▼
-Observations
+Observations (o_t)
         │
         ▼
-Signals
+Signals (S_t)
         │
         ▼
-State Vector
+Coherent State (x_t)
         │
         ▼
-Activation Gate
+Projection (y_t = P(x_t))
         │
         ▼
-Policy Projection
+Relevance Determination (g_t = G(y_t))
         │
         ▼
-Policy Selection
+Policy Evaluation (π)
         │
         ▼
-Action
+Outcome / Action (a_t)
         │
         ▼
-State Evolution
+Control State Update (m_t)
         │
         └────────→ next Turn
 ```
 
-Turn structure: `T_t = (o_t, S_t, x_t, g_t, y_t, a_t)`
+Turn structure: `T_t = (o_t, S_t, x_t, y_t, g_t, a_t, m_t)`
 
-Across time: `T_0 → T_1 → T_2 → T_3 → ...`
+Across time: `T_0 → T_1 → T_2 → ...`
 
 This makes every state transition inspectable, replayable, and governable.
 
+## Architectural Separation
+
+ESM enforces strict separation between:
+
+Measurement → signals from observations
+Interpretation → coherent state construction
+Relevance Determination → whether a situation warrants evaluation
+Authority → deterministic policy selection
+
+This separation ensures:
+
+probabilistic or generative systems may assist interpretation,
+but cannot directly authorize outcomes.
+
+## Key Concepts
+
+# Coherent State
+
+Signals are organized into a fully resolved, internally consistent state representation.
+
+This state contains all semantic content required for decision-making.
+
+# Projection
+
+Projection re-expresses the coherent state in policy-relevant coordinates.
+
+Projection introduces no new semantic content.
+It is a structured re-representation of an already interpreted state.
+
+# Relevance Determination (Gating)
+
+Relevance determination defines:
+
+the authorization boundary for decision-making
+
+It determines whether the current situation warrants policy evaluation.
+
+# Policy (Authority)
+
+Policy is the exclusive source of authority.
+
+All outcomes must be selected:
+
+deterministically
+explicitly
+under versioned rules
+
 ## Why This Exists
 
-Modern AI and decision systems frequently entangle:
+Modern AI and decision systems often entangle:
 
-- interpretation
-- decision authority
-- generative output
+interpretation
+decision authority
+generative output
 
-This makes systems difficult to:
+This leads to systems that are:
 
-- audit
-- reproduce
-- version safely
-- govern at scale
+difficult to audit
+difficult to reproduce
+unsafe to evolve
+hard to govern
 
-The Emergent State Machine addresses this problem by enforcing a strict architectural separation between:
+The Emergent State Machine addresses this by:
 
-`measurement → interpretation → authority`
+making state construction explicit
+separating interpretation from authority
+enforcing a governed decision boundary
+enabling replayable system evolution
 
-Behavioral change may occur only through explicit, versioned policy evolution.
+Behavior changes only through:
+
+explicit, versioned modification of architectural artifacts
 
 ## Scope of This Repository
 
-This repository contains the **normative specification** of the ESM pattern:
+This repository contains the canonical specification of the ESM architecture.
 
-- Formal execution model
-- Required invariants
-- Clarification and ambiguity handling rules
-- Versioning guarantees
-- Instrumented Deterministic Evolution (IDE)
+It defines:
 
-It does not contain application code.
+the execution model
+architectural invariants
+coherent state construction
+projection semantics
+relevance determination
+deterministic policy authority
+Instrumented Deterministic Evolution (IDE)
+
+This repository does not contain application implementations.
 
 ## Specification
 
@@ -117,45 +191,116 @@ See the draft here:
 
 ### Latest Paper Release
 
-**Emergent State Machine: A Deterministic Architecture for Situational Reasoning in Complex Systems — v1.1.0**
+**v1.5.0 — Interpretable Situational Reasoning & Projection Formalization**
 
-A revised version of the formal architecture paper has been released.
+The latest version of the Emergent State Machine architecture sharpens its core contribution:
+making situational reasoning explicit, inspectable, and governable.
 
-Version 1.1.0 introduces a clearer mathematical framing of the Emergent State Machine (ESM) as a turn-based control architecture. The revision improves conceptual clarity while preserving the original formal structure.
+This release clarifies how systems move from raw observations to meaningful decisions by formalizing projection as an explicit transformation from measurable state into policy-relevant structure.
 
-Key updates:
+Key highlights:
 
-- Turn formalization: the architecture is now explicitly defined around the concept of a Turn, a bounded reasoning frame containing observations, signals, state construction, projection, and policy evaluation.
-- Clearer state construction model: signals derived during a turn are formally organized into a state vector, providing an interpretable representation of the system's current situation.
-- Improved projection framing: projection is clarified as a transformation of the state vector into policy-relevant coordinates, aligning the architecture with state-space formulations in control theory.
-- Instrumented Deterministic Evolution (IDE): the paper now introduces a formal section defining IDE, the mechanism by which ESM systems evolve through explicit versioned changes to detectors, projection logic, and policy artifacts.
-- Expanded theoretical grounding: the Related Work section situates the architecture within traditions including control theory and state-space modeling, dynamical systems, situation awareness research, software architectural separation, and AI interpretability and governance.
+Projection defined as explicit coarse-graining into decision space
+Stronger framing of ESM as a system for situational reasoning
+Clearer articulation of the decision boundary (policy as authority)
+Continued emphasis on determinism, replayability, and auditability
 
-Scope of the paper:
+This version represents the most complete and accessible articulation of the architecture to date.
 
-This paper focuses on the mathematical architecture of the Emergent State Machine. Operational governance topics such as policy modularity and generative assistance constraints are addressed in the broader ESM specification.
-
-Location:
-
-- [PDF](papers/esm-architecture/esm_architecture_v1.1.0.pdf)
+- [PDF](papers/esm-architecture/esm_architecture_v1.5.0.pdf)
 
 ### Previous Architecture Paper Release
 
-**Emergent State Machine: A Turn-Based Control Architecture — v1.0.0**
+**v1.4.0 — Architectural Framework & Governance Boundary**
 
-This release updates the architecture paper to align with the ESM specification v1.0.0.
+This release formalizes the Emergent State Machine as an architectural framework for interpretable situational reasoning, with a clear and enforceable boundary between interpretation and authority.
 
-Major clarifications include:
+Key advancements:
 
-- explicit separation of **Signal**, **Projection**, and **Authority** layers
-- introduction of **primitive detectors** and **signals** as the measurement interface
-- formalization of **control state** within the policy decision boundary
-- clarification of the **authority boundary** separating interpretation from action
-- expanded definition of **Instrumented Deterministic Evolution (IDE)**
+Clarifies the architecture as Signal → State → Projection → Authority (CML)
+Establishes the governance boundary: only policy may authorize state mutation
+Refines the role of projection as explicit, inspectable coarse-graining into policy space
+Strengthens the framing of ESM as a decision system architecture, not a model or pipeline
 
-Paper available in:
+This version represents the current canonical framing of ESM as a system for governed, auditable decision-making in complex environments.
+
+- [PDF](papers/esm-architecture/esm_architecture_v1.4.0.pdf)
+
+**v1.3.0 — Architectural Reframing & Interpretability Emphasis**
+
+This release transitions the language of ESM from a control-system framing toward a broader architectural interpretation of situational reasoning systems.
+
+Key advancements:
+
+Reframes ESM as an architectural framework, not just a control loop
+Strengthens emphasis on interpretability, auditability, and governance
+Clarifies projection as the mechanism that makes situations visible, not predicted
+Refines narrative around human–AI collaboration at the decision boundary
+
+This version bridges the earlier mathematical formulation and the current governance-oriented architecture.
+
+- [PDF](papers/esm-architecture/esm_architecture_v1.3.0.pdf)
+
+**v1.2.0 — Projection Clarity & Policy-Space Reasoning**
+
+This release sharpens the role of projection into policy space as a central architectural component.
+
+Key advancements:
+
+Defines projection as explicit transformation into decision-relevant coordinates
+Distinguishes projection from prediction and inference
+Clarifies how policy operates over structured situational dimensions
+Strengthens the separation between state representation and decision logic
+
+This version marks the point where projection becomes clearly identifiable as a novel architectural contribution.
+
+- [PDF](papers/esm-architecture/esm_architecture_v1.2.0.pdf)
+
+**v1.1.0 — Deterministic State-Space Formulation & IDE**
+
+This release introduces the formal structure of the ESM as a deterministic state-space system with explicit reasoning steps.
+
+Key advancements:
+
+Defines the turn as the atomic unit of reasoning
+Formalizes the transformation chain: observations → signals → state → projection → action
+Introduces Instrumented Deterministic Evolution (IDE) as the mechanism for system change
+Establishes replayability, auditability, and failure localization as core properties
+
+This version provides the first fully developed mathematical and architectural articulation of the system.
+
+- [PDF](papers/esm-architecture/esm_architecture_v1.1.0.pdf)
+
+**v1.0.0 — Initial Formalization of the ESM Architecture**
+
+This release represents the first complete formal draft of the Emergent State Machine architecture.
+
+Key contributions:
+
+Establishes the turn-based reasoning loop
+Introduces signals, state vectors, and deterministic policy selection
+Frames the architecture as an alternative to opaque, model-centric decision systems
+Begins formalizing the relationship to control theory and state-space systems
+
+This version provides the first end-to-end articulation of the system’s structure.
 
 - [PDF](papers/esm-architecture/esm_architecture_v1.0.0.pdf)
+
+**v0.9.1 — Foundational Architecture: Turn-Based Control**
+
+This release captures the earliest formal articulation of the Emergent State Machine as a turn-based control architecture.
+
+Key contributions:
+
+Establishes the turn-based execution model
+Introduces explicit construction of state from signals
+Frames the problem of entangled interpretation and action in AI systems
+Motivates separation between descriptive reasoning and authoritative decision-making
+
+While later versions refine layering and governance boundaries, this release contains the core insight:
+making the construction of state from signals explicit as the foundation of interpretable decision systems.
+
+📄 [PDF](papers/esm-architecture/ESM_Turn_Based_Control_Architecture_v0.9.pdf)
 
 ### Designing the Digital Learning Companion
 
@@ -170,71 +315,6 @@ The Digital Learning Companion (DLC) is one implementation of the ESM pattern:
 - [Digital Learning Companion](https://github.com/Digital-Learning-Companion)
 
 Additional implementations are welcome.
-
-## Release History
-
-### v1.1.0 — Update to Strengthen Control-Theoretic Formulation
-
-This update introduces the first standalone Emergent State Machine Specification (`esm_spec`) document.
-
-The specification defines the architectural structure of the ESM independent of any specific implementation or application domain.
-
-Highlights:
-
-- Formal definition of the Turn as the fundamental unit of ESM reasoning
-- Clear separation of measurement, interpretation, and authority within the architecture
-- Definition of signals, state vectors, projection, and policy as explicit system artifacts
-- Introduction of control state for deterministic multi-turn system behavior
-- Specification of Instrumented Deterministic Evolution (IDE) as the mechanism governing system evolution
-- Clarification of architectural boundaries that prevent interpretive mechanisms from directly authorizing consequential actions
-
-Purpose of the specification:
-
-The goal of the ESM specification is to provide a domain-agnostic architectural reference that can support implementations across multiple domains, including:
-
-- decision support systems
-- operational monitoring
-- AI-assisted reasoning systems
-- governance-sensitive automated systems
-
-The specification is intended to evolve alongside the mathematical paper and reference implementations.
-
-Relationship to the math paper:
-
-The mathematical paper describes the formal structure of the architecture. The specification provides an implementation-oriented description of the system components and execution model. Both documents will evolve in parallel as the architecture develops.
-
-### v1.0.0 — First Public Release
-
-First public release of the Emergent State Machine (ESM) architectural specification.
-
-This release clarifies:
-
-- the separation of Signal, Projection, and Authority layers
-- primitive detectors, signals, and feature vectors
-- deterministic policy as the exclusive mutation authority
-- the placement of probabilistic interpretation within the Projection Layer
-- hierarchical composition of nested ESMs
-- norm ladders as staged operational or learning progressions
-
-See:
-
-- [`spec/esm_spec.md`](spec/esm_spec.md)
-- [GitHub Release: v1.0.0](https://github.com/emergent-state-machine/esm-spec/releases/tag/v1.0.0)
-
-### v0.9.1 — Late Pre-Release Draft
-
-Late pre-release draft of the Emergent State Machine architectural specification.
-
-This version is retained as a historical reference point immediately prior to the first stable public release.
-
-Contents at this tag included:
-
-- draft specification at `spec/esm_spec.md`
-- accompanying draft paper and LaTeX sources
-
-See:
-
-- [GitHub Release: v0.9.1](https://github.com/emergent-state-machine/esm-spec/releases/tag/v0.9.1)
 
 ## Citation
 
