@@ -156,16 +156,15 @@ The canonical Emergent State Machine architecture specification is located at:
 
 - [`spec/esm_spec.md`](spec/esm_spec.md)
 
-Current version: `v1.5.0`
+### Latest Spec Draft
 
-The specification defines the formal structure of the ESM as a system for interpretable, deterministic, and governed decision-making, including:
+#### ESM Spec v1.5.0
 
-- the turn-based execution model
-- architectural invariants and system boundaries
-- signal construction and projection into policy space
-- deterministic policy authority (CML)
-- handling of ambiguity and clarification
-- Instrumented Deterministic Evolution (IDE) for controlled system change
+The specification has been updated to align with the current architecture paper and governance framing.
+
+This draft clarifies the architectural boundary between signals, projection, and authority, and reflects the current formulation of ESM as a framework for interpretable situational reasoning and controlled state mutation.
+
+See ESM Spec v1.5.0: [`spec/esm_spec.md`](spec/esm_spec.md)
 
 For systems that require a deterministic and instrumented mutation boundary, the ESM architecture can be implemented using a **[Controlled Mutation Layer (CML)](https://github.com/controlled-mutation-layer)**.
 
