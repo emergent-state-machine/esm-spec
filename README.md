@@ -87,6 +87,7 @@ This state contains all semantic content required for decision-making.
 Projection re-expresses the coherent state in policy-relevant coordinates.
 
 Projection introduces no new semantic content.
+
 It is a structured re-representation of an already interpreted state.
 
 ### Relevance Determination (Gating)
@@ -155,16 +156,16 @@ The canonical Emergent State Machine architecture specification is located at:
 
 - [`spec/esm_spec.md`](spec/esm_spec.md)
 
-Current version: `v1.0.0`
+Current version: `v1.5.0`
 
-The specification defines:
+The specification defines the formal structure of the ESM as a system for interpretable, deterministic, and governed decision-making, including:
 
-- the ESM execution model
-- architectural invariants
-- signal and projection structure
-- deterministic policy authority
-- clarification and ambiguity handling
-- Instrumented Deterministic Evolution (IDE)
+- the turn-based execution model
+- architectural invariants and system boundaries
+- signal construction and projection into policy space
+- deterministic policy authority (CML)
+- handling of ambiguity and clarification
+- Instrumented Deterministic Evolution (IDE) for controlled system change
 
 For systems that require a deterministic and instrumented mutation boundary, the ESM architecture can be implemented using a **[Controlled Mutation Layer (CML)](https://github.com/controlled-mutation-layer)**.
 

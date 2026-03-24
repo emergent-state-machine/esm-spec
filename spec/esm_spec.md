@@ -1,8 +1,8 @@
 # Emergent State Machine (ESM)
 
-## Architectural Specification (v1.4.0)
+## Architectural Specification (v1.5.0)
 
-> Note: This version refines the architecture to explicitly define coherent state construction, projection semantics, relevance determination as an authorization boundary, and turn outcome behavior, aligning the specification with the formal architectural framing.
+> Note: This version refines the architecture by differentiating invariant requirements from variations that may be necessary in practical implementations.
 
 ## 1. Overview
 
@@ -21,31 +21,51 @@ The system operates through discrete turns, each representing a bounded reasonin
 
 ## 2. Architectural Principles
 
-### 2.1 Deterministic Authority
+### 2.1 Invariant Requirements (MUST)
 
-Authoritative outcomes must be selected by deterministic policy functions. Identical inputs under fixed versions must produce identical results.
+- Authority MUST be deterministic
+- Each turn MUST expose a complete reasoning chain
+- Interpretation MUST NOT authorize outcomes
+- All governing artifacts MUST be versioned
+- Evaluation MUST be conditionally triggered (not continuous action)
 
-### 2.2 Inspectable Reasoning
+### 2.2 Permitted Variations (MAY)
 
-Each turn must expose a complete reasoning chain from observation to outcome.
-
-### 2.3 Separation of Interpretation and Authority
-
-Interpretation may describe system conditions but cannot authorize outcomes.
-
-### 2.4 Versioned Evolution
-
-System behavior evolves only through explicit revision of versioned artifacts.
-
-### 2.5 Conditional Intervention
-
-The system evaluates continuously but intervenes selectively.
+- Interpretation MAY use statistical or learned models
+- Systems MAY operate in advisory-only mode
+- Systems MAY include confidence or uncertainty annotations
 
 ## 3. Core Concepts
 
-### 3.1 Turn
+### Turn
 
-A turn is the fundamental unit of reasoning.
+#### 3.1 Invariant Requirements (MUST)
+
+A turn MUST:
+
+- incorporate observations
+- construct a coherent state
+- produce a projected representation
+- evaluate relevance
+- produce an outcome
+
+A turn MUST be:
+
+- bounded
+- inspectable
+- replayable
+
+#### 3.2 Permitted Variations (MAY)
+
+- Turns MAY begin from initialized state (not empty)
+- Turns MAY include additional diagnostic artifacts
+
+#### 3.3 Implementation Notes
+
+The turn is both:
+
+- the atomic reasoning unit
+- the temporal unit of system evolution
 
 Each turn:
 
@@ -56,323 +76,471 @@ Each turn:
 
 A turn is a bounded, replayable decision frame.
 
-#### 3.1.1 Turn Outcome
+#### 3.4 Turn Outcomes
 
-A turn outcome represents the result of evaluating the current situation.
+##### Invariant Requirements (MUST)
 
-Possible outcomes include:
+Each turn MUST produce an outcome.
 
-- no-op — no action taken
-- local_action — bounded action executed
-- escalation — authority transferred
-- handoff — control transferred
-- request_clarification — additional input required
+The outcome MUST be explicitly represented, even if no action occurs.
 
-A no-op may arise from:
+##### Permitted Variations (MAY)
 
-- relevance determination (no evaluation required), or
-- policy evaluation (evaluation occurred, no action authorized)
+Outcome types MAY include:
 
-### 3.2 Observations
+- no-op
+- local_action
+- escalation
+- handoff
+- request_clarification
 
-Observations are measurable inputs from the environment.
+Implementations MAY define additional outcome types.
 
-```text
-o_t
-```
+##### Implementation Notes
 
-Sources include sensors, users, systems, or records.
+“No-op” SHOULD be explicitly recorded to preserve auditability.
 
-### 3.3 Signals
+### 5. Observations
 
-Signals are structured, testable measurements derived from observations.
+#### Invariant Requirements (MUST)
 
-```text
-S_t = { s1, s2, ..., sn }
-```
+- Observations MUST be identifiable inputs at time  
+  𝑡  
+  t
+- Observations MUST be sufficient to reconstruct signal computation
 
-Signals must be:
+#### Permitted Variations (MAY)
+
+- Observations MAY be stored inline or referenced externally
+- Observations MAY be partial or incomplete
+
+#### Implementation Notes
+
+Missing observations SHOULD be represented explicitly, not silently defaulted.
+
+### 6. Signals
+
+#### Invariant Requirements (MUST)
+
+Signals MUST be:
 
 - explicitly defined
 - bounded
 - independently testable
 - versioned
 
-### 3.4 State Vector (Coherent State)
+Signals MUST be computable from observations.
 
-Signals are organized into a coherent state vector:
+#### Permitted Variations (MAY)
 
-```text
-x_t = [ s1, s2, ..., sn ]
-```
+- Signals MAY be derived, aggregated, or transformed
+- Signals MAY include model-assisted outputs
+- Signals MAY include confidence or uncertainty
 
-This state represents a fully constructed interpretation of the situation.
+#### Implementation Notes
 
-Properties:
+Model-assisted signals MUST NOT directly authorize outcomes.
 
-- internally consistent
-- fully resolved for decision purposes
-- reproducible from signals
-- independent of policy
+### 7. Coherent State (State Vector)
 
-The state vector contains all semantic content required for reasoning.
+#### Invariant Requirements (MUST)
 
-## 4. Projection
+The state vector MUST:
 
-Projection re-expresses the coherent state in policy-relevant coordinates.
+- represent a fully constructed interpretation
+- be reproducible from signals
+- be independent of policy
 
-```text
-y_t = P(x_t)
-```
+#### Permitted Variations (MAY)
 
-Where:
+- State MAY include derived features
+- State MAY include uncertainty representations
 
-- x_t is the coherent state
-- P is the projection function
-- y_t is the policy-space representation
+#### Implementation Notes
 
-Critical property:
+State MUST be “decision-ready” — ambiguity should not be deferred past this layer.
 
-Projection introduces no new semantic content.  
-It re-expresses an already fully interpreted state.
+### 8. Projection
 
-Projection may:
+#### Invariant Requirements (MUST)
 
-- reorganize dimensions
-- scale or normalize features
-- align state with decision thresholds
+Projection MUST:
 
-Projection does not:
+- map  
+  𝑥  
+  𝑡  
+  →  
+  𝑦  
+  𝑡  
+  x  
+  t  
+  →y  
+  t
 
-- infer new meaning
+- be explicitly represented
+- be distinct from state construction and policy
+
+Projection MUST NOT:
+
+- introduce new semantic meaning
 - resolve ambiguity
-- authorize action
 
-## 5. Relevance Determination (Gating)
+#### Permitted Variations (MAY)
 
-Relevance determination evaluates whether the projected state warrants policy evaluation.
+- Projection MAY be linear, rule-based, or learned
+- Projection MAY include normalization or scaling
+- Projection MAY reduce dimensionality
 
-```text
-g_t = G(y_t)
-```
+#### Implementation Notes
 
-Where:
+Projection is where coarse-graining occurs for decision-making.
 
-- g_t ∈ {0,1}
+### 9. Relevance Determination (Gating)
 
-Behavior:
+#### Invariant Requirements (MUST)
 
-- g_t = 0 → no policy evaluation
-- g_t = 1 → proceed to policy
+- Relevance MUST evaluate  
+  𝑦  
+  𝑡  
+  y  
+  t
 
-Relevance determination defines the:
+- Relevance MUST produce a gating result
+- Policy MUST NOT execute if gating is false
 
-- authorization boundary for decision-making
+#### Permitted Variations (MAY)
 
-It distinguishes:
+- Gating MAY be binary or multi-state
+- Gating MAY incorporate temporal logic
+- Gating MAY include uncertainty thresholds
 
-- continuous situational awareness
-- from discrete decision engagement
+#### Implementation Notes
 
-Typical conditions include:
+Gating defines the authorization boundary.
 
-- deviation from desired region
-- instability or volatility
-- persistence thresholds
-- uncertainty conditions
+### 10. Policy (Authority)
 
-## 6. Policy (Authority)
+#### Invariant Requirements (MUST)
 
-Policy selects outcomes when relevance conditions are satisfied.
+- Policy MUST be deterministic
+- Policy MUST be the sole source of authority
+- Policy MUST operate only when gating allows
 
-```text
-a_t = π(y_t) if g_t = 1
-a_t = ∅ if g_t = 0
-```
+#### Permitted Variations (MAY)
 
-Policy is the exclusive source of authority.
+- Policy MAY be rule-based or table-driven
+- Policy MAY include escalation logic
+- Policy MAY output no-op
 
-Policy must be:
+#### Implementation Notes
 
-- deterministic
-- explicitly defined
-- versioned
-- auditable
+Policy determines outcomes—not interpretation layers.
 
-Policy may produce:
+### 11. Action and Outcome
 
-- actions
-- escalation
-- handoff
-- no-op
+#### Invariant Requirements (MUST)
 
-## 7. Action and Outcome
+- Actions MUST be distinguishable from outcomes
+- Outcomes MUST be recorded even if no action occurs
 
-Actions are externally visible operations.
+#### Permitted Variations (MAY)
 
-```text
-A = { a1, a2, ..., ak }
-```
+- Actions MAY be internal or external
+- Outcomes MAY include non-action results
 
-Outcomes extend beyond actions to include:
+### 12. Control State
 
-- no-op
-- escalation
-- handoff
-- clarification
+#### Invariant Requirements (MUST)
 
-## 8. Control State
+- Control state MUST evolve deterministically
 
-The system maintains internal operational state:
+#### Permitted Variations (MAY)
 
-```text
-m_t
-```
+Control state MAY include:
 
-Examples:
+- timers
+- counters
+- workflow stages
 
-- workflow stage
-- cooldown timers
-- persistence counters
-- escalation levels
+#### Implementation Notes
 
-State evolves deterministically:
+Control state enables temporal behavior without breaking determinism.
 
-```text
-m\_{t+1} = f(m_t, y_t, a_t)
-```
+### 13. Turn Execution Flow
 
-## 9. Turn Execution Flow
+#### Invariant Requirements (MUST)
 
-Each turn executes:
-
-- receive observations
-- compute signals
-- construct coherent state
-- project into policy space
-- evaluate relevance
-- (if relevant) evaluate policy
-- determine outcome
-- update control state
-
-## 10. Clarification and Partial Observability
-
-If interpretation is insufficient:
-
-- the system may produce request_clarification
-
-Ambiguity is surfaced explicitly rather than hidden.
-
-## 11. Instrumentation
-
-Each turn records:
+Each turn MUST execute:
 
 - observations
 - signals
-- coherent state (x_t)
-- projection (y_t)
-- relevance result (g_t)
-- policy version
+- state construction
+- projection
+- relevance determination
+- policy (conditional)
 - outcome
-- action (if any)
+- control update
+
+### 14. Instrumentation (Turn Record)
+
+#### Invariant Requirements (MUST)
+
+Each turn record MUST include:
+
+- observations
+- signals
+- state  
+  𝑥  
+  𝑡  
+  x  
+  t
+- projection  
+  𝑦  
+  𝑡  
+  y  
+  t
+- relevance result
+- outcome
+
+#### Permitted Variations (MAY)
+
+Turn records MAY include:
+
+- action
 - control state
-
-Optional:
-
 - confidence
+- uncertainty
 - volatility
+- provenance metadata
+- version identifiers
 
-This enables full replay.
+#### Implementation Notes
 
-## 12. Temporal Dynamics
+Replayability depends on recording sufficient information, but the spec defines only the minimum.
 
-The system operates in discrete turns over continuous time.
+### 15. Temporal Dynamics
 
-Temporal logic may include:
+#### Invariant Requirements (MUST)
+
+- Temporal behavior MUST be explicit and reproducible
+
+#### Permitted Variations (MAY)
+
+Temporal logic MAY include:
 
 - persistence
 - aggregation
 - decay
-- change detection
+- trend detection
 
-All temporal features must be explicit and reproducible.
+### 16. Layered ESMs
 
-## 13. Layered ESMs
+#### Invariant Requirements (MUST)
 
-Multiple ESMs may operate hierarchically.
+- Each ESM MUST operate independently after initialization
 
-Higher-level systems may initialize downstream state.
+#### Permitted Variations (MAY)
 
-After initialization, systems operate independently.
+- ESMs MAY initialize downstream systems
+- ESMs MAY operate hierarchically
 
-## 14. Instrumented Deterministic Evolution (IDE)
+### 17. Instrumented Deterministic Evolution (IDE)
 
-System behavior evolves through versioned artifacts:
+#### Invariant Requirements (MUST)
+
+- All governing artifacts MUST be versioned
+
+#### Permitted Variations (MAY)
+
+Artifacts MAY include:
 
 - signals
 - projection
-- relevance logic
+- relevance
 - policy
-- control updates
+- control logic
 
-All changes must be:
+### 18. Architectural Boundaries
 
-- versioned
-- recorded
-- replayable
+#### Invariant Requirements (MUST)
 
-## 15. Architectural Boundaries
+- Interpretation MUST NOT authorize outcomes
+- All outcomes MUST be deterministic
 
-Interpretation and authority remain strictly separated.
+#### Permitted Variations (MAY)
 
-Probabilistic systems may assist interpretation but cannot authorize outcomes.
+- Probabilistic systems MAY assist interpretation
 
-All outcomes must be:
+### 19. Domain Adaptation
 
-- explicitly defined
-- deterministically selected
-- governed
+#### Invariant Requirements (MUST)
 
-## 16. Reference Implementation Structure
+Implementations MUST define:
 
-```text
-signals/
-projection/
-relevance/
-policy/
-control/
-instrumentation/
-```
+- signals
+- state
+- projection
+- relevance
+- policy
 
-Each component is independently versioned.
+#### Permitted Variations (MAY)
 
-## 17. Domain Adaptation
+- Domain-specific extensions MAY be added
 
-To deploy ESM:
+### 20. Summary
 
-- define signals
-- construct coherent state
-- define projection
-- define relevance logic
-- define policy
-- define actions
+The ESM defines a minimal, invariant architecture for transforming observations into governed outcomes.
 
-Architecture remains invariant.
+All implementations must preserve:
 
-## 18. Summary
+- layered reasoning
+- explicit state
+- deterministic authority
 
-The Emergent State Machine provides a deterministic architecture for transforming observations into governed outcomes.
+All additional capabilities are extensions, not replacements.
 
-By separating:
+### 21. Compliance Checklist
 
-- measurement
-- interpretation
-- relevance determination
-- authority
+This checklist defines the minimum conditions required for an implementation to be considered a valid Emergent State Machine (ESM).
 
-the system achieves:
+An implementation MUST satisfy all items in Core Compliance.
 
-- inspectable reasoning
-- deterministic control
-- replayable execution
-- governed evolution
+#### 21.1 Core Compliance (Required)
+
+Turn Structure
+
+- The system operates in discrete, identifiable turns
+- Each turn represents a complete reasoning cycle
+- Each turn produces an explicit outcome
+
+Layer Representation
+
+Each turn MUST include explicit representations of:
+
+- Observations (  
+  𝑜  
+  𝑡  
+  o  
+  t  
+  )
+- Signals (  
+  𝑆  
+  𝑡  
+  S  
+  t  
+  )
+- Coherent state (  
+  𝑥  
+  𝑡  
+  x  
+  t  
+  )
+- Projection (  
+  𝑦  
+  𝑡  
+  y  
+  t  
+  )
+- Relevance determination (  
+  𝑔  
+  𝑡  
+  g  
+  t  
+  )
+- Outcome (  
+  𝑟  
+  𝑡  
+  r  
+  t  
+  )
+
+Layer Separation
+
+- Interpretation layers (signals, state, projection) are separated from authority
+- Projection is implemented as a distinct step (not merged with state or policy)
+- Relevance determination occurs before policy execution
+
+Deterministic Authority
+
+- Policy decisions are deterministic
+- Identical inputs under fixed versions produce identical outcomes
+- No probabilistic component directly authorizes outcomes
+
+Conditional Policy Execution
+
+- Policy is executed only when relevance conditions are satisfied
+- When relevance is not satisfied, policy is not evaluated
+
+Inspectable Reasoning
+
+- Each turn exposes a complete reasoning chain from observations to outcome
+- Intermediate representations (signals, state, projection) are inspectable
+
+#### 21.2 Turn Record Compliance (Required)
+
+Each turn record MUST include:
+
+- Observations
+- Signals
+- State (  
+  𝑥  
+  𝑡  
+  x  
+  t  
+  )
+- Projection (  
+  𝑦  
+  𝑡  
+  y  
+  t  
+  )
+- Relevance result (  
+  𝑔  
+  𝑡  
+  g  
+  t  
+  )
+- Outcome
+
+#### 21.3 Strongly Recommended (Non-Blocking)
+
+These are not required for validity but are recommended for robust implementations.
+
+Reproducibility and Replay
+
+- Version identifiers for signals, projection, relevance, and policy
+- Sufficient data to replay a turn deterministically
+
+Outcome Clarity
+
+- No-op outcomes are explicitly recorded
+- Outcome types are clearly defined
+
+Handling Uncertainty
+
+- Missing or ambiguous inputs are explicitly represented
+- Confidence or uncertainty is recorded where relevant
+
+Temporal Logic
+
+- Temporal features (e.g., persistence, trends) are explicit and reproducible
+
+Model-Assisted Components
+
+- Use of models is documented and bounded to non-authoritative layers
+- Model outputs are treated as signals or projection inputs, not decisions
+
+Initialization and Handoff
+
+- Initial state or upstream inputs are explicitly recorded
+- Source of initialization is identifiable
+
+#### 21.4 Non-Compliance Indicators
+
+An implementation is NOT a valid ESM if any of the following occur:
+
+- Outcomes are produced without explicit projection or relevance steps
+- Policy decisions are influenced directly by probabilistic outputs
+- Intermediate reasoning layers are not inspectable
+- The system operates as a continuous black-box transformation
+- Turn boundaries are not defined or reconstructible
