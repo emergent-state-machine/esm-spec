@@ -1,455 +1,378 @@
 # Emergent State Machine (ESM)
 
-## Architectural Specification (v1.2.0)
+## Architectural Specification (v1.4.0)
 
-**Note:** This version refines the core ontology of the Emergent State Machine to make projection, gating, temporal dynamics, and turn outcomes explicit, while preserving the original architectural simplicity.
-
----
+> Note: This version refines the architecture to explicitly define coherent state construction, projection semantics, relevance determination as an authorization boundary, and turn outcome behavior, aligning the specification with the formal architectural framing.
 
 ## 1. Overview
 
-The Emergent State Machine (ESM) is a deterministic control architecture for systems that transform observations into actions while preserving transparency, auditability, and governance.
+The Emergent State Machine (ESM) is a deterministic architectural framework for systems that transform observations into governed outcomes while preserving transparency, auditability, and control.
 
-The architecture separates three responsibilities:
+The architecture separates four responsibilities:
 
-- Measurement -- extracting signals from observations
-- Interpretation -- constructing a structured representation of system state
-- Authority -- selecting actions through explicit deterministic policy
+- Measurement — extracting signals from observations
+- Interpretation — constructing a coherent system state
+- Relevance Determination — deciding whether a situation warrants evaluation
+- Authority — selecting outcomes through deterministic policy
 
-This separation prevents probabilistic interpretation mechanisms from directly authorizing consequential actions. Instead, authoritative decisions remain governed by explicit policy rules.
+This separation ensures that probabilistic or statistical interpretation mechanisms cannot directly authorize consequential actions. All authority remains governed by explicit, versioned policy.
 
-The architecture operates through a sequence of turns, each representing a bounded reasoning frame in which the system evaluates state, determines relevance, and produces a turn outcome.
-
----
+The system operates through discrete turns, each representing a bounded reasoning frame.
 
 ## 2. Architectural Principles
 
 ### 2.1 Deterministic Authority
 
-Authoritative actions must be selected by deterministic policy functions. Identical system state must produce identical decisions under fixed policy versions.
+Authoritative outcomes must be selected by deterministic policy functions. Identical inputs under fixed versions must produce identical results.
 
 ### 2.2 Inspectable Reasoning
 
-Every decision must be traceable through an explicit reasoning chain linking actions to underlying observations.
+Each turn must expose a complete reasoning chain from observation to outcome.
 
-### 2.3 Separation of Description and Authority
+### 2.3 Separation of Interpretation and Authority
 
-Interpretation mechanisms may describe system conditions but cannot directly authorize actions.
+Interpretation may describe system conditions but cannot authorize outcomes.
 
 ### 2.4 Versioned Evolution
 
-Changes to system behavior must occur through explicit revision of versioned artifacts rather than implicit model drift.
+System behavior evolves only through explicit revision of versioned artifacts.
 
 ### 2.5 Conditional Intervention
 
-The system continuously evaluates its environment but only intervenes when conditions warrant action.
-
----
+The system evaluates continuously but intervenes selectively.
 
 ## 3. Core Concepts
 
 ### 3.1 Turn
 
-A turn is the fundamental unit of reasoning within an Emergent State Machine.
+A turn is the fundamental unit of reasoning.
 
-Each turn processes new observations and produces a **turn outcome**.
+Each turn:
 
-A turn contains the following stages:
+- incorporates new observations
+- constructs a coherent state
+- determines whether the situation warrants evaluation
+- conditionally produces an outcome
 
-- observation intake
-- signal extraction
-- state construction
-- projection into policy space
-- gating evaluation
-- policy evaluation (conditional)
-- outcome determination
+A turn is a bounded, replayable decision frame.
 
-Turns provide a bounded computational frame that supports replayability and auditability.
-
----
-
-### 3.1.1 Turn Outcome
+#### 3.1.1 Turn Outcome
 
 A turn outcome represents the result of evaluating the current situation.
 
 Possible outcomes include:
 
-- **no-op** — no action is taken
-- **local_action** — a bounded action is executed
-- **escalation** — authority is transferred to a higher-level system or human operator
-- **handoff** — control is transferred to another system
+- no-op — no action taken
+- local_action — bounded action executed
+- escalation — authority transferred
+- handoff — control transferred
+- request_clarification — additional input required
 
-Not all turns produce actions. Non-action is a valid and expected outcome.
+A no-op may arise from:
 
----
+- relevance determination (no evaluation required), or
+- policy evaluation (evaluation occurred, no action authorized)
 
 ### 3.2 Observations
 
-Observations represent measurable information about the environment.
+Observations are measurable inputs from the environment.
 
-Observations may originate from:
+```text
+o_t
+```
 
-- sensors
-- user input
-- external systems
-- historical records
-
-Observations are denoted:
-
-`o_t`
-
-where `t` indicates the current turn.
-
----
+Sources include sensors, users, systems, or records.
 
 ### 3.3 Signals
 
-Signals are structured measurements derived from observations.
+Signals are structured, testable measurements derived from observations.
 
-Signals may be:
+```text
+S_t = { s1, s2, ..., sn }
+```
 
-- direct signals -- direct measurements
-- derived signals -- deterministic transformations of observations or other signals
+Signals must be:
 
-Signals must satisfy the following properties:
+- explicitly defined
+- bounded
+- independently testable
+- versioned
 
-- explicit definition
-- bounded output range
-- independent testability
-- versioned implementation
+### 3.4 State Vector (Coherent State)
 
-Signals extracted during a turn form the signal set:
+Signals are organized into a coherent state vector:
 
-`S_t = { s1, s2, ..., sn }`
+```text
+x_t = [ s1, s2, ..., sn ]
+```
 
----
+This state represents a fully constructed interpretation of the situation.
 
-### 3.4 State Vector
+Properties:
 
-Signals are organized into a structured representation called the state vector.
+- internally consistent
+- fully resolved for decision purposes
+- reproducible from signals
+- independent of policy
 
-The state vector describes the system's current situation in a form suitable for interpretation and policy evaluation.
-
-`x_t = [ s1, s2, ..., sn ]`
-
-Each component corresponds to a signal derived during the current turn.
-
-The state vector may include derived features such as temporal summaries or diagnostic indicators, provided they remain interpretable and reproducible.
-
----
+The state vector contains all semantic content required for reasoning.
 
 ## 4. Projection
 
-The state vector alone does not determine which actions should occur.
+Projection re-expresses the coherent state in policy-relevant coordinates.
 
-The system therefore projects the state vector into policy space, where dimensions correspond to decision-relevant conditions.
+```text
+y_t = P(x_t)
+```
 
-Projection is represented as:
+Where:
 
-`y_t = P(x_t)`
+- x_t is the coherent state
+- P is the projection function
+- y_t is the policy-space representation
 
-where:
+Critical property:
 
-- `x_t` is the state vector
-- `P` is the projection function
-- `y_t` is the policy-space representation
+Projection introduces no new semantic content.  
+It re-expresses an already fully interpreted state.
 
-Projection is a required step that transforms state into policy-relevant coordinates.
+Projection may:
 
-Projection may be implemented through deterministic algorithms or statistical models, but the resulting representation must remain structured and reproducible.
+- reorganize dimensions
+- scale or normalize features
+- align state with decision thresholds
 
-Projection does not authorize action.
+Projection does not:
 
----
+- infer new meaning
+- resolve ambiguity
+- authorize action
 
-## 5. Gating
+## 5. Relevance Determination (Gating)
 
-Gating determines whether the projected state warrants policy evaluation and potential action.
+Relevance determination evaluates whether the projected state warrants policy evaluation.
 
-Gating is represented as:
+```text
+g_t = G(y_t)
+```
 
-`g_t = G(y_t)`
+Where:
 
-where:
-
-- `y_t` is the projected state
-- `G` is the gating function
-- `g_t ∈ {0, 1}`
+- g_t ∈ {0,1}
 
 Behavior:
 
-- if `g_t = 0` → no-op
-- if `g_t = 1` → proceed to policy evaluation
+- g_t = 0 → no policy evaluation
+- g_t = 1 → proceed to policy
 
-Gating implements conditional intervention by distinguishing between continuous evaluation and discrete action.
+Relevance determination defines the:
 
-Typical gating conditions may include:
+- authorization boundary for decision-making
 
-- deviation from a desirable region
-- high volatility or rapid change
-- low confidence in interpretation
-- violation of persistence constraints
+It distinguishes:
 
----
+- continuous situational awareness
+- from discrete decision engagement
 
-## 6. Policy
+Typical conditions include:
 
-Policy governs authoritative action selection.
+- deviation from desired region
+- instability or volatility
+- persistence thresholds
+- uncertainty conditions
 
-Policy is evaluated only when gating conditions are satisfied.
+## 6. Policy (Authority)
 
-`a_t = π(y_t)  if g_t = 1`  
-`a_t = ∅       if g_t = 0`
+Policy selects outcomes when relevance conditions are satisfied.
 
-where:
+```text
+a_t = π(y_t) if g_t = 1
+a_t = ∅ if g_t = 0
+```
 
-- `π` is the policy function
-- `y_t` is the projected state
-- `a_t` is the selected action
+Policy is the exclusive source of authority.
 
-Policy rules may include:
+Policy must be:
 
-- threshold logic
-- escalation rules
-- persistence requirements
-- cooldown constraints
-- routing logic
+- deterministic
+- explicitly defined
+- versioned
+- auditable
 
-Policy must satisfy four requirements:
+Policy may produce:
 
-- determinism
-- explicit definition
-- versioning
-- exclusive decision authority
-
-Only policy may authorize actions that affect external systems.
-
----
+- actions
+- escalation
+- handoff
+- no-op
 
 ## 7. Action and Outcome
 
-An action represents an authoritative operation executed by the system.
+Actions are externally visible operations.
 
-Actions are one type of turn outcome.
+```text
+A = { a1, a2, ..., ak }
+```
 
-Possible outcomes include:
+Outcomes extend beyond actions to include:
 
 - no-op
-- local_action
 - escalation
 - handoff
-
-The action set is defined as:
-
-`A = { a1, a2, ..., ak }`
-
-Action sets are externally defined and may be constrained to pre-authorized operations depending on deployment context.
-
----
+- clarification
 
 ## 8. Control State
 
-An Emergent State Machine maintains internal operational state across turns.
+The system maintains internal operational state:
 
-Control state may include:
+```text
+m_t
+```
+
+Examples:
 
 - workflow stage
-- escalation level
 - cooldown timers
 - persistence counters
-- active objectives
+- escalation levels
 
-Control state is denoted:
+State evolves deterministically:
 
-`m_t`
-
-Control state evolves deterministically:
-
-`m_{t+1} = f(m_t, y_t, a_t)`
-
-This update function is explicit and versioned.
-
----
+```text
+m\_{t+1} = f(m_t, y_t, a_t)
+```
 
 ## 9. Turn Execution Flow
 
-At each turn the system executes the following pipeline:
+Each turn executes:
 
 - receive observations
 - compute signals
-- construct state vector
-- project state into policy space
-- evaluate gating
-- (if gated) evaluate policy
-- determine turn outcome
+- construct coherent state
+- project into policy space
+- evaluate relevance
+- (if relevant) evaluate policy
+- determine outcome
 - update control state
-
-This pipeline ensures that authoritative decisions always pass through explicit policy.
-
----
 
 ## 10. Clarification and Partial Observability
 
-In some situations available signals may not uniquely determine a valid interpretation or action.
+If interpretation is insufficient:
 
-When ambiguity is detected, the system may produce:
+- the system may produce request_clarification
 
-`request_clarification`
-
-Additional input is then incorporated in the next turn.
-
-This approach surfaces ambiguity explicitly rather than collapsing uncertainty internally.
-
----
+Ambiguity is surfaced explicitly rather than hidden.
 
 ## 11. Instrumentation
 
-Each turn produces a structured interaction record containing:
+Each turn records:
 
-- raw observations
-- signal values
-- state vector
-- projection output
-- gating result
+- observations
+- signals
+- coherent state (x_t)
+- projection (y_t)
+- relevance result (g_t)
 - policy version
-- turn outcome
-- selected action (if any)
+- outcome
+- action (if any)
 - control state
 
-Optional fields may include:
+Optional:
 
-- confidence measures
-- volatility indicators
+- confidence
+- volatility
 
-These records allow complete replay of system behavior.
-
----
+This enables full replay.
 
 ## 12. Temporal Dynamics
 
-The ESM operates over discrete turns while interacting with continuous real-world time.
+The system operates in discrete turns over continuous time.
 
-Time between turns may vary.
+Temporal logic may include:
 
-Temporal reasoning may include:
+- persistence
+- aggregation
+- decay
+- change detection
 
-- persistence requirements
-- temporal aggregation
-- stability and change detection
-- decay of signal relevance
-
-Signals and derived features may decrease in influence over time as they become less relevant to current interpretation.
-
-Temporal features must remain explicitly defined and reproducible.
-
----
+All temporal features must be explicit and reproducible.
 
 ## 13. Layered ESMs
 
-Multiple ESMs may operate at different levels of abstraction within a system.
+Multiple ESMs may operate hierarchically.
 
-Higher-level ESMs may provide initialized state to downstream ESMs through structured state transfer.
+Higher-level systems may initialize downstream state.
 
-After initialization, ESMs operate independently on their own observation streams.
-
-Interaction between ESMs occurs through:
-
-- state transfer
-- outcome-triggered coordination
-
-Continuous coupling between ESMs is not required.
-
----
+After initialization, systems operate independently.
 
 ## 14. Instrumented Deterministic Evolution (IDE)
 
-System behavior evolves through explicit artifact revision.
+System behavior evolves through versioned artifacts:
 
-Artifacts subject to versioning include:
+- signals
+- projection
+- relevance logic
+- policy
+- control updates
 
-- signal detectors
-- projection logic
-- gating functions
-- policy rules
-- control state update logic
-
-Each revision must be:
+All changes must be:
 
 - versioned
 - recorded
-- testable through replay
-
-Under this regime system evolution occurs intentionally rather than through implicit parameter drift.
-
----
+- replayable
 
 ## 15. Architectural Boundaries
 
-The ESM architecture enforces strict separation between interpretation and authority.
+Interpretation and authority remain strictly separated.
 
-Interpretation mechanisms may assist in describing system conditions but cannot directly authorize actions.
+Probabilistic systems may assist interpretation but cannot authorize outcomes.
 
-All actions must be:
+All outcomes must be:
 
 - explicitly defined
-- externally governed
 - deterministically selected
-
-This boundary allows systems to incorporate probabilistic or generative models while preserving deterministic governance of consequential decisions.
-
----
+- governed
 
 ## 16. Reference Implementation Structure
 
-A minimal ESM implementation contains the following components:
-
+```text
 signals/
-primitive detectors
-
 projection/
-state interpretation logic
-
-gating/
-relevance evaluation logic
-
+relevance/
 policy/
-decision rules
-
 control/
-state update logic
-
 instrumentation/
-interaction logging
+```
 
-Each component must be independently versioned.
-
----
+Each component is independently versioned.
 
 ## 17. Domain Adaptation
 
-The ESM architecture is domain-agnostic.
+To deploy ESM:
 
-To deploy an ESM system in a new domain, developers must define:
+- define signals
+- construct coherent state
+- define projection
+- define relevance logic
+- define policy
+- define actions
 
-- domain-specific signals
-- projection functions
-- gating logic
-- policy rules
-- action sets
-
-The architectural separation between measurement, interpretation, and authority remains invariant.
-
----
+Architecture remains invariant.
 
 ## 18. Summary
 
-The Emergent State Machine provides a deterministic architecture for systems that convert observations into outcomes while preserving transparency and governance.
+The Emergent State Machine provides a deterministic architecture for transforming observations into governed outcomes.
 
-By separating measurement, interpretation, relevance evaluation, and authority, the architecture enables:
+By separating:
+
+- measurement
+- interpretation
+- relevance determination
+- authority
+
+the system achieves:
 
 - inspectable reasoning
-- deterministic decision control
-- replayable system behavior
-- controlled system evolution
-
-This structure allows automated systems to remain understandable, auditable, and governable even as they grow in complexity.
+- deterministic control
+- replayable execution
+- governed evolution
