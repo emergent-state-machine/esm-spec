@@ -1,0 +1,49 @@
+% Figure: worked example of coherent state and projection
+% Requires in preamble:
+% \usepackage{tikz}
+% \usetikzlibrary{positioning,arrows.meta}
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[
+    >=Latex,
+    box/.style={
+        draw,
+        rounded corners=4pt,
+        align=left,
+        text width=0.34\textwidth,
+        inner sep=10pt,
+        minimum height=4.8cm
+    },
+    note/.style={align=center, font=\small}
+]
+
+\node[box] (state) {
+{\bfseries Coherent State Vector $x_t$}\\[4pt]
+{\itshape (respiratory example)}\\[10pt]
+oxygenation status: impaired\\[3pt]
+respiratory effort: high\\[3pt]
+airway status: obstructed\\[3pt]
+trend direction: deteriorating\\[3pt]
+patient stability: unstable\\[10pt]
+{\itshape Single coherent situational construct}
+};
+
+\node[box, right=2.8cm of state] (proj) {
+{\bfseries Projection into Policy Coordinates $y_t$}\\[10pt]
+hypoxemia severity: 0.82\\[3pt]
+breathing risk: 0.76\\[3pt]
+airway obstruction: 0.68\\[3pt]
+deterioration risk: 0.88\\[3pt]
+intervention urgency: 0.91\\[10pt]
+{\itshape Same situation expressed in decision-relevant space}
+};
+
+\draw[->, thick] (state.east) -- node[above, font=\normalsize] {Projection $P$} (proj.west);
+
+\node[note, below=5pt of $(state.east)!0.5!(proj.west)$] {\itshape No new \\semantic \\content \\introduced};
+
+\end{tikzpicture}
+\caption{Worked example of state construction and projection in a respiratory ESM. The coherent state vector $x_t$ represents a fully resolved situational construct. Projection maps that same situation into policy-relevant coordinates $y_t$ without introducing new semantic content, enabling downstream relevance evaluation and policy to operate on an explicitly defined decision space.}
+\label{fig:state-projection-example}
+\end{figure}

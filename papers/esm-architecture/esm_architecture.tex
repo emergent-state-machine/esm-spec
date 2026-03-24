@@ -78,7 +78,7 @@
 % Title
 % ----------------------------
 \title{Emergent State Machines:\\
-A Deterministic Control Framework \\ for Interpretable Situational Reasoning}
+An Architectural Framework \\for Deterministic, Interpretable Decision Systems}
 
 \author{
 Richard Hines\\
@@ -94,11 +94,11 @@ Richard Hines\\
 \begin{abstract}
 This paper presents the mathematical foundations of Emergent State Machines (ESMs), a deterministic control framework for interpretable situational reasoning in complex systems. The ESM formalism defines both individual machines and networks of interacting machines that exchange state, signals, or control across well-defined boundaries while preserving a common underlying structure independent of domain-specific logic.
 
-The central organizing unit of this framework is the \emph{turn}: a complete reasoning frame in which observations from the environment are transformed into signals, assembled into an interpretable state vector, projected into policy-relevant coordinates, evaluated for relevance, and, when warranted, mapped deterministically to an action or other outcome. Within each turn, raw observations are converted into direct and derived signals defined by domain experts. These signals form an explicit state vector representing the system's current situation. A projection mechanism then expresses that state in policy-relevant coordinates, enabling deterministic policy selection without collapsing reasoning into latent or opaque representations.
+The central organizing unit of this framework is the \emph{turn}: a complete reasoning frame in which observations from the environment are transformed into signals, assembled into a coherent state vector, expressed in policy-relevant coordinates without introducing new semantic content, evaluated for relevance, and, when warranted, mapped deterministically to an action or other outcome. Within each turn, raw observations are converted into direct and derived signals defined by domain experts. These signals form an explicit and fully interpreted state vector representing the system's current situation. Projection then re-expresses that state in policy-relevant coordinates, enabling deterministic policy selection without collapsing reasoning into latent or opaque representations.
 
-By structuring system behavior as sequences of turns, ESMs make reasoning processes inspectable, replayable, and auditable. Repeated turns generate trajectories through interpretable and policy-relevant state space over variable real-world time, allowing policies to guide the system toward desirable stable regions and away from undesirable ones.
+By structuring system behavior as sequences of turns, ESMs make reasoning processes inspectable, replayable, and auditable. Repeated turns generate trajectories through interpretable and policy-relevant state spaces over variable real-world time, allowing policies to guide the system toward desirable stable regions and away from undesirable ones.
 
-Unlike architectures that entangle probabilistic interpretation with consequential action, the ESM preserves a structural boundary between state representation and authoritative policy selection. Projection interprets; relevance gating determines whether a situation warrants decision; deterministic policy authorizes action. This separation supports traceability, failure localization, and controlled system evolution through versioned revision of signals, projections, gating logic, and policies. The resulting framework provides a mathematically structured approach to decision systems whose reasoning must remain visible, reproducible, and governable across domains including clinical monitoring, learning systems, and operational control.
+Unlike architectures that entangle probabilistic interpretation with consequential action, the ESM preserves a structural boundary between state representation and authoritative policy selection. Interpretation is completed during state construction; projection re-expresses the state in decision-relevant coordinates; relevance determination via gating evaluates whether a situation warrants action; and deterministic policy authorizes outcomes. This separation supports traceability, failure localization, and controlled system evolution through versioned revision of signals, projections, gating logic, and policies. The resulting framework provides a mathematically structured approach to decision systems whose reasoning must remain visible, reproducible, and governable across domains including clinical monitoring, learning systems, and operational control.
 
 The canonical specification is available at
 \href{https://github.com/emergent-state-machine/esm-spec}{\nolinkurl{github.com/emergent-state-machine/esm-spec}}.
@@ -107,7 +107,7 @@ The canonical specification is available at
 \paragraph{Contribution Statement.}
 This paper makes five principal contributions.
 1. It defines the turn as the atomic unit of reasoning in a decision system, providing a formal object for inspection, replay, and audit.
-2. It introduces a deterministic state-space formulation in which observations are transformed into signals, state vectors, projected representations, relevance states, and outcomes through an explicit reasoning chain.
+2. It introduces a deterministic state-space formulation in which observations are transformed into signals, coherent state vectors, projected representations, relevance determinations, and outcomes through an explicit reasoning chain.
 3. It formalizes decision processes as trajectories through interpretable and policy-relevant state spaces over variable real-world time.
 4. It establishes layered reasoning through explicit state initialization and handoff across interacting systems.
 5. It introduces Instrumented Deterministic Evolution (IDE), a regime in which system behavior evolves only through explicit, versioned modification of architectural components.
@@ -122,23 +122,37 @@ Many contemporary decision systems operate as opaque pipelines in which complex 
 
 The Emergent State Machine (ESM) framework addresses this limitation by structuring automated reasoning into discrete, inspectable units called \emph{turns}. Although this paper introduces Emergent State Machines as a class of architectures, analysis is often conducted at the level of a single machine. In practice, complex systems are composed of interacting ESMs that exchange state, signals, or control across well-defined boundaries, forming hierarchical structures in which higher-level behavior emerges from coordinated subsystems \cite{simon1962}. The formalism presented here therefore applies both to individual machines and to networks of interconnected ESMs.
 
-A turn is the fundamental reasoning frame of the system. During a turn, observations are collected from the environment, transformed into direct and derived signals, assembled into an interpretable state vector, projected into policy-relevant coordinates, evaluated through relevance gating, and, when warranted, mapped deterministically to an action or other outcome. The turn therefore serves as the minimal object required to inspect, replay, reproduce, and audit system reasoning.
+A turn is the fundamental reasoning frame of the system. During a turn, observations are collected from the environment, transformed into direct and derived signals, assembled into a coherent state vector, expressed in policy-relevant coordinates without introducing new semantic content, evaluated through relevance determination via gating, and, when warranted, mapped deterministically to an action or other outcome. The turn therefore serves as the minimal object required to inspect, replay, reproduce, and audit system reasoning.
 
-This framing is important for both theory and practice. Theoretically, it allows the ESM to be modeled as a dynamical system evolving through interpretable and policy-relevant state spaces, consistent with foundational work in control and decision theory \cite{kalman1960, bertsekas1995}. Practically, it gives system designers and domain experts a concrete artifact that can be logged, examined, and revised. Rather than treating reasoning as an invisible process inside a model, the ESM makes each reasoning step explicit. Each turn packages the information available to the system, the transformations applied to that information, the policy dimensions activated, the relevance conditions satisfied, and the outcome produced. A sequence of turns therefore provides both a trajectory through state space and a structured record of how the system's reasoning unfolded.
+\begin{figure}[t]
+\centering
+\[
+\begin{aligned}
+\textbf{Observations} &\;\longrightarrow\; \textbf{Signals} \;\longrightarrow\; \textbf{Coherent State Vector} \;\longrightarrow\; \textbf{Projection} \\
+&\qquad\;\longrightarrow\; \textbf{Relevance} \;\longrightarrow\; \textbf{Policy} \;\longrightarrow\; \textbf{Outcome}
+\end{aligned}
+\]
+\vspace{-0.5em}
+\caption{Canonical ESM reasoning pipeline.}
+\label{fig:esm-reasoning-pipeline}
+\end{figure}
 
-The architecture developed here differs from systems that entangle probabilistic interpretation with authoritative action selection. In the ESM, observations, signals, state representation, policy projection, relevance gating, and policy action remain structurally separated. Projection expresses what the current situation means in policy-relevant terms by evaluating the alignment of the state with defined decision patterns. Relevance gating determines whether the current situation warrants authoritative decision at all. Policy then governs which action, if any, is authorized. This separation preserves interpretability and makes system behavior traceable, aligning with calls for transparent and inspectable AI systems \cite{doshi2017}. The resulting reasoning chain can be inspected in both directions: from observations forward to outcome, and from outcome backward to the observations and rules that produced it. Because the architecture is deterministic at the authoritative layer, system behavior is replayable under fixed versions of its governing artifacts.
+
+This framing is important for both theory and practice. Theoretically, it allows the ESM to be modeled as a dynamical system evolving through interpretable and policy-relevant state spaces, consistent with foundational work in control and decision theory \cite{kalman1960, bertsekas1995}. Practically, it gives system designers and domain experts a concrete artifact that can be logged, examined, and revised. Rather than treating reasoning as an invisible process inside a model, the ESM makes each reasoning step explicit. Each turn packages the information available to the system, the transformations applied to that information, the resulting coherent state representation, the policy-relevant coordinates in which that state is expressed, the relevance conditions evaluated, and the outcome produced. A sequence of turns therefore provides both a trajectory through state space and a structured record of how the system's reasoning unfolded.
+
+The architecture developed here differs from systems that entangle probabilistic interpretation with authoritative action selection. In the ESM, observations, signals, state construction, projection, relevance determination, and policy action remain structurally separated. Interpretation is completed during state construction; projection introduces no new semantic content and re-expresses the fully constructed situational state in policy-relevant coordinates. Relevance determination via gating evaluates whether the current situation warrants authoritative decision at all. Policy then governs which action, if any, is authorized. This separation preserves interpretability and makes system behavior traceable, aligning with calls for transparent and inspectable AI systems \cite{doshi2017}. The resulting reasoning chain can be inspected in both directions: from observations forward to outcome, and from outcome backward to the observations and rules that produced it. Because the architecture is deterministic at the authoritative layer, system behavior is replayable under fixed versions of its governing artifacts.
 
 Time is explicit in this framework in two distinct senses. The sequence of turns provides a discrete, inspectable reasoning order, while real-world time between turns may vary depending on when observations arrive or when conditions warrant reevaluation. This distinction allows the ESM to represent persistence, abrupt change, and temporally decaying relevance without collapsing reasoning into a continuous opaque process. In this respect, the architecture reflects core principles of feedback systems and cybernetics, in which system behavior emerges through iterative interaction between state and environment \cite{wiener1948, astrom2010}.
 
-This paper presents the mathematical foundations of that architecture. It first defines the turn as the atomic unit of reasoning, then formalizes the transformation from observations to signals, state vectors, projected policy coordinates, relevance-gating states, and outcomes. These components may be summarized as follows:
+This paper presents the mathematical foundations of that architecture. It first defines the turn as the atomic unit of reasoning, then formalizes the transformation from observations to signals, coherent state vectors, projected policy coordinates, relevance determinations, and outcomes. These components may be summarized as follows:
 
 \begin{itemize}
 \item observations, representing measurements or events in the monitored environment
 \item signals, which are direct or derived quantities computed from observations
-\item state vectors, organizing signals into a structured representation of the current situation
-\item projection into policy space, evaluating the state relative to defined decision dimensions
-\item relevance gating, determining whether the current situation warrants policy evaluation
-\item policy selection and outcome determination, governing authoritative system response
+\item state vectors, organizing signals into a coherent representation of the current situation
+\item projection into policy space, expressing the state in decision-relevant coordinates
+\item relevance determination through gating, evaluating whether the current situation warrants policy action
+\item policy and authorized outcomes, governing authoritative system response
 \item state evolution, occurring as the system receives new observations over time
 \item temporal dynamics, including persistence, volatility, abrupt change, and decay of relevance
 \end{itemize}
@@ -148,16 +162,18 @@ By making each stage explicit and inspectable, the ESM provides a transparent al
 % ----------------------------
 % ESM as a Discrete-Time System
 % ------------------------------
+% ------------------------------
 \section{ESM as a Discrete-Time System}
 
-An Emergent State Machine may be understood as a discrete-time system evolving through successive updates to an explicitly constructed state. At each step, observations are transformed into structured signals, which are assembled into a state vector $x_t$, producing a sequence of states $\{x_t\}$ indexed by discrete steps in the system’s reasoning process.
+An Emergent State Machine may be understood as a discrete-time system evolving through successive updates to an explicitly constructed state. At each step, observations are transformed into structured signals, which are assembled into a coherent state vector $x_t$, producing a sequence of states $\{x_t\}$ indexed by discrete steps in the system’s reasoning process.
 
-Unlike classical formulations in which state is inferred from observations, the ESM defines its state explicitly through signal construction and structured representation. State evolution therefore depends not only on incoming observations, but also on the definitions of signals and the policy structure through which those signals are interpreted.
+The state vector $x_t$ is not a collection of independently updated variables or partial estimates. It is a committed situational construct in which all dimensions refer to a single, fully resolved interpretation of the system’s current condition. Temporal aggregation, derived features, and domain-specific signals may contribute to its construction, but by the time $x_t$ is formed, these elements have been integrated into a unified representation of the present situation.
+
+Unlike classical formulations in which state is inferred implicitly from observations, the ESM defines its state explicitly through signal construction and structured representation. State evolution therefore depends not only on incoming observations, but also on the definitions of signals and the transformation structure through which those signals are interpreted.
 
 From a control-theoretic perspective, the ESM is a dynamical system whose state transitions are governed by a structured update process. In contrast to classical system identification approaches, which infer system structure from observed behavior \cite{ljung1999}, the ESM makes both the state representation and the transformation structure explicit and inspectable.
 
 This formulation raises a natural question: what constitutes a single step in the system’s evolution? To answer this, we introduce the concept of a turn as the fundamental unit of reasoning within the ESM.
-
 
 % ----------------------------
 % The Turn as the Fundamental Unit of Reasoning
@@ -183,9 +199,9 @@ where
 \item $o_t$ denotes the observations available at time $t$,
 \item $S_t$ denotes the set of direct and derived signals computed from those observations,
 \item $x_t$ denotes the interpretable state vector constructed from those signals,
-\item $y_t$ denotes the representation of the state in policy-relevant coordinates,
+\item $y_t$ denotes the projected representation of the state in policy-relevant coordinates,
 \item $g_t$ denotes the relevance-gating state,
-\item $r_t$ denotes the turn outcome.
+\item $r_t$ denotes the structured turn outcome (which may include an authorized action $a_t$)
 \end{itemize}
 
 When an action is authorized, the action itself is denoted separately by $a_t$ and is one possible component of the turn outcome.
@@ -196,7 +212,7 @@ This formulation makes explicit that a turn is not merely a timestamped input or
 \begin{figure}[H]
 \centering
 \input{../../figures/esm-core-loop.tex}
-\caption{Core reasoning loop of an Emergent State Machine. Each turn transforms observations into signals, constructs a state vector, projects the state into policy coordinates, evaluates relevance, and, when warranted, selects an action or other outcome.}
+\caption{Core reasoning loop of an Emergent State Machine. Each turn transforms observations into signals, constructs a state vector, projects the state into policy coordinates, evaluates relevance, and, when warranted, selects an authorized outcome (action, no-op, escalation, handoff, or clarification).}
 \label{fig:esm-core-loop}
 \end{figure}
 \pagebreak
@@ -224,10 +240,10 @@ This implies that the unit of generalization in the Emergent State Machine is no
 In this sense, the Emergent State Machine is a reusable control architecture in which domains are instantiated through signal and projection design rather than through modification of the core reasoning process.
 
 % ----------------------------
-% Observations and Signals
+% From Observations to Signals
 % ----------------------------
 
-\section{Observations and Signals}
+\section{From Observations to Signals}
 
 Each turn of an Emergent State Machine begins with observations obtained from the environment being monitored. Observations represent measurements, events, or reported information describing the system at time $t$.
 
@@ -300,10 +316,10 @@ Signal design therefore constitutes a separation of concerns at the level of rep
 Because signals are explicitly defined and versioned, they remain interpretable and auditable across system revisions. At the same time, the selection and use of signals introduces potential feedback effects. As observed in studies of measurement and evaluation, the use of specific metrics to guide decision-making can alter the behavior of the system being measured, potentially degrading their validity over time \cite{campbell1979}. By making signal definitions explicit and revisable, the ESM provides a framework in which such effects can be examined and managed rather than remaining implicit.
 
 % ----------------------------
-% State Vector Construction
+% Constructing a Coherent State Vector
 % ----------------------------
 
-\section{State Vector Construction}
+\section{Constructing a Coherent State Vector}
 
 Signals derived during a turn are organized into a structured mathematical representation of the system's current condition called the state vector. Representing system behavior through explicit state vectors is standard practice in control and system identification theory \cite{ljung1999}.
 
@@ -327,17 +343,19 @@ s_n
 \end{bmatrix}.
 \end{equation}
 
-Each component of the vector corresponds to a signal computed from the observations available during the current turn.
+The state vector $x_t$ is a coherent situational construct: all components refer to the same moment and are interpreted together as a single, fully resolved description of the system’s current condition. It is not a collection of independently updated variables or partial estimates. Interpretation is therefore completed at the stage of state construction, prior to any projection or policy evaluation.
 
-The structure of the state vector is therefore not an intrinsic property of the monitored system, but a constructed representation determined by the selection and definition of signals. In this sense, the state vector reflects a design choice about how the system encodes and organizes information about its environment, rather than a directly observed property of the system itself.
+Each component of the vector corresponds to a signal whose meaning has been fully resolved at the time of construction.
+
+The structure of the state vector is not an intrinsic property of the monitored system, but a constructed representation determined by the selection and definition of signals. In this sense, the state vector reflects a design choice about how the system encodes and organizes information about its environment, rather than a directly observed property of the system itself.
 
 Unlike latent representations commonly used in many machine learning systems, the ESM state vector is explicit and interpretable. Each element corresponds to a signal whose definition, range, and computation are known. This design ensures that the system's representation of the current situation can be inspected, verified, and revised by domain experts. In this respect, the ESM aligns with traditions in symbolic and structured representations of cognition, in which system state is represented explicitly rather than implicitly encoded within learned parameters \cite{newell1976physical}.
 
-The state vector therefore functions as the system's formal description of the situation being monitored at turn $t$. It captures the relevant measurable and derived properties of the system in a structured mathematical form suitable for projection and policy evaluation. The resulting representation reflects a deliberate design choice about how observations are encoded for computation and interpretation \cite{marr1982}.
+The state vector therefore functions as the system's committed description of the situation at turn $t$. It captures the relevant measurable and derived properties of the system in a unified representation, allowing downstream components to operate on a fully interpreted state rather than reconstructing meaning from partial or distributed information. The resulting representation reflects a deliberate design choice about how observations are encoded for computation and interpretation \cite{marr1982}.
 
 The state vector may include both instantaneous signals and temporally derived signals, provided that all components remain explicitly defined and reproducible. In layered deployments, the state vector may also incorporate initialized contextual information inherited from prior turns or from upstream system components, so long as that inherited structure remains inspectable.
 
-Because the state vector is constructed deterministically from signals, identical observations and initialized conditions will always produce identical state vectors under fixed signal definitions. This property supports replayability and traceability of system reasoning.
+Because the state vector is constructed deterministically from explicitly defined signals, identical observations and initialized conditions will always produce identical state vectors under fixed signal definitions. This property supports replayability and traceability of system reasoning.
 
 Across successive turns, the state vector evolves as new observations arrive and new signals are computed. The resulting sequence
 
@@ -345,12 +363,12 @@ Across successive turns, the state vector evolves as new observations arrive and
 x_1, x_2, x_3, \dots
 \end{equation}
 
-forms a trajectory through the system's state space, representing the evolution of the monitored situation over time.
+forms a trajectory through the system's state space, representing the evolution of a consistently interpreted situation over time.
 
 % ----------------------------
-% Relevance Gating
+% Relevance Determination
 % ----------------------------
-\section{Relevance Gating}
+\section{Relevance Determination via Gating}
 
 Not every turn warrants authoritative decision. The Emergent State Machine therefore employs \emph{relevance gating} to determine whether the current projected situation requires policy evaluation.
 
@@ -370,25 +388,28 @@ g_t \in \{0,1\}.
 
 If $g_t = 1$, the situation is treated as decision-relevant and policy evaluation proceeds. If $g_t = 0$, the system does not invoke policy and the turn outcome is a no-op.
 
-Relevance gating serves three primary purposes.
+Relevance determination via gating serves three primary purposes.
 
 First, it prevents the system from treating every turn as equally consequential. The ESM evaluates every turn, but it does not authorize policy evaluation on every turn. This distinction preserves a separation between continuous observation and conditional intervention, consistent with event-triggered control formulations in which control action is invoked only when relevance conditions are satisfied \cite{tabuada2007}. In practical decision environments, this reflects the observation that expert practitioners do not evaluate all possible states continuously, but instead recognize situations that warrant attention and action \cite{klein1998}.
 
 Second, relevance gating restricts authoritative decision to situations that satisfy explicit structural conditions. These conditions may include threshold crossings, persistence requirements, transitions into or out of desirable regions, abrupt change, elevated volatility, or other deterministic criteria defined by system designers and domain experts. In this sense, relevance gating functions as a supervisory layer over decision activation, analogous to supervisory control of discrete event processes \cite{ramadge1987}.
 
-Third, relevance gating supports modular reasoning architectures. Different policy regimes or escalation pathways may become available under different gating conditions, but the activation of those regimes remains governed by explicit, inspectable functions of projected state.
+Third, relevance determination supports modular reasoning architectures. Different policy regimes or escalation pathways may become available under different gating conditions, but the activation of those regimes remains governed by explicit, inspectable functions of projected state.
 
 Because relevance gates are explicitly defined, the conditions under which policy becomes active remain inspectable and auditable. When a particular turn becomes decision-relevant, the gating condition responsible for that activation can be traced directly to the signals and projected dimensions that produced it.
+
+\input{../../figures/esm-projection-example.tex}
 
 % ----------------------------
 % Projection into Policy Space
 % ----------------------------
 
 \section{Projection into Policy Space}
+\textit{(Expression of State in Decision-Relevant Coordinates)}
 
-The state vector describes the current situation of the monitored system in terms of measurable signals. However, policy decisions are typically defined in terms of higher-level situational dimensions rather than individual signals. The Emergent State Machine therefore transforms the state vector into a representation expressed in policy-relevant coordinates.
+The state vector $x_t$ provides a coherent situational construct: a fully resolved representation of the system’s current condition expressed in explicitly defined signals. However, policy does not operate directly on this representation. Policy decisions are formulated in terms of higher-level dimensions that define what matters for action. The Emergent State Machine therefore expresses the state vector in policy-relevant coordinates.
 
-This transformation is called \emph{projection into policy space}.
+This operation is called \emph{projection into policy space}. Projection introduces no new semantic content. Interpretation is completed during state construction; projection re-expresses that already interpreted state in the coordinates required for decision-making.
 
 Let $P$ denote the policy projection operator. The projection of the state vector is
 
@@ -399,41 +420,47 @@ y_t = P x_t
 where
 
 \begin{itemize}
-\item $x_t$ is the state vector constructed from signals,
+\item $x_t$ is the coherent state vector constructed from signals,
 \item $P$ is the policy projection operator,
 \item $y_t$ is the representation of the state in policy-relevant coordinates.
 \end{itemize}
 
+
 Projection is a required step of the architecture. Policy does not operate directly on raw observations or on unprojected state vectors. Instead, policy operates on a representation of state that has already been expressed in decision-relevant coordinates.
 
-From a conceptual perspective, projection formalizes the role of interpretation within the reasoning process. The transformation from state to policy-relevant coordinates is not merely a change of basis, but an explicit encoding of how the system understands the current situation in terms of decision-relevant meaning. Across philosophical and cognitive traditions, interpretation has been treated as a primary component of understanding rather than a secondary transformation applied after perception. In this sense, projection can be understood as the structured expression of situational meaning, aligning with accounts of interpretation as constitutive of experience \cite{heidegger1962}, historically conditioned and evolving \cite{gadamer1975}, and organized through meaningful cognitive framing \cite{bruner1990}. In practical reasoning, this corresponds to Aristotle’s notion of \emph{phronesis}, in which judgment depends on the interpretation of the particular situation rather than the application of universal rules \cite{aristotle2009}. More broadly, interpretive structure may reflect symbolic patterning in how situations are understood and categorized \cite{jung1968}. The ESM makes this interpretive layer explicit and inspectable rather than leaving it implicit within model structure.
+Projection in the ESM is not merely a mathematical transformation of the state vector. It defines the coordinates in which decision-making occurs, separating the interpretation of state from the policy that acts on it. Crucially, projection introduces no new semantic content. By the time projection occurs, interpretation has already been completed in the construction of the state vector. Projection therefore re-expresses an already constructed situational state in decision-relevant coordinates rather than computing a new interpretation of what is happening.
 
-Classical system identification provides a natural point of comparison for this formulation. In Ljung’s treatment, system behavior is modeled through explicit state-space or input–output structures—including nonlinear state-space formulations \cite[Ch.~5.3]{ljung1999}—whose parameters are estimated from data via an iterative procedure involving data collection, model structure selection, parameter estimation, and validation \cite[Ch.~1.3]{ljung1999}. In this framework, the state is typically a latent or parameterized construct whose primary role is to support prediction, simulation, or control design, often through predictor-based estimation methods such as prediction-error minimization \cite{ljung1999}. Even in its most general form, this approach remains centered on estimating latent system representations from data.
+This distinction is essential. In many systems, decision logic operates directly on raw signals or partially processed state, requiring policy to implicitly interpret those inputs. In the ESM, interpretation is completed prior to policy evaluation. The projection operator transforms the state vector into a representation expressed entirely in decision-relevant dimensions, allowing policy to operate on a fully resolved situational description. As a result, projection serves as the boundary between observation and action. It determines which aspects of the state are relevant for decision-making and how those aspects are expressed, while policy remains responsible only for selecting actions based on those explicitly defined conditions.
 
-By contrast, the ESM constructs state deterministically from explicit signals and separates that construction from both interpretation (projection) and action (policy), preserving inspectability and governance. The Emergent State Machine adopts the state-space intuition that system behavior can be analyzed as trajectories through a structured representation \cite[Ch.~4.3]{ljung1999}, but departs from identification-as-estimation in several key respects. Rather than estimating a latent state or model parameters, the ESM constructs its state vector deterministically from explicit, versioned signals. Projection then expresses this state in policy-relevant coordinates, separating interpretation from both observation and action. This yields a representation that is not optimized for prediction accuracy alone, but for interpretability, replayability, and governance of downstream decisions.
+From a conceptual perspective, projection formalizes the role of interpretation within the reasoning process while keeping that interpretive structure explicit and inspectable. Across philosophical and cognitive traditions, interpretation has been treated as a primary component of understanding rather than a secondary transformation applied after perception. In this sense, projection can be understood as the structured expression of situational meaning, aligning with accounts of interpretation as constitutive of experience \cite{heidegger1962}, historically conditioned and evolving \cite{gadamer1975}, and organized through meaningful cognitive framing \cite{bruner1990}. In practical reasoning, this corresponds to Aristotle’s notion of \emph{phronesis}, in which judgment depends on the interpretation of the particular situation rather than the application of universal rules \cite{aristotle2009}. More broadly, interpretive structure may reflect symbolic patterning in how situations are understood and categorized \cite{jung1968}. The ESM makes this interpretive layer explicit and inspectable rather than leaving it implicit within model structure.
 
-In this sense, the role of state shifts from a latent variable supporting model estimation to an explicit situational construct supporting decision accountability. The projection operator does not collapse uncertainty into a single estimated model; instead, it organizes available signals into interpretable dimensions—potentially including confidence or ambiguity—that remain visible to relevance gating and policy. This structural separation enables the system to evolve its interpretive components through controlled revision without implicitly altering the authoritative decision mechanism.
+Classical system identification provides a natural point of comparison for this formulation. In Ljung’s treatment, system behavior is modeled through explicit state-space or input--output structures---including nonlinear state-space formulations \cite[Ch.~5.3]{ljung1999}---whose parameters are estimated from data via an iterative procedure involving data collection, model structure selection, parameter estimation, and validation \cite[Ch.~1.3]{ljung1999}. In this framework, the state is typically a latent or parameterized construct whose primary role is to support prediction, simulation, or control design, often through predictor-based estimation methods such as prediction-error minimization \cite{ljung1999}. Even in its most general form, this approach remains centered on estimating latent system representations from data.
 
-Each component of $y_t$ corresponds to the activation level of a policy-relevant dimension. These dimensions are defined by system designers or domain experts and represent structural properties of the situation being monitored.
+By contrast, the ESM constructs state deterministically from explicit signals and separates that construction from both projection and policy, preserving inspectability and governance. The Emergent State Machine adopts the state-space intuition that system behavior can be analyzed as trajectories through a structured representation \cite[Ch.~4.3]{ljung1999}, but departs from identification-as-estimation in several key respects. Rather than estimating a latent state or model parameters, the ESM constructs its state vector deterministically from explicit, versioned signals. Projection then expresses this already interpreted state in policy-relevant coordinates, separating situational description from action selection. This yields a representation that is not optimized for prediction accuracy alone, but for interpretability, replayability, and governance of downstream decisions.
 
-While the core formalism does not require any particular structure within $y_t$, practical deployments often include additional interpretive components that are not directly observable in the raw signal set. In particular, many systems represent confidence or uncertainty as an explicit dimension of projected state. This allows the system to distinguish between situations that appear similar at the level of signals but differ in the reliability of their interpretation.
+In this sense, the role of state shifts from a latent variable supporting model estimation to an explicit situational construct supporting decision accountability. Projection does not collapse uncertainty into a single estimated model; instead, it organizes available meaning into coordinates that are directly usable for policy evaluation. This structural separation enables the system to evolve its decision framing through controlled revision without implicitly altering the underlying interpretation of the situation or the authoritative decision mechanism.
+
+Each component of $y_t$ corresponds to a policy-relevant dimension. These dimensions are defined by system designers or domain experts and represent structural properties of the situation being monitored as they matter for decision.
+
+While the core formalism does not require any particular structure within $y_t$, practical deployments often include additional dimensions that are not directly observable in the raw signal set. In particular, many systems represent confidence or uncertainty as an explicit coordinate of projected state. This allows the system to distinguish between situations that appear similar at the level of the coherent state vector but differ in the reliability with which that situation should be acted upon.
 
 Such representations are optional and domain-dependent. Confidence may be computed deterministically from signal properties, derived from temporal stability, or estimated through auxiliary models, provided that its definition remains explicit and reproducible. When included, confidence becomes part of the projected state rather than an implicit property of the underlying signals, enabling relevance gating and policy to condition decisions on both the interpreted situation and the reliability of that interpretation.
 
 For example, in a clinical monitoring system, projection dimensions might include degrees of respiratory instability, circulatory compromise, persistence of improvement, or confidence in current interpretation. In an educational system, projection dimensions might represent claim strength, evidence relevance, reasoning coherence, recent volatility, or confidence in a current assessment.
 
-Projection therefore does not predict the future. Instead, it illuminates the current situation by expressing the measured state in coordinates relevant to relevance gating and policy evaluation. Representing system behavior through transformations of state vectors into decision-relevant coordinates is consistent with state-space approaches in control and estimation theory \cite{kalman1960,ljung1999}.
+Projection therefore does not predict the future. Instead, it expresses an already interpreted situation in the coordinates relevant to relevance determination and policy evaluation. Representing system behavior through transformations of state vectors into decision-relevant coordinates is consistent with state-space approaches in control and estimation theory \cite{kalman1960,ljung1999}.
 
 In simple systems, projection may be close to an identity transformation. In more complex systems, projection may involve richer deterministic transforms or reproducible model-assisted mappings. In either case, projection remains structurally distinct from policy and does not itself authorize action.
 
-Because projection is defined as an explicit transformation of the state vector, its behavior remains inspectable and reproducible. Changes to the projection operator correspond to explicit revisions of the system's interpretive structure rather than hidden modifications to latent representations.
+Because projection is defined as an explicit transformation of the state vector, its behavior remains inspectable and reproducible. Changes to the projection operator correspond to explicit revisions of the decision-coordinate system through which the state is evaluated, rather than hidden modifications to latent representations or silent changes in situational interpretation.
 
 % ----------------------------
-% Policy Selection and Turn Outcomes
+% Policy and Authorized Outcomes
 % ----------------------------
-\section{Policy Selection and Turn Outcomes}
 
-Once the system's current state has been expressed in policy-relevant coordinates and relevance gating has been evaluated, the Emergent State Machine determines a turn outcome.
+\section{Policy and Authorized Outcomes}
+
+Once the system's current state has been expressed in policy-relevant coordinates and relevance has been determined, the Emergent State Machine produces a turn outcome.
 
 If the current turn is not decision-relevant, then
 
@@ -473,17 +500,17 @@ When an action is present, the action itself is determined through
 a_t \leftarrow \pi(y_t).
 \end{equation}
 
-These chains allow any turn outcome to be traced backward through relevance gating, projection, state vector construction, signals, and observations.
+These chains allow any turn outcome to be traced backward through relevance determination, projection, coherent state construction, signals, and observations.
 
-In the Emergent State Machine architecture, policy represents the decision mechanism of the system, governing action selection based on explicit evaluation of the current state. While projection interprets the state of the monitored system and gating determines whether the situation warrants policy evaluation, only policy determines which action may be taken in response.
+In the Emergent State Machine architecture, policy represents the decision mechanism of the system, governing outcome selection through explicit evaluation of the current state. The system first constructs a coherent state representing a fully interpreted situation. That state is then re-expressed in policy-relevant coordinates through projection, and relevance determination evaluates whether the situation warrants policy evaluation. Only policy determines which outcome, if any, is authorized in response.
 
-Across successive turns, policy selection induces a sequence of actions that defines a trajectory through the system’s state space. The ESM therefore operates as a sequential decision process in which each action influences subsequent states and future decisions.
+Across successive turns, policy selection induces a sequence of outcomes that defines a trajectory through the system’s state space. The ESM therefore operates as a sequential decision process in which each outcome influences subsequent states and future decisions.
 
-Within this process, the state vector serves as an explicit representation of the system’s situational awareness, structuring relevant elements of the environment to support interpretation and action. This aligns with models of situation awareness that emphasize the perception of elements, their integration into a coherent representation, and the projection of future states \cite{endsley1995}.
+Within this process, the state vector serves as a coherent and fully resolved representation of the system’s situational awareness, structuring relevant elements of the environment into a unified, interpretable form. This aligns with models of situation awareness that emphasize the perception of elements, their integration into a coherent representation, and the projection of future states \cite{endsley1995}.
 
-However, unlike frameworks that treat sequential decision-making as a global optimization problem over trajectories, the ESM evaluates each step locally through explicit state construction and policy projection. Classical formulations instead seek to optimize cumulative reward over time \cite{bellman1957}.
+However, unlike frameworks that treat sequential decision-making as a global optimization problem over trajectories, the ESM evaluates each step locally through explicit state construction and semantic-preserving projection. Classical formulations instead seek to optimize cumulative reward over time \cite{bellman1957}.
 
-In contrast, the ESM determines actions through interpretable alignment between the current state and policy-defined patterns. System behavior emerges from locally governed transitions rather than from optimization over extended horizons. This perspective is consistent with observations from naturalistic decision-making, in which expert practitioners act by recognizing and responding to structured patterns in the current situation rather than computing optimal policies over long-term futures \cite{klein1998}.
+In contrast, the ESM determines outcomes through deterministic evaluation of the projected state under explicit policy rules. System behavior emerges from locally governed transitions rather than from optimization over extended horizons. This perspective is consistent with observations from naturalistic decision-making, in which expert practitioners act by recognizing and responding to structured patterns in the current situation rather than computing optimal policies over long-term futures \cite{klein1998}.
 
 % ----------------------------
 % State Evolution and Trajectories
@@ -491,7 +518,7 @@ In contrast, the ESM determines actions through interpretable alignment between 
 
 \section{State Evolution and Trajectories}
 
-As new observations arrive, the Emergent State Machine constructs new turns and updates its representation of the monitored situation. Each turn therefore produces a new state vector derived from the latest observations and any retained contextual structure.
+As new observations arrive, the Emergent State Machine constructs new turns and produces a new representation of the monitored situation. Each turn yields a coherent state vector derived from current observations and explicitly defined contextual structure.
 
 Let $o_{t+1}$ denote the observations available during the next turn. The system update can be written as
 
@@ -499,7 +526,7 @@ Let $o_{t+1}$ denote the observations available during the next turn. The system
 x_{t+1} = \Phi(x_t, o_{t+1})
 \end{equation}
 
-where $\Phi$ represents the deterministic transformation that incorporates new observations into the evolving state representation.
+where $\Phi$ represents the deterministic construction of a new coherent state from current observations and any retained, explicitly defined context. Each $x_t$ is a fully interpreted representation of the situation at that turn.
 
 Successive state vectors form a trajectory through state space, a standard representation used in dynamical systems and control theory \cite{astrom2010,bertsekas1995}:
 
@@ -513,7 +540,7 @@ Projection produces a corresponding trajectory through policy-relevant coordinat
 y_1, y_2, y_3, \dots
 \end{equation}
 
-This trajectory represents the temporal evolution of the monitored situation as it becomes relevant to decision.
+This projected trajectory re-expresses the evolution of the situation in decision-relevant coordinates without introducing new semantic content.
 
 The sequence of turns
 
@@ -521,7 +548,7 @@ The sequence of turns
 T_1 \rightarrow T_2 \rightarrow T_3 \rightarrow \dots
 \end{equation}
 
-therefore corresponds to a trajectory through the system's interpretable and projected state spaces. This sequential structure reflects process-oriented accounts of system behavior in which meaning emerges through ordered sequences of states rather than through isolated observations \cite{abbott2001}.
+therefore corresponds to a trajectory through the system's coherent and projected state spaces. This sequential structure reflects process-oriented accounts of system behavior in which meaning is established at each step through explicit state construction rather than emerging implicitly from unstructured observations \cite{abbott2001}.
 
 \begin{figure}[H]
 \centering
@@ -530,13 +557,13 @@ therefore corresponds to a trajectory through the system's interpretable and pro
 \label{fig:esm-attractor}
 \end{figure}
 
-Temporal relationships between observations may be incorporated into derived signals and projected dimensions. Such quantities may represent persistence, trends, rates of change, abrupt shifts, volatility over recent turns, or related measures of temporal structure. These temporal features allow the system to detect patterns that emerge over time rather than relying solely on instantaneous measurements.
+Temporal relationships between observations may be incorporated into derived signals and projected dimensions. Such quantities may represent persistence, trends, rates of change, abrupt shifts, volatility over recent turns, or related measures of temporal structure. These temporal features allow the system to detect patterns that emerge over time while remaining grounded in explicitly defined, reproducible signals.
 
 Real-world time between turns may vary. Some turns may occur seconds apart, while others may be separated by minutes or longer intervals depending on the observation process and deployment context. The ESM therefore combines discrete reasoning order with variable elapsed time in the world being monitored. This distinction reflects the difference between discrete computational steps and the lived continuity of temporal processes, a distinction emphasized in philosophical treatments of time as duration rather than as a sequence of uniform intervals \cite{bergson1910}.
 
 Because temporal relevance is not uniform, the influence of some signals or derived conditions may decay over time. A disturbance, anomaly, or diagnostic concern may be highly relevant when recent but substantially less relevant after a sustained period of stability. The architecture therefore permits explicitly defined temporally decaying influence for signals or inferred conditions whose diagnostic relevance diminishes over time.
 
-Trajectories through projected state space may converge toward desirable regions, persist within them, oscillate near their boundaries, or diverge away from them. Policy operates on this evolving representation to guide the system toward desirable conditions and away from undesirable ones. The evolution of the system through state space is constrained not only by policy but also by the structure of possible transitions available at each step. This reflects both the concept of the adjacent possible, in which system evolution proceeds through locally reachable configurations rather than arbitrary global transitions \cite{kauffman2000}, and the role of path dependence in complex systems, where historical trajectories shape the set of future possibilities \cite{arthur2009}.
+Trajectories through projected state space may converge toward desirable regions, persist within them, oscillate near their boundaries, or diverge away from them. Policy evaluates the projected state at each turn to determine authorized outcomes, guiding the system toward desirable conditions and away from undesirable ones. The evolution of the system through state space is constrained both by policy and by the structure of locally available transitions. This reflects the concept of the adjacent possible, in which system evolution proceeds through locally reachable configurations rather than arbitrary global transitions \cite{kauffman2000}, as well as the role of path dependence in complex systems, where historical trajectories shape future possibilities \cite{arthur2009}.
 
 % ----------------------------
 % Layered ESMs
@@ -576,10 +603,9 @@ Layered ESMs therefore allow shared situational context and specialized local re
 % ----------------------------
 % Desirable Regions and Stable States
 % ----------------------------
-
 \section{Desirable Regions and Stable States}
 
-Not all regions of projected state space correspond to acceptable or stable system conditions. Certain projected configurations represent preferred operational states, while others indicate instability or risk. The Emergent State Machine therefore distinguishes between desirable and undesirable regions of projected state space.
+Not all regions of projected state space correspond to acceptable or stable system conditions. Certain projected configurations correspond to preferred operational states, while others indicate instability or risk. The Emergent State Machine therefore distinguishes between desirable and undesirable regions of projected state space.
 
 Let $\mathcal{Y}$ denote the space of all possible projected state representations. Within this space, domain experts define a subset
 
@@ -587,9 +613,9 @@ Let $\mathcal{Y}$ denote the space of all possible projected state representatio
 \mathcal{Y}_D \subset \mathcal{Y}
 \end{equation}
 
-representing desirable or stable projected system conditions.
+representing desirable or stable system conditions expressed in policy-relevant coordinates. These regions correspond to conditions already defined in the coherent state and re-expressed through projection for decision-making purposes.
 
-For example, in a clinical monitoring system, the desirable region may correspond not merely to isolated physiological values but to projected conditions indicating sustained respiratory stability, acceptable uncertainty, and low recent volatility. In an educational system, desirable regions may correspond to projected combinations of reasoning coherence, evidence alignment, and sufficiently stable performance over recent turns.
+For example, in a clinical monitoring system, the desirable region may correspond not merely to isolated physiological values but to coherent conditions indicating sustained respiratory stability, acceptable uncertainty, and low recent volatility. In an educational system, desirable regions may correspond to combinations of reasoning coherence, evidence alignment, and sufficiently stable performance over recent turns.
 
 As the system evolves through successive turns, the sequence of projected states
 
@@ -601,11 +627,11 @@ forms a trajectory through projected state space. This trajectory may move towar
 
 Operationally, desirable region membership is often temporal rather than instantaneous. A system may enter a desirable region briefly without yet being stable in any meaningful sense. Conversely, sustained residence within a desirable region over sufficient real-world time may justify stronger claims of stability, recovery, or readiness for transition. Stability is therefore a property of trajectories over time rather than of isolated points in state space.
 
-A useful interpretation of attractor-like behavior in the ESM is therefore temporal and policy-relative. Desirable regions may function as stable attractors when trajectories tend to enter them, remain within them, and return to them after small perturbations under the combined influence of world dynamics and policy-guided intervention, consistent with dynamical systems treatments of stability and attractors \cite{strogatz2015}.
+A useful interpretation of attractor-like behavior in the ESM is therefore temporal and policy-relative. Desirable regions may function as stable attractors when trajectories tend to enter them, remain within them, and return to them after small perturbations under the combined influence of world dynamics and policy-mediated intervention, consistent with dynamical systems treatments of stability and attractors \cite{strogatz2015}.
 
 The evolution of trajectories through projected state space is further shaped by path dependence, in which prior states influence the set of reachable future configurations and the likelihood of remaining within desirable regions \cite{arthur2009}.
 
-The ESM therefore defines a control structure in which policy does not merely respond to isolated signals but instead shapes trajectories through projected state space over time.
+The ESM therefore defines a control structure in which policy evaluates projected state at each turn and selects outcomes that influence the trajectory over time, guiding the system toward desirable regions and away from undesirable conditions.
 
 % ----------------------------
 % Determinism, Transparency, and Auditability
@@ -618,30 +644,30 @@ A central design principle of the Emergent State Machine architecture is that it
 The transformation chain within each turn can be expressed as
 
 \begin{equation}
-o_t \rightarrow S_t \rightarrow x_t \rightarrow y_t \rightarrow g_t \rightarrow r_t
+o_t \rightarrow S_t \rightarrow x_t \rightarrow y_t \rightarrow g_t \rightarrow a_t
 \end{equation}
 
-with policy evaluation contributing to the outcome whenever relevance gating activates authoritative decision.
+where $x_t$ represents a coherent, fully interpreted state, $y_t$ is its projection into policy-relevant coordinates, and $g_t$ determines whether policy evaluation is authorized. Policy is invoked only when relevance determination permits evaluation, and it alone determines the resulting outcome.
 
-Because each stage of this transformation is explicitly defined, system outcomes can be traced through the complete reasoning pathway. This explicit ordering of transformations aligns with established principles in distributed systems, where well-defined event ordering enables reasoning about system behavior \cite{lamport1978}. Any selected action can therefore be analyzed by examining the observations, signals, state vectors, projected dimensions, and gate conditions that produced the corresponding outcome.
+Because each stage of this transformation is explicitly defined, system outcomes can be traced through the complete reasoning pathway. This explicit ordering of transformations aligns with established principles in distributed systems, where well-defined event ordering enables reasoning about system behavior \cite{lamport1978}. Any selected outcome can therefore be analyzed by examining the observations, signals, coherent state, projected state, and relevance conditions that produced it.
 
 This deterministic structure provides several important properties.
 
 \subsection{Replayability}
 
-Given recorded observations and fixed definitions of signals, projection, relevance gating, and policy, the system will reproduce the same turn outcome for a given turn. Interaction traces can therefore be replayed to reproduce previous system behavior. This property is consistent with state-machine approaches to system design, in which correctness is achieved through deterministic execution over well-defined state transitions \cite{schneider1990}.
+Given recorded observations and fixed definitions of signals, state construction, projection, relevance determination, and policy, the system will reproduce the same turn outcome for a given turn. Projection preserves semantic content, ensuring that replay reconstructs both the interpreted state and its decision-relevant representation without ambiguity. Interaction traces can therefore be replayed to reproduce previous system behavior. This property is consistent with state-machine approaches to system design, in which correctness is achieved through deterministic execution over well-defined state transitions \cite{schneider1990}.
 
-Replayability enables retrospective analysis of system outcomes and allows designers to evaluate alternative projections, gating rules, or policies using historical interaction data.
+Replayability enables retrospective analysis of system outcomes and allows designers to evaluate alternative projections, relevance rules, or policies using historical interaction data.
 
 \subsection{Failure Localization}
 
-When undesirable outcomes occur, the source of the problem can be localized within the reasoning chain. Errors may originate from signal definitions, projection rules, relevance gates, temporal aggregation logic, or policy logic, but each stage remains independently inspectable.
+When undesirable outcomes occur, the source of the problem can be localized within the reasoning chain. Errors may originate from signal definitions, state construction, projection rules, relevance determination logic, temporal aggregation, or policy logic, but each stage remains independently inspectable.
 
 Because each component of the architecture is explicit, debugging and system refinement can proceed through targeted revisions rather than opaque model retraining.
 
 \subsection{Auditability}
 
-The reasoning chain also supports formal auditing. For any turn outcome produced by the system, the full sequence of transformations from observation to projected state, relevance evaluation, and policy decision can be reconstructed.
+The reasoning chain also supports formal auditing. For any outcome produced by the system, the full sequence of transformations—from observation through signal extraction, coherent state construction, projection, relevance evaluation, and policy decision—can be reconstructed.
 
 This transparency is particularly important in domains where automated reasoning influences consequential outcomes, such as healthcare, education, or industrial operations. It aligns with broader calls for interpretable and inspectable decision systems in artificial intelligence \cite{doshi2017}.
 
@@ -650,18 +676,19 @@ Deterministic reasoning therefore provides a structural basis for system account
 % ----------------------------
 % Interpretability and Human Oversight
 % ----------------------------
-
 \section{Interpretability and Human Oversight}
 
-Traditional computational systems often produce outputs without exposing the intermediate reasoning processes that led to those outcomes. As a result, interpretability is frequently treated as a post-hoc activity in which explanations are reconstructed after decisions have been made. In contrast, the Emergent State Machine produces explicit reasoning artifacts at every turn. Rather than requiring external explanation, each outcome is accompanied by a structured representation of the observations, signals, state vector, projected interpretation, relevance gating, and policy evaluation that produced it.
+Traditional computational systems often produce outputs without exposing the intermediate reasoning processes that led to those outcomes. As a result, interpretability is frequently treated as a post-hoc activity in which explanations are reconstructed after decisions have been made. In contrast, the Emergent State Machine produces explicit reasoning artifacts at every turn. Rather than requiring external explanation, each outcome is accompanied by a structured representation of the observations, signals, coherent state, projected state, relevance determination, and policy evaluation that produced it.
 
-This distinction shifts interpretability from an auxiliary feature to an intrinsic property of the system. Because each stage of the reasoning process is explicitly defined and preserved, the system does not merely produce decisions—it produces inspectable reasoning histories. This aligns with broader efforts in artificial intelligence to develop systems whose internal decision processes are transparent and understandable to human users \cite{doshi2017}.
+This distinction shifts interpretability from an auxiliary feature to an intrinsic property of the system. Because each stage of the reasoning process is explicitly defined and preserved, the system does not merely produce decisions—it produces inspectable reasoning histories. Interpretation is completed through explicit state construction prior to decision, and all subsequent stages operate on that representation. This aligns with broader efforts in artificial intelligence to develop systems whose internal decision processes are transparent and understandable to human users \cite{doshi2017}.
 
-The availability of explicit reasoning artifacts supports human inspection and understanding of system behavior. Users can examine not only the final outcome of a turn, but also the intermediate representations that shaped that outcome. In a clinical monitoring context, for example, a practitioner can inspect the signals derived from patient observations, the projected assessment of respiratory or circulatory stability, the relevance conditions that triggered escalation, and the policy rule that determined the recommended intervention. In an educational setting, an instructor can review the signals extracted from a student's response, the projected assessment of claim strength or reasoning coherence, and the policy conditions that led to a particular evaluation or feedback action. This structure supports forms of situation awareness in which users perceive relevant elements, integrate them into a coherent understanding, and anticipate implications for future states \cite{endsley1995}.
+The availability of explicit reasoning artifacts supports human inspection and understanding of system behavior. Users can examine not only the final outcome of a turn, but also the intermediate representations that shaped that outcome. In a clinical monitoring context, for example, a practitioner can inspect the signals derived from patient observations, the coherent state describing the patient’s condition, the projected representation used for decision-making, the relevance conditions that triggered escalation, and the policy rule that determined the recommended intervention. In an educational setting, an instructor can review the signals extracted from a student's response, the coherent representation of reasoning quality, the projected assessment used for evaluation, and the policy conditions that led to a particular feedback action. This structure supports forms of situation awareness in which users perceive relevant elements, integrate them into a coherent understanding, and anticipate implications for future states \cite{endsley1995}.
 
-Interpretability in this context is not limited to passive inspection. Because the components of the reasoning process are explicit, they can also be examined in relation to one another, enabling users to construct coherent explanations of system behavior. This process aligns with accounts of sensemaking in which individuals interpret complex environments by organizing available information into meaningful structures \cite{weick1995}. By presenting signals, state, projections, and decisions as structured components of a reasoning chain, the ESM provides a substrate for such sensemaking rather than requiring users to infer hidden relationships within opaque models.
+Interpretability in this context is not limited to passive inspection. Because the components of the reasoning process are explicit, they can be examined in relation to one another, enabling users to construct coherent explanations of system behavior. These explanations are assembled directly from structured elements of the reasoning chain rather than inferred from opaque internal representations. This process aligns with accounts of sensemaking in which individuals interpret complex environments by organizing available information into meaningful structures \cite{weick1995}. By presenting each stage of reasoning explicitly, the ESM provides a substrate for such sensemaking rather than requiring users to reconstruct hidden relationships within opaque models.
 
-Crucially, interpretability within the ESM architecture supports human intervention and control. Because signals, projection functions, relevance gates, and policy rules are explicitly defined, they can be revised, extended, or constrained by system designers and domain experts. This enables a form of human oversight in which users do not merely observe system behavior but actively participate in shaping it. For example, a clinical team may refine the definition of derived signals or adjust escalation criteria in response to observed system performance, while an educational team may revise projection functions or policy thresholds to better align with instructional goals.
+Crucially, interpretability within the ESM architecture supports human intervention and control. Because signals, state construction, projection functions, relevance determination logic, and policy rules are explicitly defined, they can be revised, extended, or constrained by system designers and domain experts. This enables a form of human oversight in which users do not merely observe system behavior but actively participate in shaping it at specific layers of the architecture.
+
+For example, a clinical team may refine the definition of derived signals or adjust relevance criteria in response to observed system performance, while an educational team may revise projection functions or policy thresholds to better align with instructional goals. Because interpretation, relevance determination, and policy are structurally separated, these modifications can be made independently: users may refine how situations are interpreted without altering decision rules, or adjust decision rules without redefining the underlying representation of the situation.
 
 In this sense, the ESM supports a collaborative mode of reasoning in which human and system contributions are integrated rather than separated. The system provides structured representations and consistent evaluation, while human participants contribute domain knowledge, contextual judgment, and iterative refinement of system definitions. This perspective is consistent with views of cognition as distributed across individuals and artifacts, in which reasoning emerges from interaction between human agents and structured representations \cite{hutchins1995}.
 
@@ -670,7 +697,6 @@ By making reasoning explicit, inspectable, and modifiable, the Emergent State Ma
 % ----------------------------
 % Human Integration 
 % ----------------------------
-
 \section{Human Integration}
 
 While interpretability enables human inspection and intervention, it does not by itself describe how humans and systems participate in a shared reasoning process. The Emergent State Machine supports a stronger form of interaction in which human participants and computational processes jointly contribute to the construction, interpretation, and evolution of system behavior over time.
@@ -691,32 +717,31 @@ In practical terms, this means that system behavior evolves not only through aut
 
 The Emergent State Machine therefore supports a mode of operation in which human expertise and computational structure are tightly integrated. Rather than replacing human judgment or requiring it to operate independently of system outputs, the architecture enables a collaborative reasoning process in which both human and system contributions are made explicit, inspectable, and subject to continuous refinement.
 
-
 % ----------------------------
 % Cybernetics & Complexity
 % ----------------------------
 
 \section{Cybernetics and Complexity}
-
 The Emergent State Machine may be situated within a broader intellectual tradition spanning cybernetics, control theory, and complexity science. These fields share a common concern with how systems regulate behavior over time through feedback, adaptation, and interaction with their environment.
 
 Classical cybernetics established the foundational role of feedback in system behavior. Wiener characterized control systems in terms of feedback loops through which systems monitor and adjust their behavior \cite{wiener1948}. Ashby formalized the relationship between system regulation and environmental complexity through the law of requisite variety, which states that effective control requires a system to possess sufficient internal variety to respond to external disturbances \cite{ashby1956}. Beer extended these ideas to organizational systems, emphasizing the importance of maintaining viable structures through hierarchical coordination and feedback across multiple levels \cite{beer1972}.
 
-These frameworks provide a powerful account of regulation and adaptation, but they typically treat signals and system representations as given rather than as explicitly constructed and inspectable components. While cybernetic systems respond to signals, they do not generally make the definition of those signals or the structure of their interpretation available for direct examination or revision. Von Foerster emphasized the role of the observer in defining system boundaries and descriptions, highlighting that what is treated as a system depends on how it is observed and represented \cite{vonfoerster1974}. However, classical formulations do not provide a general architectural mechanism for making these representational choices explicit and operational within the system itself.
+These frameworks provide a powerful account of regulation and adaptation, but they typically treat signals and system representations as given rather than as explicitly constructed and inspectable components. While cybernetic systems respond to signals, they do not generally make the definition of those signals or the structure of their interpretation available for direct examination or revision. Von Foerster emphasized the role of the observer in defining system boundaries and descriptions, highlighting that what is treated as a system depends on how it is observed and represented \cite{vonfoerster1974}. However, classical formulations do not provide a general architectural mechanism for making these representational choices explicit, inspectable, and operational within the system itself.
 
 Complexity science extends these ideas by examining how system behavior emerges from local interactions over time. Prigogine showed that ordered structures can arise from far-from-equilibrium conditions through processes of self-organization \cite{prigogine1984}. Wolfram demonstrated that even simple rule-based systems can exhibit behavior that is computationally irreducible, requiring step-by-step simulation rather than direct prediction \cite{wolfram2002}. In biological systems, Levin has shown that signaling networks coordinate distributed processes to produce coherent large-scale behavior without centralized control \cite{levin2021}. These perspectives emphasize that system dynamics often cannot be fully understood through static models alone, but must be analyzed as evolving processes.
 
-The Emergent State Machine builds on these traditions while introducing a key extension. In addition to modeling feedback, dynamics, and emergent behavior, the ESM makes the structure of perception and interpretation explicit within the system architecture. Signals are not treated as implicit inputs but as explicitly defined distinctions that determine how the system partitions its environment. Projection does not remain an internal or latent transformation but becomes an inspectable mapping from state to policy-relevant meaning. Policy, in turn, operates on these explicit representations through deterministic rules that govern action selection.
+The Emergent State Machine builds on these traditions while introducing a key extension: it makes the construction of system-relevant distinctions explicit and governed within the architecture. Signals are not treated as implicit inputs but as explicitly defined distinctions that determine how the system partitions its environment. Coherent state construction makes these distinctions operational, while projection provides an explicit mapping from state to decision-relevant representation. Relevance determination and policy then operate on these representations through deterministic rules that govern action selection.
 
-In this sense, the ESM may be understood as a modernized cybernetic architecture in which feedback, representation, and decision-making are integrated but not conflated. The system retains the regulatory structure emphasized by cybernetics and the dynamic evolution emphasized by complexity science, while extending both by making the representational and interpretive layers explicit, inspectable, and subject to controlled revision. This explicit representation layer enables a form of system design in which not only behavior, but also the structure through which behavior is interpreted and governed, can be analyzed, tested, and evolved over time.
+In this sense, the ESM may be understood as a cybernetic architecture in which not only feedback, but the structure of perception and interpretation itself, is formalized and subject to control. The system retains the regulatory structure emphasized by cybernetics and the dynamic evolution emphasized by complexity science, while extending both by making representational and interpretive layers explicit, inspectable, and revisable.
+
+This shift enables a form of system design in which not only behavior, but the structure through which behavior is interpreted and acted upon, becomes a controllable object of analysis. As a result, adaptation is no longer limited to changes in system behavior, but extends to the evolution of the representations that govern that behavior.
 
 % ----------------------------
 % Governance
 % ----------------------------
-
 \section{Governance}
 
-In traditional computational systems, governance is often framed in terms of outputs: whether decisions are accurate, fair, or aligned with desired outcomes. In the Emergent State Machine architecture, governance extends beyond outputs to encompass the structures that produce those outputs. Because signals, projection functions, relevance gates, and policy rules are explicitly defined, governance operates directly over the representational and decision-making components of the system.
+In traditional computational systems, governance is often framed in terms of outputs: whether decisions are accurate, fair, or aligned with desired outcomes. In the Emergent State Machine architecture, governance extends beyond outputs to encompass the structures that produce those outputs. Because signals, state construction, projection functions, relevance determination, and policy rules are explicitly defined, governance operates directly over the representational and decision-making components of the system.
 
 This shift reflects the insight that measurement and representation shape system behavior. Campbell observed that when a measure becomes a target, it can distort the processes it is intended to monitor \cite{campbell1979}. In the ESM, signal definitions determine what aspects of the environment are measured and made available for reasoning. As a result, choices about which signals to include, how they are defined, and how they are aggregated are themselves governance decisions that influence system behavior.
 
@@ -728,35 +753,35 @@ Effective governance therefore requires not only technical correctness but also 
 
 The consequences of these design choices are particularly significant in domains where system outputs affect human outcomes. Benjamin has shown that technical systems can reproduce and amplify existing inequalities when their underlying assumptions and classifications are not critically examined \cite{benjamin2019}. In an educational setting, for example, poorly designed projection dimensions or policy thresholds may systematically disadvantage certain groups of students, while in clinical contexts, signal definitions or escalation criteria may bias attention toward or away from particular patient populations.
 
-By making the structure of perception, interpretation, and decision explicit, the Emergent State Machine enables a form of governance in which these components can be inspected, evaluated, and revised. Rather than treating system behavior as an opaque product of hidden mechanisms, the architecture exposes the elements through which behavior is produced, allowing governance to operate directly on the definitions that shape how the system understands and acts upon the world.
+By making the structure of perception, interpretation, and decision explicit, the Emergent State Machine enables governance to operate at the level where system behavior is actually formed. Rather than auditing only outcomes, stakeholders can evaluate and revise the definitions, representations, and decision rules that generate those outcomes. This enables a form of governance that is continuous, participatory, and structurally grounded in the system’s operation.
 
 % ----------------------------
 % Instrumented Deterministic Evolution
 % ----------------------------
 \section{Instrumented Deterministic Evolution}
 
-While the Emergent State Machine produces deterministic outcomes within a fixed configuration, real-world systems must evolve over time as domain knowledge improves and operational requirements change. The ESM therefore supports a regime of controlled architectural revision called \emph{Instrumented Deterministic Evolution} (IDE).
+While the Emergent State Machine produces deterministic outcomes within a fixed configuration, real-world systems must evolve over time as domain knowledge improves and operational requirements change. The ESM therefore supports a regime of controlled architectural revision called \emph{Instrumented Deterministic Evolution} (IDE), in which system behavior evolves only through explicit, versioned changes to the structures that define perception, interpretation, and decision.
 
 Under IDE, system behavior evolves only through explicit revision of versioned architectural artifacts. These artifacts include
 \begin{itemize}
 \item signal definitions
 \item derived signal computations
 \item projection operators
-\item relevance-gating functions
+\item relevance determination functions
 \item policy rules
 \item temporal aggregation or decay logic
 \end{itemize}
-Any modification to these components produces a new system configuration version.
+Any modification to these components produces a new system configuration version. Crucially, behavioral change occurs only through these versioned modifications; no implicit parameter updates alter authoritative system behavior.
 
 This approach reflects a broader view of learning as an iterative, instrumented process grounded in experience and evaluation. Rather than modifying behavior through implicit parameter updates, the ESM evolves through explicit revision of its representational and decision structures, allowing each change to be inspected, tested, and governed.
 
 \subsection{Structural Separation and Trainability}
 
-A central property enabling IDE is the structural separation between observation, interpretation, and authority. In the ESM, signals and projection define how the system \emph{represents} a situation, while policy defines how the system \emph{acts} on that representation. This separation ensures that learning and refinement can occur within the descriptive layers without directly altering the authoritative decision mechanism.
+A central property enabling IDE is the structural separation between observation, interpretation, and authority. In the ESM, signals and projection define how the system \emph{represents} a situation, while policy defines how the system \emph{acts} on that representation. This separation ensures that learning and refinement occur within the descriptive layers, while authoritative decision behavior changes only through explicit adoption of revised components.
 
 In many contemporary systems, learned representations and decision policies are entangled within a single model, making it difficult to determine whether behavioral changes arise from improved interpretation or unintended shifts in decision logic. By contrast, the ESM isolates these concerns. As a result, learned or revised components---such as signal detectors or projection mappings---can be updated, evaluated, and versioned independently of policy.
 
-This separation is particularly important for training. Models may be trained on recorded interaction data to improve signal extraction or projection quality, but their outputs are incorporated into system behavior only through explicit, versioned updates. Authoritative action selection remains governed by deterministic policy, preserving interpretability and control.
+This separation is particularly important for training. Models may be trained on recorded interaction data to improve signal extraction or projection quality, but their outputs are incorporated into system behavior only through explicit, versioned updates. Authoritative action selection remains governed by deterministic policy, preserving interpretability and control. In this sense, learning is decoupled from decision authority: models may inform representation, but they do not directly enact change.
 
 This structure supports forms of learning that extend beyond simple parameter adjustment. In particular, it enables revision of the system's representational assumptions themselves, consistent with accounts of double-loop learning in which underlying governing variables are reconsidered rather than merely adjusted \cite{argyris1978}.
 
@@ -778,7 +803,7 @@ This enables evaluation questions such as:
 \item how different configurations would have altered trajectory evolution
 \end{itemize}
 
-From this perspective, system refinement resembles a process of hypothesis testing over trajectories. Signal definitions, projection mappings, and policy rules can be treated as explicit hypotheses about how to represent and respond to the environment, which can be evaluated against observed outcomes and revised accordingly \cite{popper1959}.
+From this perspective, system refinement resembles a process of hypothesis testing over trajectories. IDE therefore operationalizes a scientific workflow in which system behavior is treated as an object of experiment, with competing representations and policies evaluated against recorded experience. Signal definitions, projection mappings, and policy rules can be treated as explicit hypotheses about how to represent and respond to the environment, which can be evaluated against observed outcomes and revised accordingly \cite{popper1959}.
 
 \subsection{Training and Replay Loop}
 
@@ -786,7 +811,7 @@ Formally, let $v$ denote a specific configuration consisting of signal definitio
 \begin{equation}
 r_t^{(v)} = R^{(v)}(o_t)
 \end{equation}
-where $R^{(v)}$ denotes the full deterministic reasoning chain under configuration $v$.
+where $R^{(v)}$ denotes the full deterministic reasoning chain under configuration $v$, including state construction, projection, relevance determination, and policy evaluation.
 
 When action is authorized under that configuration, the action may be written more specifically as
 \begin{equation}
@@ -814,27 +839,28 @@ This loop reflects a cycle of experience, reflection, and revision, consistent w
 
 \subsection{Controlled Evolution}
 
-The key property of IDE is that behavioral change occurs only through explicit modification of versioned artifacts. System evolution therefore remains intentional and inspectable rather than emerging implicitly through hidden parameter drift.
+The key property of IDE is that behavioral change occurs only through explicit modification of versioned artifacts. System evolution therefore remains intentional and inspectable, rather than emerging implicitly through hidden parameter drift.
 
 Because learned components are introduced only through versioned updates and evaluated through replay on recorded trajectories, the system supports controlled improvement without sacrificing determinism at the decision layer.
 
 This distinction reflects a deeper shift in how inference is treated within the system. Traditional system identification embeds inference within the system itself, often entangling representation, estimation, and decision. By contrast, the ESM externalizes inference into instrumented, versioned components and preserves the decision state as an explicit, inspectable construct. As a result, changes to interpretation can be introduced, evaluated, and governed without implicitly altering the system’s authoritative behavior.
 
-Instrumented Deterministic Evolution therefore allows systems to improve over time while preserving replayability, traceability, and governance over consequential decision logic.
+Instrumented Deterministic Evolution therefore allows systems to improve over time while preserving replayability, traceability, and governance over consequential decision logic. As a result, improvement is achieved not by allowing systems to change autonomously, but by enabling structured, evidence-based revision of the representations and rules that govern their behavior.
 
 % Boundaries of the Architecture
 % ----------------------------
 \section{Boundaries of the Architecture}
 
-The Emergent State Machine framework enforces structural separation between observation, interpretation, relevance evaluation, and authoritative policy selection. While this separation provides important properties of transparency and replayability, it does not eliminate the inherent limits of modeling, measurement, or governance. The ESM should therefore be understood as an architectural framework for structured, interpretable decision processes, rather than as a universal solution to all forms of reasoning or control.
+The Emergent State Machine framework enforces structural separation between observation, interpretation, relevance determination, and authoritative policy selection. While this separation provides important properties of transparency and replayability, it does not eliminate the inherent limits of modeling, measurement, or governance, nor does it guarantee correctness of interpretation or decision. The ESM should therefore be understood as an architectural framework for structured, interpretable decision processes, rather than as a universal solution to all forms of reasoning or control.
 
-In particular, the ESM does not operate as a framework for global optimization over trajectories. Classical formulations of sequential decision-making, such as dynamic programming, seek to optimize cumulative reward across extended horizons \cite{bellman1957}. By contrast, the ESM operates through locally evaluated decisions based on projected state and explicit policy rules. System behavior emerges from sequences of such decisions rather than from optimization over a global objective function.
+In particular, the ESM does not operate as a framework for global optimization over trajectories. Classical formulations of sequential decision-making, such as dynamic programming, seek to optimize cumulative reward across extended horizons \cite{bellman1957}. By contrast, the ESM operates through locally evaluated decisions based on projected state and explicit policy rules. System behavior emerges from sequences of such decisions rather than from optimization over a global objective function or long-horizon reward formulation.
 
 \subsection{Projection Quality}
 
-Projection determines how signals are interpreted as structured policy-relevant state. If signal definitions are incomplete, poorly designed, or biased, deterministic policy will faithfully act on those flawed representations.
+Projection determines how signals are interpreted as structured policy-relevant state. If signal definitions are incomplete, poorly designed, or biased, deterministic policy will faithfully act on those flawed representations, potentially amplifying their effects through consistent application. For this reason, policy design remains a normative and domain-dependent activity that cannot be resolved purely through architectural structure.
 
-The ESM therefore does not guarantee correctness of interpretation. Instead, it guarantees that interpretation remains explicit, inspectable, and revisable.
+The ESM does not guarantee correctness of interpretation. Instead, it guarantees that interpretation remains explicit, inspectable, and revisable.
+
 
 \subsection{Policy Design}
 
@@ -846,9 +872,9 @@ The architecture ensures that such issues remain visible and modifiable. However
 
 Many real-world decision systems operate under partial observability, where the available signals may not uniquely determine the true system state. Formal frameworks such as partially observable Markov decision processes (POMDPs) model this uncertainty by maintaining belief distributions over latent states \cite{kaelbling1998}.
 
-The Emergent State Machine adopts a different architectural strategy. Rather than collapsing uncertainty through probabilistic belief updates within the decision mechanism, ambiguity is surfaced explicitly as a system condition. When available signals do not justify confident progress under the current reasoning constraints, the system may request clarification or additional observation before proceeding.
+The Emergent State Machine adopts a different architectural strategy. Rather than collapsing uncertainty through probabilistic belief updates within the decision mechanism, ambiguity is surfaced explicitly as a system condition. When available signals do not justify confident progression under the current reasoning constraints, the system may request clarification or additional observation before proceeding.
 
-Clarification may arise either because relevance gating does not authorize consequential action under current conditions or because policy, once invoked, determines that additional information is required before authorizing action.
+Clarification may arise either because relevance determination does not authorize consequential action under current conditions or because policy, once invoked, determines that additional information is required before authorizing action.
 
 Ambiguity is therefore treated as an observable and governable system condition rather than an internal inference artifact. In contrast to structural causal approaches that focus on identifying underlying causal relationships and counterfactual dependencies \cite{pearl2009}, the ESM focuses on representing and managing the current decision context under explicit uncertainty, without requiring a complete causal model of the system.
 
@@ -856,21 +882,21 @@ Ambiguity is therefore treated as an observable and governable system condition 
 
 Generative models may assist with tasks such as interpretation support, explanation generation, or interface construction. Within the ESM architecture, such models operate at the descriptive layer rather than the authoritative layer.
 
-Generative outputs may contribute to observation processing, signal derivation, or projection support, but they cannot directly authorize actions. All consequential decisions must pass through deterministic relevance gating and policy evaluation.
+Generative outputs may contribute to observation processing, signal derivation, or projection support, but they cannot directly authorize actions. They may inform the system’s representation of a situation, but they do not constitute the decision mechanism itself. All consequential decisions must pass through deterministic relevance gating and policy evaluation.
 
 This constraint allows generative capabilities to support system reasoning while preserving explicit governance over decision authority. More generally, while machine learning methods may be incorporated into signal extraction or projection layers, they do not replace the explicit policy structure that governs action selection.
 
 \subsection{Action Boundary and Deployment Constraints}
 
-The ESM architecture does not imply unrestricted automation. In safety-critical deployments, the set of allowable automated actions may be externally constrained by institutional governance, protocol boundaries, or regulatory requirements.
+The ESM architecture does not imply nor require unrestricted automation. In safety-critical deployments, the set of allowable automated actions may be externally constrained by institutional governance, protocol boundaries, or regulatory requirements.
 
 Accordingly, action sets may be restricted to pre-authorized, explicitly bounded operations, while higher-risk or irreversible decisions remain reserved for human or supervisory authority. The architecture supports such constraints by ensuring that all authorized actions remain explicit, versioned, replayable, and externally governable.
 
 \subsection{Applicability Scope}
 
-The Emergent State Machine is most applicable in systems where automated reasoning influences externally consequential decisions. In domains where outputs are purely generative---such as creative text production---the strict separation between interpretation and authority may be unnecessary.
+The Emergent State Machine is most applicable in systems where automated reasoning influences externally consequential decisions. In domains where outputs are purely generative—such as creative text production—the strict separation between interpretation and authority may be unnecessary.
 
-The architecture therefore represents a design discipline for systems in which interpretability, accountability, and governance of automated decisions are critical requirements. It is best understood as complementing, rather than replacing, statistical learning, causal modeling, and optimization-based approaches within a broader ecosystem of decision-support methods.
+The architecture should therefore be understood as a design discipline for systems in which interpretability, accountability, and governance of decision processes are primary requirements. It complements, rather than replaces, statistical learning, causal modeling, and optimization-based approaches, providing a structured framework for integrating these methods within governed decision systems.
 
 % ----------------------------
 % Related Work
@@ -878,31 +904,31 @@ The architecture therefore represents a design discipline for systems in which i
 \section{Related Work}
 \label{sec:related_work}
 
-The Emergent State Machine (ESM) draws on ideas from control theory, dynamical systems, system identification, signal processing, software architecture, situation awareness research, and recent work on AI interpretability and governance. While each of these traditions contributes foundational concepts, the ESM combines and extends them through a distinctive architectural separation between measurement, interpretation, relevance, and authoritative policy selection.
+The Emergent State Machine (ESM) draws on ideas from control theory, dynamical systems, system identification, signal processing, software architecture, situation awareness research, and recent work on AI interpretability and governance. While each of these traditions contributes foundational concepts, the ESM introduces a unifying architectural framework that makes measurement, interpretation, relevance determination, and authoritative policy selection explicit, separable, and governable.
 
 \subsection{Control and State-Space Systems}
 
 Control theory represents system behavior through state-space formulations in which system state evolves over time and control inputs influence system trajectories \cite{kalman1960,astrom2010}. Classical approaches distinguish between measurement, state estimation, and control, often using observers to infer latent system state and controllers to determine actions.
 
-The ESM adopts the state-space perspective but reinterprets the role of state. Rather than estimating latent state through probabilistic inference, the ESM constructs an explicit, interpretable state vector from deterministically defined signals. Control is similarly restructured: instead of continuous control laws, the ESM employs discrete, policy-governed action selection activated through relevance gating. This preserves the trajectory-based reasoning of control theory while ensuring that both state representation and decision authority remain inspectable.
+The ESM adopts the state-space perspective but reinterprets the role of state. Rather than estimating latent state through probabilistic inference, the ESM constructs an explicit, interpretable state vector from deterministically defined signals. Control is similarly restructured: instead of continuous control laws, the ESM employs discrete, policy-governed action selection activated through relevance gating. This preserves the trajectory-based reasoning of control theory while ensuring that both state representation and decision authority remain inspectable. In contrast to observer-based approaches that estimate hidden state, the ESM eliminates latent state by construction, replacing inference with explicit representation.
 
 \subsection{System Identification and Signal Construction}
 
 System identification frameworks model system behavior by constructing representations of state from observed data \cite{ljung1999}. In these approaches, state is often latent and optimized for predictive performance. Signal processing and detection theory similarly focus on extracting meaningful structure from noisy observations \cite{raghavan2014}.
 
-The ESM builds on these ideas by introducing explicitly defined signals as the foundation of state construction. Rather than learning latent representations, signals are specified, versioned, and auditable. This transforms the representation problem from one of inference to one of transparent construction, allowing domain experts to inspect and revise how observations are translated into structured state.
+The ESM builds on these ideas by introducing explicitly defined signals as the foundation of state construction. Rather than learning latent representations, signals are specified, versioned, and auditable. This transforms the representation problem from one of inference to one of explicit, governed construction, allowing domain experts to inspect and revise how observations are translated into structured state.
 
 \subsection{Representation Learning}
 
 Machine learning systems commonly transform raw observations into latent feature representations that support prediction and classification tasks \cite{bishop2006}. These representations are typically learned through optimization and are often not directly interpretable.
 
-The ESM replaces latent feature representations with explicitly defined signals and state vectors. Meaning is not compressed into opaque embeddings but expanded into named, interpretable components. This shift prioritizes semantic transparency over representational efficiency, enabling reasoning processes that can be inspected, audited, and revised.
+The ESM replaces latent feature representations with explicitly defined signals and state vectors. Meaning is not compressed into opaque embeddings but expanded into named, interpretable components. This shift prioritizes semantic transparency over representational efficiency, enabling reasoning processes that can be inspected, audited, and revised. This tradeoff favors interpretability and governance over compression efficiency, making the internal structure of reasoning available for inspection and revision.
 
 \subsection{Decision Theory and Uncertainty}
 
 Classical decision theory often models decision-making under uncertainty as optimization over expected outcomes, distinguishing between risk, where probabilities are known, and uncertainty, where they are not \cite{knight1921}. Behavioral research has shown that human decision-making frequently departs from these models, relying instead on heuristics and bounded rationality \cite{kahneman1979}. Alternative perspectives emphasize that decision strategies are adapted to environmental structure rather than globally optimal in all contexts \cite{gigerenzer1999}.
 
-The ESM departs from these frameworks by externalizing uncertainty into explicit system state rather than resolving it internally through probabilistic optimization. Ambiguity, conflicting signals, or insufficient evidence are represented directly within the system and may lead to deferral, clarification, or constrained action. In this sense, the architecture treats uncertainty as a condition to be governed rather than a quantity to be collapsed.
+The ESM departs from these frameworks by externalizing uncertainty into explicit system state rather than resolving it internally through probabilistic optimization. Ambiguity, conflicting signals, or insufficient evidence are represented directly within the system and may lead to deferral, clarification, or constrained action. In this sense, the architecture treats uncertainty as an explicit system condition to be represented and governed, rather than resolved through internal probabilistic optimization.
 
 \subsection{Naturalistic Decision Making}
 
@@ -914,13 +940,15 @@ The ESM aligns with this perspective by organizing reasoning around structured s
 
 Event-triggered control frameworks invoke control actions only when specific conditions are satisfied, rather than continuously \cite{tabuada2007}. Supervisory control theory similarly governs the activation of discrete event processes through higher-level control logic \cite{ramadge1987}.
 
-The ESM generalizes these ideas through the concept of relevance gating. While the system evaluates every turn, policy evaluation is conditionally activated only when projected state satisfies explicit structural conditions. This separates continuous observation from conditional intervention and provides an inspectable mechanism for determining when decisions become consequential.
+The ESM generalizes these ideas through the concept of relevance gating. While the system evaluates every turn, policy evaluation is conditionally activated only when projected state satisfies explicit structural conditions. This separates continuous observation from conditional intervention and provides an explicit, inspectable mechanism for determining when decisions become consequential.
 
 \subsection{Hierarchical and Modular Systems}
 
-Hierarchical system design has long been recognized as essential for managing complexity \cite{simon1962}. Subsequent work in hierarchical control \cite{albus1981} and modular software architecture \cite{parnas1972,dijkstra1974,reenskaug1979} demonstrates how layered structures enable coordination across different levels of abstraction while preserving local autonomy.
+Hierarchical system design has long been recognized as essential for managing complexity \cite{simon1962}. Subsequent work in hierarchical control \cite{albus1981} and modular software architecture \cite{parnas1972,dijkstra1974,reenskaug1979} demonstrates how layered structures enable coordination across levels of abstraction while preserving local autonomy.
 
-The ESM extends these principles through layered ESM architectures in which upstream systems construct contextual state that is transferred to downstream systems. These systems interact through explicit state handoff and outcome-triggered coordination rather than continuous coupling. This preserves modularity, traceability, and replayability while allowing shared situational context across different levels of reasoning.
+The ESM extends these principles through layered architectures in which upstream systems construct contextual state that is explicitly transferred to downstream systems. Interaction occurs through state handoff and outcome-triggered coordination rather than continuous coupling.
+
+This design preserves modularity, traceability, and replayability while enabling shared situational context across levels of reasoning. Because coordination is mediated through explicit state rather than shared internal representations, systems remain independently interpretable while participating in a coherent, multi-level decision process.
 
 \subsection{Dynamical Systems and Complexity}
 
@@ -932,19 +960,19 @@ The ESM adopts this trajectory-based perspective, treating successive turns as s
 
 Cybernetics and systems theory established foundational principles of feedback, regulation, and hierarchical organization in complex systems \cite{wiener1948,ashby1956,beer1972}. These traditions emphasize how systems maintain stability through feedback and adapt to environmental variation.
 
-The ESM builds on these ideas while introducing an explicit representational layer. Rather than treating signals and system descriptions as implicit components of feedback loops, the architecture makes them explicit, inspectable, and subject to revision. This enables governance not only over system behavior but over the structures through which behavior is interpreted and controlled.
+The ESM builds on these ideas while introducing an explicit and governed representational layer. Rather than treating signals and system descriptions as implicit components of feedback loops, the architecture makes them explicit, inspectable, and subject to revision. This enables governance not only over system behavior but over the structures through which behavior is interpreted and controlled.
 
 \subsection{Situation Awareness}
 
 Situation awareness research characterizes human decision-making as a process of perceiving relevant elements, comprehending their meaning, and projecting future states \cite{endsley1995}. This framework emphasizes the importance of structured interpretation in complex environments.
 
-The ESM provides a computational analogue to this process. Observations are transformed into signals, signals are organized into an explicit state representation, and projection expresses that state in policy-relevant coordinates. Unlike human cognition, however, this process remains fully explicit and reproducible, enabling systematic analysis and revision of situational reasoning.
+The ESM provides a computational analogue to this process. Observations are transformed into signals, signals are organized into an explicit state representation, and projection expresses that state in policy-relevant coordinates. Unlike human cognition, however, this process is fully specified, inspectable, and reproducible, allowing systematic evaluation and revision of situational reasoning. 
 
 \subsection{Interpretability and Governance}
 
 Recent work in AI interpretability and ethics has highlighted the risks of opaque decision systems \cite{doshi2017,mittelstadt2016}. Many contemporary architectures embed both representation and decision logic within learned models, making it difficult to trace outcomes to specific inputs or assumptions.
 
-The ESM addresses these concerns by enforcing a strict separation between interpretation and authority. Signals, state representations, projections, and policies are defined as explicit, versioned artifacts. Decisions can therefore be traced through a complete reasoning chain from observation to action, enabling auditability, failure localization, and controlled system evolution.
+The ESM addresses these concerns by enforcing a strict separation between interpretation and authority. Signals, state representations, projections, and policies are defined as explicit, versioned artifacts. Decisions can therefore be traced through a complete reasoning chain from observation to action, enabling auditability, failure localization, and controlled system evolution. 
 
 \subsection{Distinguishing Features of the ESM}
 
@@ -952,34 +980,32 @@ Across these traditions, the Emergent State Machine introduces a distinctive syn
 
 \begin{itemize}
 \item state is constructed through \textbf{explicitly defined, interpretable signals} rather than inferred as a latent variable
-\item projection expresses state in \textbf{policy-relevant coordinates} without collapsing interpretation into decision-making
-\item relevance gating determines when policy evaluation is authorized, \textbf{separating continuous observation from conditional intervention}
-\item policy selection is \textbf{deterministic, inspectable, and governed by explicit rules} rather than optimized over implicit objectives
-\item system evolution occurs through versioned modification of signals, projections, and policies under \textbf{Instrumented Deterministic Evolution}
+\item projection expresses the state in \textbf{policy-relevant coordinates} without introducing new semantic content or collapsing interpretation into decision-making
+\item relevance determination via gating evaluates when policy action is authorized, \textbf{separating continuous observation from consequential decision}
+\item policy and authorized outcomes are \textbf{deterministic, inspectable, and governed by explicit rules} rather than optimized over implicit objectives
+\item system evolution occurs through versioned modification of signals, projections, relevance determination logic, and policies under \textbf{Instrumented Deterministic Evolution}, rather than through implicit parameter drift
 \end{itemize}
 
-Together, these elements produce an architecture in which automated reasoning remains transparent, reproducible, and governable even as systems grow in complexity and operate in uncertain domains.
-
+Together, these elements define an architecture in which automated reasoning remains transparent, reproducible, and governable even as systems grow in complexity, operate under uncertainty, and evolve over time.
 
 % ----------------------------
 % Conclusion
 % ----------------------------
 \section{Conclusion}
 
-This paper has presented the mathematical and architectural foundations of the Emergent State Machine (ESM), a deterministic framework for interpretable situational reasoning in complex systems. The architecture organizes reasoning into discrete units called turns, each of which transforms observations into signals, constructs an explicit state vector, projects that state into policy-relevant coordinates, evaluates relevance, and, when warranted, deterministically produces an action or other outcome.
+This paper has presented the mathematical and architectural foundations of the Emergent State Machine (ESM), a deterministic framework for interpretable situational reasoning in complex systems. The architecture organizes reasoning into discrete units called turns, each of which transforms observations into signals, constructs a coherent state, expresses that state in policy-relevant coordinates, evaluates relevance through explicit determination, and, when warranted, deterministically produces an authorized outcome.
 
-By structuring system behavior as a sequence of turns, the ESM makes reasoning processes inspectable, replayable, and auditable. State evolution becomes visible as trajectories through interpretable and projected state space, allowing policies to guide system behavior toward desirable regions and away from unstable conditions over variable real-world time.
+By structuring system behavior as a sequence of turns, the ESM makes reasoning processes inspectable, replayable, and auditable. State evolution becomes visible as trajectories through interpretable and policy-relevant state spaces, allowing policies to guide system behavior toward desirable regions and away from unstable conditions over variable real-world time.
 
-A central contribution of the architecture is the preservation of structural boundaries among interpretation, relevance evaluation, and authority. Projection mechanisms describe the current situation, relevance gating determines whether the situation warrants policy evaluation, and deterministic policy governs consequential action. This separation ensures that system behavior remains traceable to explicit architectural artifacts rather than embedded within opaque model parameters.
+A central contribution of the architecture is the preservation of structural boundaries among interpretation, relevance determination, and authority. Interpretation is completed during state construction; projection re-expresses the fully constructed situational state in decision-relevant coordinates; relevance determination evaluates whether the situation warrants action; and deterministic policy governs authorized outcomes. This separation ensures that system behavior remains traceable to explicit architectural artifacts rather than embedded within opaque model parameters.
 
-Because signals, projections, gates, temporal logic, and policies are explicitly defined and versioned, the architecture supports a regime of Instrumented Deterministic Evolution in which behavioral change occurs only through intentional revision of system components. System evolution therefore becomes controlled, inspectable, and governable rather than implicit or emergent through hidden parameter updates.
+Because signals, projections, relevance determination logic, temporal logic, and policies are explicitly defined and versioned, the architecture supports a regime of Instrumented Deterministic Evolution in which behavioral change occurs only through intentional revision of system components. System evolution therefore becomes controlled, inspectable, and governable rather than implicit or emergent through hidden parameter updates.
 
 Layered deployments extend these properties by allowing initialized state to be transferred across interacting ESMs without collapsing modularity or obscuring provenance. This enables local reasoning, shared contextual state, temporal persistence, and deterministic authority to coexist within a unified and inspectable system architecture.
 
 The Emergent State Machine does not eliminate the inherent challenges of modeling complex, uncertain domains. However, it provides a disciplined architectural framework in which automated reasoning remains transparent, reproducible, and subject to explicit governance. In systems where probabilistic interpretation influences consequential decisions, maintaining clear structural boundaries among description, relevance, and authority is not merely a design preference, but an architectural requirement.
 
-By making the processes of perception, interpretation, and decision explicit and inspectable, the ESM enables a new class of systems in which reasoning itself can be analyzed, evaluated, and deliberately evolved over time.
-
+By making the processes of observation, interpretation, and decision explicit, separable, and governable, the ESM enables a class of systems in which reasoning itself becomes an object of analysis, evaluation, and deliberate evolution over time.
 
 \bibliographystyle{plain}
 \bibliography{references}

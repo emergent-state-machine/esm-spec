@@ -35,13 +35,13 @@
 
 \node[box, below=of obs] (sig) {\textbf{Signals}\\Direct and derived signals computed deterministically from observations};
 
-\node[smallbox, below=of sig] (state) {\textbf{State Vector}\\Interpretable current situation represented in signal space};
+\node[smallbox, below=of sig] (state) {\textbf{State Vector}\\Coherent situational state (fully resolved; all signals interpreted together)};
 
-\node[smallbox, below=of state] (proj) {\textbf{Policy Projection}\\State expressed in policy-relevant coordinates};
+\node[smallbox, below=of state] (proj) {\textbf{Projection into Policy Space}\\State re-expressed in policy-relevant coordinates (no new semantic content)};
 
-\node[smallbox, below=of proj] (gate) {\textbf{Relevance Gate}\\Condition determining whether policy evaluation begins};
+\node[smallbox, below=of proj] (gate) {\textbf{Relevance Determination (Gating)}\\Condition determining whether policy evaluation begins};
 
-\node[smallbox, below=of gate] (policy) {\textbf{Policy Evaluation}\\Deterministic evaluation of the next authorized response};
+\node[smallbox, below=of gate] (policy) {\textbf{Policy and Authorized Outcome}\\Deterministic evaluation of the next authorized response};
 
 \node[smallbox, below=of policy] (outcome) {\textbf{Outcome}\\Turn result: no-op, action, escalation, handoff, or clarification};
 
@@ -60,18 +60,18 @@
 \draw[arrow] (action) -- (evolve);
 
 % Gate side note for no-op
-\node[note, right=0.8cm of gate, yshift=0.12cm] (gatenote) {if not relevant:\\yields \textbf{no-op}};
+\node[note, right=0.8cm of gate, yshift=0.12cm] (gatenote) {If not relevant: \textbf{no-op}\\(no policy action; state still evolves)};
 \draw[arrow] (gate.east) -- ++(0.7,0) |- (outcome.east);
 
 % Loop back
 \draw[arrow] (evolve.east) .. controls +(2.6,0) and +(2.6,0) .. (obs.east);
 
 % Loop label
-\node[note, right=2.55cm of policy] {repeat with\\new observations};
+\node[note, right=2.55cm of policy] {Next turn with\\new observations};
 
 % Bottom summary text
 \node[align=center, below=0.45cm of evolve, font=\small] (traj)
 {\textbf{Trajectory through State Space:} $x_1 \rightarrow x_2 \rightarrow x_3 \rightarrow \cdots$\\[0.15em]
-\textbf{Control Objective:} steer trajectories toward desirable or stable regions};
+\textbf{Control Objective:} steer toward desirable or stable regions};
 
 \end{tikzpicture}
