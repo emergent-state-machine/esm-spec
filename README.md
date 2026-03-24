@@ -4,10 +4,10 @@ The **Emergent State Machine (ESM)** is an architectural framework for determini
 
 It defines how systems transform observations into governed outcomes while preserving:
 
-transparency
-replayability
-auditability
-explicit control over decision authority
+- transparency
+- replayability
+- auditability
+- explicit control over decision authority
 
 ## Core Execution Model
 
@@ -15,12 +15,12 @@ ESM organizes reasoning into discrete computational frames called turns.
 
 Each turn:
 
-incorporates observations
-derives signals
-constructs a coherent state
-re-expresses that state in decision coordinates
-determines whether evaluation is warranted
-conditionally produces an outcome
+- incorporates observations
+- derives signals
+- constructs a coherent state
+- re-expresses that state in decision coordinates
+- determines whether evaluation is warranted
+- conditionally produces an outcome
 
 ## ESM Core Loop
 
@@ -64,74 +64,74 @@ This makes every state transition inspectable, replayable, and governable.
 
 ESM enforces strict separation between:
 
-Measurement → signals from observations
-Interpretation → coherent state construction
-Relevance Determination → whether a situation warrants evaluation
-Authority → deterministic policy selection
+- Measurement → signals from observations
+- Interpretation → coherent state construction
+- Relevance Determination → whether a situation warrants evaluation
+- Authority → deterministic policy selection
 
 This separation ensures:
 
-probabilistic or generative systems may assist interpretation,
-but cannot directly authorize outcomes.
+- probabilistic or generative systems may assist interpretation,
+- but cannot directly authorize outcomes.
 
 ## Key Concepts
 
-# Coherent State
+### Coherent State
 
 Signals are organized into a fully resolved, internally consistent state representation.
 
 This state contains all semantic content required for decision-making.
 
-# Projection
+### Projection
 
 Projection re-expresses the coherent state in policy-relevant coordinates.
 
 Projection introduces no new semantic content.
 It is a structured re-representation of an already interpreted state.
 
-# Relevance Determination (Gating)
+### Relevance Determination (Gating)
 
 Relevance determination defines:
 
-the authorization boundary for decision-making
+- the authorization boundary for decision-making
 
 It determines whether the current situation warrants policy evaluation.
 
-# Policy (Authority)
+### Policy (Authority)
 
 Policy is the exclusive source of authority.
 
 All outcomes must be selected:
 
-deterministically
-explicitly
-under versioned rules
+- deterministically
+- explicitly
+- under versioned rules
 
 ## Why This Exists
 
 Modern AI and decision systems often entangle:
 
-interpretation
-decision authority
-generative output
+- interpretation
+- decision authority
+- generative output
 
 This leads to systems that are:
 
-difficult to audit
-difficult to reproduce
-unsafe to evolve
-hard to govern
+- difficult to audit
+- difficult to reproduce
+- unsafe to evolve
+- hard to govern
 
 The Emergent State Machine addresses this by:
 
-making state construction explicit
-separating interpretation from authority
-enforcing a governed decision boundary
-enabling replayable system evolution
+- making state construction explicit
+- separating interpretation from authority
+- enforcing a governed decision boundary
+- enabling replayable system evolution
 
 Behavior changes only through:
 
-explicit, versioned modification of architectural artifacts
+- explicit, versioned modification of architectural artifacts
 
 ## Scope of This Repository
 
@@ -139,13 +139,13 @@ This repository contains the canonical specification of the ESM architecture.
 
 It defines:
 
-the execution model
-architectural invariants
-coherent state construction
-projection semantics
-relevance determination
-deterministic policy authority
-Instrumented Deterministic Evolution (IDE)
+- the execution model
+- architectural invariants
+- coherent state construction
+- projection semantics
+- relevance determination
+- deterministic policy authority
+- Instrumented Deterministic Evolution (IDE)
 
 This repository does not contain application implementations.
 
@@ -200,10 +200,10 @@ This release clarifies how systems move from raw observations to meaningful deci
 
 Key highlights:
 
-Projection defined as explicit coarse-graining into decision space
-Stronger framing of ESM as a system for situational reasoning
-Clearer articulation of the decision boundary (policy as authority)
-Continued emphasis on determinism, replayability, and auditability
+- Projection defined as explicit coarse-graining into decision space
+- Stronger framing of ESM as a system for situational reasoning
+- Clearer articulation of the decision boundary (policy as authority)
+- Continued emphasis on determinism, replayability, and auditability
 
 This version represents the most complete and accessible articulation of the architecture to date.
 
@@ -217,10 +217,10 @@ This release formalizes the Emergent State Machine as an architectural framework
 
 Key advancements:
 
-Clarifies the architecture as Signal → State → Projection → Authority (CML)
-Establishes the governance boundary: only policy may authorize state mutation
-Refines the role of projection as explicit, inspectable coarse-graining into policy space
-Strengthens the framing of ESM as a decision system architecture, not a model or pipeline
+- Clarifies the architecture as Signal → State → Projection → Authority (CML)
+- Establishes the governance boundary: only policy may authorize state mutation
+- Refines the role of projection as explicit, inspectable coarse-graining into policy space
+- Strengthens the framing of ESM as a decision system architecture, not a model or pipeline
 
 This version represents the current canonical framing of ESM as a system for governed, auditable decision-making in complex environments.
 
@@ -232,10 +232,10 @@ This release transitions the language of ESM from a control-system framing towar
 
 Key advancements:
 
-Reframes ESM as an architectural framework, not just a control loop
-Strengthens emphasis on interpretability, auditability, and governance
-Clarifies projection as the mechanism that makes situations visible, not predicted
-Refines narrative around human–AI collaboration at the decision boundary
+- Reframes ESM as an architectural framework, not just a control loop
+- Strengthens emphasis on interpretability, auditability, and governance
+- Clarifies projection as the mechanism that makes situations visible, not predicted
+- Refines narrative around human–AI collaboration at the decision boundary
 
 This version bridges the earlier mathematical formulation and the current governance-oriented architecture.
 
@@ -247,10 +247,10 @@ This release sharpens the role of projection into policy space as a central arch
 
 Key advancements:
 
-Defines projection as explicit transformation into decision-relevant coordinates
-Distinguishes projection from prediction and inference
-Clarifies how policy operates over structured situational dimensions
-Strengthens the separation between state representation and decision logic
+- Defines projection as explicit transformation into decision-relevant coordinates
+- Distinguishes projection from prediction and inference
+- Clarifies how policy operates over structured situational dimensions
+- Strengthens the separation between state representation and decision logic
 
 This version marks the point where projection becomes clearly identifiable as a novel architectural contribution.
 
@@ -262,10 +262,10 @@ This release introduces the formal structure of the ESM as a deterministic state
 
 Key advancements:
 
-Defines the turn as the atomic unit of reasoning
-Formalizes the transformation chain: observations → signals → state → projection → action
-Introduces Instrumented Deterministic Evolution (IDE) as the mechanism for system change
-Establishes replayability, auditability, and failure localization as core properties
+- Defines the turn as the atomic unit of reasoning
+- Formalizes the transformation chain: observations → signals → state → projection → action
+- Introduces Instrumented Deterministic Evolution (IDE) as the mechanism for system change
+- Establishes replayability, auditability, and failure localization as core properties
 
 This version provides the first fully developed mathematical and architectural articulation of the system.
 
@@ -277,10 +277,10 @@ This release represents the first complete formal draft of the Emergent State Ma
 
 Key contributions:
 
-Establishes the turn-based reasoning loop
-Introduces signals, state vectors, and deterministic policy selection
-Frames the architecture as an alternative to opaque, model-centric decision systems
-Begins formalizing the relationship to control theory and state-space systems
+- Establishes the turn-based reasoning loop
+- Introduces signals, state vectors, and deterministic policy selection
+- Frames the architecture as an alternative to opaque, model-centric decision systems
+- Begins formalizing the relationship to control theory and state-space systems
 
 This version provides the first end-to-end articulation of the system’s structure.
 
@@ -292,10 +292,10 @@ This release captures the earliest formal articulation of the Emergent State Mac
 
 Key contributions:
 
-Establishes the turn-based execution model
-Introduces explicit construction of state from signals
-Frames the problem of entangled interpretation and action in AI systems
-Motivates separation between descriptive reasoning and authoritative decision-making
+- Establishes the turn-based execution model
+- Introduces explicit construction of state from signals
+- Frames the problem of entangled interpretation and action in AI systems
+- Motivates separation between descriptive reasoning and authoritative decision-making
 
 While later versions refine layering and governance boundaries, this release contains the core insight:
 making the construction of state from signals explicit as the foundation of interpretable decision systems.
