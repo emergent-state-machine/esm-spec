@@ -1,6 +1,6 @@
 # Emergent State Machine
 
-The **Emergent State Machine (ESM)** is an architectural framework for deterministic, interpretable decision systems.
+The **Emergent State Machine (ESM)** is an architectural framework for deterministic, interpretable, governable decision systems.
 
 It defines how systems transform observations into governed outcomes while preserving:
 
