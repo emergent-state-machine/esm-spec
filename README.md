@@ -195,6 +195,8 @@ See the draft here:
 
 **v1.6.0 — Deterministic Decision Invocation & Structured Relevance Gating**
 
+Read the Paper: [PDF](papers/esm-architecture/esm_architecture_v1.6.0.pdf)
+
 This release strengthens the architectural clarity of the Emergent State Machine by making explicit when decision-making is authorized, not just how decisions are produced.
 
 It sharpens the role of relevance gating as a deterministic authorization layer over policy invocation, and clarifies the turn as a complete reasoning frame in which state construction, evaluation, and outcome determination occur together.
