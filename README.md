@@ -19,8 +19,8 @@ Each turn:
 - derives signals
 - constructs a coherent state
 - re-expresses that state in decision coordinates
-- determines whether evaluation is warranted
-- conditionally produces an outcome
+- determines whether policy is authorized
+- produces an outcome (action or no-op)
 
 ## ESM Core Loop
 
@@ -58,7 +58,7 @@ Turn structure: `T_t = (o_t, S_t, x_t, y_t, g_t, a_t, m_t)`
 
 Across time: `T_0 → T_1 → T_2 → ...`
 
-This makes every state transition inspectable, replayable, and governable.
+Each turn forms a complete reasoning frame: state construction, evaluation, and outcome determination occur within the same unit of computation. This makes every state transition inspectable, replayable, and governable.
 
 ## Architectural Separation
 
@@ -66,7 +66,7 @@ ESM enforces strict separation between:
 
 - Measurement → signals from observations
 - Interpretation → coherent state construction
-- Relevance Determination → whether a situation warrants evaluation
+- Relevance Determination → whether policy is authorized
 - Authority → deterministic policy selection
 
 This separation ensures:
@@ -96,7 +96,9 @@ Relevance determination defines:
 
 - the authorization boundary for decision-making
 
-It determines whether the current situation warrants policy evaluation.
+It determines whether the current situation warrants policy evaluation, based on conditions defined over the projected state.
+
+Relevance is not limited to threshold checks on individual signals. It may be defined over composite conditions, including relationships among signals and their evolution over time.
 
 ### Policy (Authority)
 
@@ -190,6 +192,22 @@ See the draft here:
 ## Papers
 
 ### Latest Paper Release
+
+**v1.6.0 — Deterministic Decision Invocation & Structured Relevance Gating**
+
+This release strengthens the architectural clarity of the Emergent State Machine by making explicit when decision-making is authorized, not just how decisions are produced.
+
+It sharpens the role of relevance gating as a deterministic authorization layer over policy invocation, and clarifies the turn as a complete reasoning frame in which state construction, evaluation, and outcome determination occur together.
+
+Key highlights:
+
+Relevance gating formalized as deterministic authorization over policy invocation
+Clarification that gating operates over projected state, not individual signals
+Introduction of composite relevance conditions (patterns, relationships, temporal structure)
+Turn defined as a complete reasoning unit (no separation between state formation and decision)
+Stronger articulation of dual-layer determinism: both decisions and their invocation are governed
+
+This version deepens the framework’s core guarantee: that both what decisions are made and when decisions are made are fully explicit, inspectable, and reproducible.
 
 **v1.5.0 — Interpretable Situational Reasoning & Projection Formalization**
 
