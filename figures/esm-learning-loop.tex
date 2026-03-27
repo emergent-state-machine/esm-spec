@@ -1,0 +1,88 @@
+\begin{tikzpicture}[
+  scale=0.84,
+  transform shape,
+  x=1cm, y=1cm,
+  box/.style={
+    rectangle,
+    rounded corners,
+    draw,
+    align=center,
+    minimum width=5.2cm,
+    minimum height=0.98cm,
+    font=\small
+  },
+  smallbox/.style={
+    rectangle,
+    rounded corners,
+    draw,
+    align=center,
+    minimum width=4.8cm,
+    minimum height=0.90cm,
+    font=\small
+  },
+  note/.style={
+    align=center,
+    font=\footnotesize
+  },
+  arrow/.style={
+    -{Latex[length=2.5mm]},
+    thick
+  }
+]
+
+% =========================================================
+% Right column: runtime execution
+% =========================================================
+\node[box] (obs)    at (9.2, 8.6) {\textbf{Observations}\\Raw inputs from environment};
+
+\node[box] (signal) at (9.2, 6.9) {\textbf{Signal Layer (with Model)}\\Deterministic signals (model frozen at runtime)};
+
+\node[smallbox] (state)  at (9.2, 5.2) {\textbf{State Vector}\\Explicit, interpretable state};
+
+\node[smallbox] (proj)   at (9.2, 3.5) {\textbf{Projection}\\Policy-relevant coordinates};
+
+\node[smallbox] (gate)   at (9.2, 1.8) {\textbf{Relevance Gate}\\Conditional policy activation};
+
+\node[smallbox] (policy) at (9.2, 0.1) {\textbf{Policy}\\Deterministic action selection};
+
+\node[smallbox] (outcome) at (9.2, -1.6) {\textbf{Outcome}\\Logged result};
+
+\draw[arrow] (obs) -- (signal);
+\draw[arrow] (signal) -- (state);
+\draw[arrow] (state) -- (proj);
+\draw[arrow] (proj) -- (gate);
+\draw[arrow] (gate) -- (policy);
+\draw[arrow] (policy) -- (outcome);
+
+% =========================================================
+% Left column: offline training / refinement
+% =========================================================
+\node[box] (log) at (0.8, 5.2) {\textbf{Turn Log}\\Observations, signals, state, \\ projection, policy, outcomes};
+
+\node[smallbox] (dataset) at (0.8, 3.5) {\textbf{Training Dataset}\\Extracted from turn log};
+
+\node[smallbox] (train) at (0.8, 1.8) {\textbf{Model Training}\\Statistical / ML methods};
+
+\node[smallbox] (model) at (0.8, 0.1) {\textbf{Model Artifact (Versioned)}\\Validated and frozen};
+
+\draw[arrow] (log) -- (dataset);
+\draw[arrow] (dataset) -- (train);
+\draw[arrow] (train) -- (model);
+
+% =========================================================
+% Cross-column connections
+% =========================================================
+
+% Runtime outcomes recorded into turn log
+\draw[arrow] (outcome.west) -- ++(-1.45,0) |- (log.east);
+
+% Versioned model redeployed into signal/projection side
+\draw[arrow] (model.east) -- ++(1.65,0) |- (signal.west);
+
+% =========================================================
+% Explanatory note
+% =========================================================
+\node[note] at (5.0, -2.6)
+{illustrates the IDE cycle. Evolution is intentional, inspectable, governed.};
+
+\end{tikzpicture}
