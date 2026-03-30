@@ -45,7 +45,7 @@
 
 \node[smallbox, below=of policy] (outcome) {\textbf{Outcome}\\Turn result: no-op, action, escalation, handoff, or clarification};
 
-\node[smallbox, below=of outcome] (action) {\textbf{Action (if present)}\\Executed intervention, alert, prompt, or workflow step};
+\node[smallbox, below=of outcome] (action) {\textbf{Action (when authorized)}\\Executed intervention, alert, prompt, or workflow step};
 
 \node[smallbox, below=of action] (evolve) {\textbf{State Evolution}\\New observations arrive; next turn begins};
 
@@ -72,6 +72,6 @@
 % Bottom summary text
 \node[align=center, below=0.45cm of evolve, font=\small] (traj)
 {\textbf{Trajectory through State Space:} $x_1 \rightarrow x_2 \rightarrow x_3 \rightarrow \cdots$\\[0.15em]
-\textbf{Control Objective:} steer toward desirable or stable regions};
+\textbf{Local decisions shape the trajectory}: $x_1 \to x_2 \to \dots$ toward policy-defined regions};
 
 \end{tikzpicture}

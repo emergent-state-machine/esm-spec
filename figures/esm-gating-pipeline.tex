@@ -1,0 +1,32 @@
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tikzpicture}[
+    >=Latex,
+    lbl/.style={font=\normalsize, align=center},
+    ann/.style={font=\small},
+    flow/.style={->, thick},
+    noflow/.style={->, dashed, thick}
+]
+
+% Main pipeline labels
+\node[lbl] (o) at (0,0) {Observations \\ {\small $o_t$}};
+\node[lbl] (S) at (3.0,0) {Signals \\ {\small $S_t$}};
+\node[lbl] (x) at (5.8,0) {State \\ {\small $x_t$}};
+\node[lbl] (y) at (8.4,0) {Projection \\ {\small $y_t$}};
+\node[lbl] (g) at (11.2,0) {Gating \\ {\small $g_t$}};
+\node[lbl] (r) at (15.0,0) {Outcome \\ {\small $r_t$}};
+
+% Main left-to-right pipeline
+\draw[flow] (o) -- (S);
+\draw[flow] (S) -- (x);
+\draw[flow] (x) -- (y);
+\draw[flow] (y) -- (g);
+
+% g_t = 1 branch (solid)
+\draw[flow] (g) to[out=18,in=162] node[midway, above, ann] {$g_t = 1,\ \pi(y_t)$} (r);
+
+% g_t = 0 branch (dashed)
+\draw[noflow] (g) to[out=-18,in=-162] node[midway, below, ann] {$g_t = 0,\ \text{no-op}$} (r);
+
+\end{tikzpicture}
+}
