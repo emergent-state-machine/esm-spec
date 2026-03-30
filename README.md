@@ -204,14 +204,7 @@ Policy is now consistently defined as the sole mechanism that produces outcomes 
 Relevance Gating Semantics Tightened
 Relevance gating is more precisely articulated as the deterministic condition under which policy is invoked. Turns that do not meet gating conditions resolve explicitly as no-ops, without policy evaluation.
 Turn Outcome Consistency
-Every turn produces a well-defined outcome 
-𝑟
-𝑡
-r
-t
-	​
-
-, including explicit no-op outcomes. This ensures a complete and auditable decision record across all turns.
+Every turn produces a well-defined outcome `r_t`, including explicit no-op outcomes. This ensures a complete and auditable decision record across all turns.
 Figure Updates and Additions
 Core architectural diagrams have been updated for clarity and alignment with the refined terminology. New figures further illustrate projection, gating, and system flow.
 Improved Internal Consistency
