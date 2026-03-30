@@ -193,6 +193,33 @@ See the draft here:
 
 ### Latest Paper Release
 
+**v1.7.0 — Authority Boundary Clarification & Deployment Readiness**
+Read the Paper: [PDF](papers/esm-architecture/esm_architecture_v1.7.0.pdf)
+
+This release refines the core semantics of the Emergent State Machine (ESM) architecture and strengthens its presentation as a deterministic framework for interpretable situational reasoning.
+
+Key Updates
+Authority Boundary Clarified
+Policy is now consistently defined as the sole mechanism that produces outcomes when invoked. Interpretation (human or AI) contributes only through signals and projection; commitment occurs exclusively at the policy layer.
+Relevance Gating Semantics Tightened
+Relevance gating is more precisely articulated as the deterministic condition under which policy is invoked. Turns that do not meet gating conditions resolve explicitly as no-ops, without policy evaluation.
+Turn Outcome Consistency
+Every turn produces a well-defined outcome 
+𝑟
+𝑡
+r
+t
+	​
+
+, including explicit no-op outcomes. This ensures a complete and auditable decision record across all turns.
+Figure Updates and Additions
+Core architectural diagrams have been updated for clarity and alignment with the refined terminology. New figures further illustrate projection, gating, and system flow.
+Improved Internal Consistency
+Terminology and phrasing have been aligned across sections to ensure consistency between formal definitions and narrative explanations.
+Summary
+
+v1.7.0 strengthens the architectural integrity of ESM by making the decision boundary explicit and eliminating ambiguity around when and how outcomes are produced. The result is a clearer, more inspectable model of decision-making that is easier to implement, evaluate, and deploy.
+
 **v1.6.0 — Deterministic Decision Invocation & Structured Relevance Gating**
 
 Read the Paper: [PDF](papers/esm-architecture/esm_architecture_v1.6.0.pdf)
