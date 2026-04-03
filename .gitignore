@@ -5,6 +5,9 @@ esm-org-profile/
 # Private drafts
 spec/esm_formal_paper_claude.md
 
+# Released paper assets live in GitHub Releases, not on the working branch.
+papers/esm-math/esm_formal_framework_v1.0.0.pdf
+
 
 # LaTeX build artifacts
 *.aux
